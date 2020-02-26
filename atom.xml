@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://nchuxw.github.io/</id>
+    <title>nchuxw</title>
+    <updated>2020-02-26T12:22:09.507Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://nchuxw.github.io/"/>
+    <link rel="self" href="https://nchuxw.github.io/atom.xml"/>
+    <subtitle>欢迎来到nchuxw的博客</subtitle>
+    <logo>https://nchuxw.github.io/images/avatar.png</logo>
+    <icon>https://nchuxw.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2020, nchuxw</rights>
+    <entry>
+        <title type="html"><![CDATA[HDU-2102 A计划]]></title>
+        <id>https://nchuxw.github.io/post/hdu-2102-a-ji-hua/</id>
+        <link href="https://nchuxw.github.io/post/hdu-2102-a-ji-hua/">
+        </link>
+        <updated>2020-02-26T11:36:55.000Z</updated>
+        <summary type="html"><![CDATA[<p>简单搜索题</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>简单搜索题</p>
+<!-- more -->
+<h1 id="题目">题目</h1>
+<p>  <a href="http://acm.hdu.edu.cn/showproblem.php?pid=2102">http://acm.hdu.edu.cn/showproblem.php?pid=2102</a></p>
+<h1 id="题意">题意</h1>
+<p>  中文题，就不解释了哈。</p>
+<h1 id="解题思路">解题思路</h1>
+<p>  从起点开始搜索四个方向就好了，用深度优先搜索和广度优先搜索都行，遇到#就搜索另一层。需要注意的是传送到另一层后，不只是要判断是不是墙，还要判断是不是#，因为按题意来说，这种情况会一直在两层之间传送，然后走不出去，如果不特判的话，会在另一层继续搜索。</p>
+<h1 id="代码">代码</h1>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+const int MAX_N = 12;
+
+typedef struct node
+{
+	int x, y, z;
+	int t;
+} node;
+
+int n, m, t;
+char map[2][MAX_N][MAX_N];
+
+int solve()
+{
+	int i, j, front, back;
+	int book[2][MAX_N][MAX_N];
+	node que[2 * MAX_N * MAX_N];
+	node tep;
+	int dir[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+	que[0] = (node){0, 0, 0, 0};
+	front = 0;
+	back = 1;
+	memset(book, 0, sizeof(book));
+	book[0][0][0] = 1;
+	while(front != back)
+	{
+		for(i = 0; i &lt; 4; i++)
+		{
+			tep = que[front];
+			tep.x += dir[i][0];
+			tep.y += dir[i][1];
+			tep.t++;
+			if(tep.x &lt; 0 || tep.x &gt;= n || tep.y &lt; 0 || tep.y &gt;= m || tep.t &gt; t)
+			{
+				continue;
+			}
+			if(map[tep.z][tep.x][tep.y] == '#')
+			{
+				tep.z = !tep.z;
+			}
+			if(map[tep.z][tep.x][tep.y] == '*' || map[tep.z][tep.x][tep.y] == '#' || book[tep.z][tep.x][tep.y] == 1)
+			{
+				continue;
+			}
+			if(map[tep.z][tep.x][tep.y] == 'P')
+			{
+				return tep.t;
+			}
+			book[tep.z][tep.x][tep.y] = 1;
+			que[back] = tep;
+			back++;
+		}
+		front++;
+	}
+	return 0;
+}
+
+int main()
+{
+	int c, i, ans;
+
+	scanf(&quot;%d&quot;, &amp;c);
+	while(c--)
+	{
+		scanf(&quot;%d %d %d&quot;, &amp;n, &amp;m, &amp;t);
+		getchar();
+		for(i = 0; i &lt; n; i++)
+		{
+			scanf(&quot;%s&quot;, map[0][i]);
+		}
+		getchar();
+		for(i = 0; i &lt; n; i++)
+		{
+			scanf(&quot;%s&quot;, map[1][i]);
+		}
+
+		ans = solve();
+		if(ans == 0)
+		{
+			printf(&quot;NO\n&quot;);
+		}
+		else
+		{
+			printf(&quot;YES\n&quot;);
+		}
+	}
+	return 0;
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[HDU-1067 Gap]]></title>
+        <id>https://nchuxw.github.io/post/hdu-1067-gap/</id>
+        <link href="https://nchuxw.github.io/post/hdu-1067-gap/">
+        </link>
+        <updated>2020-02-23T07:45:01.000Z</updated>
+        <summary type="html"><![CDATA[<p>广度优先搜索＋map标记状态</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>广度优先搜索＋map标记状态</p>
+<!-- more -->
+<h1 id="题目">题目</h1>
+<p><a href="http://acm.hdu.edu.cn/showproblem.php?pid=1067">http://acm.hdu.edu.cn/showproblem.php?pid=1067</a></p>
+<h1 id="题意">题意</h1>
+<p>  首先给出28（4×7）张卡片和一个4×8的表格，每张卡片都有一个数字，分别是11～17、21～27、31～37和41～47。初始时将卡片随机放入表格里除第一列以外的其他位置，如下图：<br>
+<img src="https://nchuxw.github.io//post-images/1582445042932.gif" alt="" loading="lazy"><br>
+然后将数字11的卡片放到第一列的第一行，数字21的卡片放到第一列的第二行，数字31和41的卡片类似，如下图：<br>
+<img src="https://nchuxw.github.io//post-images/1582445276370.gif" alt="" loading="lazy"><br>
+接下来需要移动卡片，移动的规则是，只能将卡片移动到空白格子上，且移动到空白格子上的卡片，必须是比空白格子左边卡片上的数字大1的那张。比如上图的第一行的第二列空白格子，其左边卡片上的数字是42，那么只能将数字为43的卡片移动到该空白格子上。在移动过若干次卡片后，如果卡片的位置能变成下图所示的样子，输出最小移动的次数，否则输出-1。<br>
+<img src="https://nchuxw.github.io//post-images/1582446099263.gif" alt="" loading="lazy"></p>
+<h1 id="解题思路">解题思路</h1>
+<p>  这题要计算最小移动的次数，首先想到的是用广度优先搜索，比较麻烦的是标记每次移动后状态。可以将表格的状态转化为一个长度为28的字符串（4×7，表格第一列不会被移动，所以不用标记），然后用map的这个字符串来判断该状态是否被标记过。</p>
+<h1 id="代码">代码</h1>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;string&gt;
+#include &lt;queue&gt;
+#include &lt;map&gt;
+
+using namespace std;
+
+typedef struct node
+{
+	char index[4];
+	char a[30];
+	int t;
+} node;
+
+int solve(node start)
+{
+	int i, j, k, si, di, dnum;
+	node tep;
+	queue&lt;node&gt; que;
+	map&lt;string, bool&gt; mp;
+	char end[30] = 
+	{
+		12, 13, 14, 15, 16, 17, 1,
+		22, 23, 24, 25, 26, 27, 1,
+		32, 33, 34, 35, 36, 37, 1,
+		42, 43, 44, 45, 46, 47, 1, 0
+	};
+
+	if(strcmp(start.a, end) == 0)
+	{
+		return 0;
+	}
+	que.push(start);
+	mp[start.a] = true;
+	while(que.empty() == false)
+	{
+		for(k = 0; k &lt; 4; k++)
+		{
+			tep = que.front();
+			si = tep.index[k];
+			dnum = (si % 7 == 0) ? si / 7 * 10 + 12 : tep.a[si - 1] + 1;
+			if(dnum == 2 || dnum % 10 == 8)
+			{
+				continue;
+			}
+			for(i = 0; i &lt; 28; i++)
+			{
+				if(tep.a[i] == dnum)
+				{
+					di = i;
+					break;
+				}
+			}
+			tep.a[di] = 1;
+			tep.a[si] = dnum;
+			tep.index[k] = di;
+			tep.t++;
+			if(strcmp(tep.a, end) == 0)
+			{
+				return tep.t;
+			}
+			if(mp.count(tep.a) == 1)
+			{
+				continue;
+			}
+			mp[tep.a] = true;
+			que.push(tep);
+		}
+		que.pop();
+	}
+	return -1;
+}
+
+int main()
+{
+	int n, i, j, k, ans, in;
+	node start;
+	
+	scanf(&quot;%d&quot;, &amp;n);
+	while(n--)
+	{
+		k = 0;
+		for(i = 0; i &lt; 4; i++)
+		{
+			for(j = 0; j &lt; 7; j++)
+			{
+				scanf(&quot;%d&quot;, &amp;in);
+				start.a[i * 7 + j] = (char)in;
+				if(start.a[i * 7 + j] % 10 == 1)
+				{
+					start.a[i * 7 + j] = 1;
+					start.index[k] = i * 7 + j;
+					k++;
+				}
+			}
+		}
+		start.a[28] = '\0';
+		start.t = 0;
+		ans = solve(start);
+		printf(&quot;%d\n&quot;, ans);
+	}
+	return 0;
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[数字图像基础]]></title>
+        <id>https://nchuxw.github.io/post/shu-zi-tu-xiang-chu-li-ji-chu-zhi-shi/</id>
+        <link href="https://nchuxw.github.io/post/shu-zi-tu-xiang-chu-li-ji-chu-zhi-shi/">
+        </link>
+        <updated>2020-02-18T12:44:55.000Z</updated>
+        <summary type="html"><![CDATA[<p>一些关于数字图像处理的基本知识</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>一些关于数字图像处理的基本知识</p>
+<!-- more -->
+<h1 id="基本概念">基本概念</h1>
+<p><strong>单色光</strong>：没有颜色的光，单色光的唯一属性是强度。<br>
+<strong>灰度级</strong>：单色光的强度，从黑到白的单色光的度量值范围。<br>
+<strong>灰度图像</strong>：用单色光来表示的图像。</p>
+<p>一幅图像可以用一个矩阵来表示，矩阵中某点的值表示图像在该点的灰度级。<br>
+<strong>空间域</strong>：一幅数字图像的坐标张成的实平面部分。<br>
+<strong>像素</strong>：图像矩阵中的元素，也可以称之为图像单元或图像元素。</p>
+<p><strong>噪声</strong>：存在于图像数据中的不必要的或多余的干扰信息。<br>
+<strong>对比度</strong>：图像中最高和最低灰度级间的灰度差。<br>
+<strong>饱和度</strong>：指图像色彩的纯净程度。</p>
+<p>下次再写。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[HDU-3085 Nightmare Ⅱ]]></title>
+        <id>https://nchuxw.github.io/post/hdu-3085-nightmare-ii/</id>
+        <link href="https://nchuxw.github.io/post/hdu-3085-nightmare-ii/">
+        </link>
+        <updated>2020-02-15T08:57:20.000Z</updated>
+        <summary type="html"><![CDATA[<p>双向广度优先搜索</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>双向广度优先搜索</p>
+<!-- more -->
+<h1 id="题目">题目</h1>
+<p>  地址：<a href="http://acm.hdu.edu.cn/showproblem.php?pid=3085">http://acm.hdu.edu.cn/showproblem.php?pid=3085</a></p>
+<h1 id="题意">题意</h1>
+<p>  给出一个n×m的迷宫，迷宫里有些地方是墙，有些地方是空地，迷宫里还有两只鬼，鬼可以分身，以每秒两步的速度向附近扩散，而且鬼可以穿墙。erriyue和他的女朋友在迷宫里面，erriyue每秒钟可以走3步，他的女朋友每秒钟可以走一步。问erriyue能否在在鬼抓到他或他女朋友之前，与他女朋友会合，如果可以输出最少需要的时间，否则输出-1。</p>
+<ul>
+<li>墙用#表示</li>
+<li>空地用.表示</li>
+<li>鬼的初始位置用M表示</li>
+<li>erriyue的初始位置用M表示</li>
+<li>erriyue的女朋友初始位置用G表示</li>
+</ul>
+<h1 id="解题思路">解题思路</h1>
+<p>  以erriyue和他女朋友为原点，使用双向广度优先搜索路径，同时使用曼哈顿距离（也就是两个方向上的距离和）来判断会不会被鬼追上。双向的广度优先搜索相当单向的耗时少一点，用曼哈顿距离就可以不用把鬼加到队列里了，省了空间。</p>
+<h1 id="代码">代码</h1>
+<pre><code class="language-cpp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;queue&gt;
+
+using namespace std;
+
+const int MAX_N = 800 + 10;
+// const int MAX_N = 2 + 10;
+
+typedef struct point
+{
+	int x, y;
+} point;
+
+int n, m;
+char mp[MAX_N][MAX_N];
+char book[2][MAX_N][MAX_N];
+queue&lt;point&gt; que[2];
+int dir[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+int abs(int a, int b)
+{
+	return (a &gt; b) ? a - b : b - a;
+}
+
+int check_point(point p, point zs[], int t)
+{
+	if (abs(p.x, zs[0].x) + abs(p.y, zs[0].y) &lt;= 2 * t || 
+		abs(p.x, zs[1].x) + abs(p.y, zs[1].y) &lt;= 2 * t)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+int step_one(int mg, point zs[], int t)
+{
+	int i, pn;
+	point front, tep;
+
+	pn = que[mg].size();
+	while(pn--)
+	{
+		front = que[mg].front();
+		que[mg].pop();
+		if(check_point(front, zs, t))
+		{
+			continue;
+		}
+		for(i = 0; i &lt; 4; i++)
+		{
+			tep = front;
+			tep.x += dir[i][0];
+			tep.y += dir[i][1];
+			if(tep.x &lt; 0 || tep.x &gt;= n || tep.y &lt; 0 || tep.y &gt;= m)
+			{
+				continue;
+			}
+			if(check_point(tep, zs, t) || mp[tep.x][tep.y] == 'X' || book[mg][tep.x][tep.y] == 1)
+			{
+				continue;
+			}
+			if(book[!mg][tep.x][tep.y] == 1)
+			{
+				return 1;
+			}
+			book[mg][tep.x][tep.y] = 1;
+			que[mg].push(tep);
+		}
+	}
+	return 0;
+}
+
+int solve(point ms, point gs, point zs[])
+{
+	int t;
+
+	memset(book, 0, sizeof(book));
+	book[0][ms.x][ms.y] = 1;
+	book[1][gs.x][gs.y] = 1;
+	que[0].push(ms);
+	que[1].push(gs);
+	t = 0;
+	while(que[0].empty() == false || que[1].empty() == false)
+	{
+		t++;
+		if(step_one(0, zs, t) == 1) return t;
+		if(step_one(0, zs, t) == 1) return t;
+		if(step_one(0, zs, t) == 1) return t;
+		if(step_one(1, zs, t) == 1) return t;
+	}
+	return -1;
+}
+
+int main()
+{
+	int t, i, j, k, ans;
+	point ms, gs, zs[2];
+
+	scanf(&quot;%d&quot;, &amp;t);
+	while(t--)
+	{
+		scanf(&quot;%d %d&quot;, &amp;n, &amp;m);
+		getchar();
+		k = 0;
+		for(i = 0; i &lt; n; i++)
+		{
+			scanf(&quot;%s&quot;, mp[i]);
+			for(j = 0; j &lt; m; j++)
+			{
+				if(mp[i][j] == 'M')
+				{
+					ms = (point){i, j};
+				}
+				else if(mp[i][j] == 'G')
+				{
+					gs = (point){i, j};
+				}
+				else if(mp[i][j] == 'Z')
+				{
+					zs[k] = (point){i, j};
+					k++;
+				}
+			}
+		}
+
+		while(que[0].empty() == false) que[0].pop();
+		while(que[1].empty() == false) que[1].pop();		
+		ans = solve(ms, gs, zs);
+		printf(&quot;%d\n&quot;, ans);
+	}
+	return 0;
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Markdown语法教程]]></title>
+        <id>https://nchuxw.github.io/post/markdown-ji-ben-yu-fa/</id>
+        <link href="https://nchuxw.github.io/post/markdown-ji-ben-yu-fa/">
+        </link>
+        <updated>2020-02-07T05:00:05.000Z</updated>
+        <summary type="html"><![CDATA[<p>从网上收集的markdown语法教程</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>从网上收集的markdown语法教程</p>
+<!-- more -->
+<p><ul class="markdownIt-TOC">
+<li><a href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2">写在前面</a></li>
+<li><a href="#markdown%E7%AE%80%E4%BB%8B">Markdown简介</a></li>
+<li><a href="#markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95">Markdown基本语法</a>
+<ul>
+<li><a href="#%E6%A0%87%E9%A2%98">标题</a></li>
+<li><a href="#%E5%AD%97%E4%BD%93">字体</a>
+<ul>
+<li><a href="#%E7%AE%80%E5%8D%95%E5%AD%97%E4%BD%93">简单字体</a></li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AD%97%E4%BD%93">自定义字体</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A9%BA%E6%A0%BC">空格</a></li>
+<li><a href="#%E6%8D%A2%E8%A1%8C">换行</a></li>
+<li><a href="#%E5%BC%95%E7%94%A8">引用</a></li>
+<li><a href="#%E5%9B%BE%E7%89%87">图片</a>
+<ul>
+<li><a href="#%E7%AE%80%E5%8D%95%E5%9B%BE%E7%89%87">简单图片</a></li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9B%BE%E7%89%87">自定义图片</a></li>
+</ul>
+</li>
+<li><a href="#%E9%93%BE%E6%8E%A5">链接</a>
+<ul>
+<li><a href="#%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5">外部链接</a></li>
+<li><a href="#%E5%86%85%E9%83%A8%E9%93%BE%E6%8E%A5">内部链接</a></li>
+</ul>
+</li>
+<li><a href="#%E5%88%97%E8%A1%A8">列表</a>
+<ul>
+<li><a href="#%E6%97%A0%E5%BA%8F%E5%88%97%E8%A1%A8">无序列表</a></li>
+<li><a href="#%E6%9C%89%E5%BA%8F%E5%88%97%E8%A1%A8">有序列表</a></li>
+<li><a href="#%E5%B5%8C%E5%A5%97%E5%88%97%E8%A1%A8">嵌套列表</a></li>
+</ul>
+</li>
+<li><a href="#%E8%A1%A8%E6%A0%BC">表格</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81">代码</a>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5">代码片段</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E6%AE%B5%E8%90%BD">代码段落</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6">转义字符</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96">其他</a>
+<ul>
+<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
+<li><a href="#%E8%84%9A%E6%B3%A8">脚注</a></li>
+<li><a href="#%E5%88%86%E5%89%B2%E7%BA%BF">分割线</a></li>
+<li><a href="#%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F%E5%92%8C%E7%94%BB%E5%9B%BE">数学公式和画图</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</p>
+<h1 id="写在前面">写在前面</h1>
+<p>  前两天用Gridea和Github Pages搭好了我的博客，不得不说，这两个都是好东西，而且都是免费的。Gridea用来搭建个人博客容易，而且人性化，适合像我这样的菜鸟上手，Github Pages提供平台展示博客。在这里感谢一下<a href="https://gridea.dev/">Gridea</a>和<a href="https://pages.github.com/">Github Pages</a>的开发者们。<br>
+  Gridea支持Markdown语法，我这个菜鸟又不会，所以打算学一下，顺便写一篇介绍基本语法的博文，作为我的第一篇博文，下面进入正题吧！</p>
+<h1 id="markdown简介">Markdown简介</h1>
+<p>  Markdown 语言由约翰·格鲁伯(John Gruber)于2004年创建，是一种轻量级标记语言。Markdown允许人们使用易读易写的纯文本来编写带样式的文档，有点类似html，不过它比html简单一些。Markdown 编写的文档可以导出 HTML 、Word、图像、PDF、Epub 等多种格式的文档。使用Markdown 编写的文档后缀为 .md, .markdown，比如github仓库里的README.md文档。</p>
+<p>  关于Markdown的编辑器，可分为以下三类：</p>
+<ol>
+<li>平台集成工具：各大在线博客、社区平台自带的写作工具，比如CSDN、博客园、简书等。</li>
+<li>独立软件类：在本地上使用的独立软件，可以编辑本地文件，比如Typora、Haroopad等。</li>
+<li>插件类：有些编辑器安装相应的插件，可以具有Markdown的功能，比如Atom、VS code、Sublime Text等。</li>
+</ol>
+<h1 id="markdown基本语法">Markdown基本语法</h1>
+<h2 id="标题">标题</h2>
+<p>  标题可以使用两种方式来设置，一种是用“=”和“-”，一种是用“#”。</p>
+<ol>
+<li>使用“=”和“-”符号，在标题的下一行加一个“=”，就会有一级标题的效果，如果加“-”的话就是二级标题。</li>
+</ol>
+<pre><code> 一级标题
+=
+二级标题
+-
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://nchuxw.github.io//post-images/1581056192563.png" alt="" loading="lazy"></figure>
+<p>  需要注意的是，使用这种方式的标题，上一行如果是普通文本，两行之间要加一个换行，不然上一行文本也会有标题的样式。</p>
+<ol start="2">
+<li>使用“#”符号，在标题的前面加“#”符号就好了，加几个“#”就代表几级标题，最多支持6级标题。</li>
+</ol>
+<pre><code># 一级标题
+## 二级标题
+### 三级标题
+#### 四级标题
+##### 五级标题
+###### 六级标题
+</code></pre>
+<p>效果如下：</p>
+<figure data-type="image" tabindex="2"><img src="https://nchuxw.github.io//post-images/1581056288407.png" alt="" loading="lazy"></figure>
+<h2 id="字体">字体</h2>
+<h3 id="简单字体">简单字体</h3>
+<p>Markdown 可以使用以下几种字体：</p>
+<pre><code>*斜体文本*
+_斜体文本_
+**粗体文本**
+__粗体文本__
+***粗斜体文本***
+___粗斜体文本___
+&lt;u&gt;带下划线文本&lt;/u&gt;
+~~带删除线文本~~
+</code></pre>
+<p>效果如下：<br>
+   <em>斜体文本</em><br>
+   <em>斜体文本</em><br>
+   <strong>粗体文本</strong><br>
+   <strong>粗体文本</strong><br>
+   <em><strong>粗斜体文本</strong></em><br>
+   <em><strong>粗斜体文本</strong></em><br>
+   <u>带下划线文本</u><br>
+   <s>带删除线文本</s></p>
+<h3 id="自定义字体">自定义字体</h3>
+<p>Markdown的最初目标就是为纯写作而生的，因此，它并没有考虑文字的更多样式。如果想使用更多字体样式，可以借助html的font标签。</p>
+<pre><code>&lt;font color=red&gt;红色字体&lt;/font&gt;
+&lt;font size=6&gt;6号字体&lt;/font&gt;
+&lt;font color=red size=6&gt;6号红色字体&lt;/font&gt;
+</code></pre>
+<p>效果如下：</p>
+<p>   <font color=red>红色字体</font></p>
+<p>   <font size=6>6号字体</font></p>
+<p>   <font color=red size=6>6号红色字体</font></p>
+<h2 id="空格">空格</h2>
+<p>Markdown不能直接用键盘输入的空格和回车来表示空格，需要用特殊符号。<br>
+<code>&amp;ensp;</code>或<code>&amp;#8194;</code>表示半角空格(En Space)，占一个字符，相当于半个汉字的长度。<br>
+<code>&amp;emsp;</code>或<code>&amp;#8195;</code>表示全角空格(Em Space)，占两个字符，相当于一个汉字的长度。<br>
+<code>&amp;nbsp;</code>或<code>&amp;#160;</code>不换行空格(No-Break Space)，占一个字符，相当于一个字符&quot;n&quot;的长度。<br>
+半角空格和全角空格推荐在中文里使用，不换行空格推荐在英文里使用。</p>
+<h2 id="换行">换行</h2>
+<p>markdown里敲多个换行只能显示一个，如果想显示多个换行，需要用<code>&lt;br&gt;</code>或者<code>&lt;br/&gt;</code>来表示。</p>
+<h2 id="引用">引用</h2>
+<p>引用的文字段落会高亮显示，方法是在文字开头加&quot;&gt;&quot;符号。</p>
+<pre><code>&gt; 最外层
+&gt;&gt; 第一层嵌套
+&gt;&gt;&gt; 第二层嵌套
+</code></pre>
+<blockquote>
+<p>最外层</p>
+<blockquote>
+<p>第一层嵌套</p>
+<blockquote>
+<p>第二层嵌套</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="图片">图片</h2>
+<h3 id="简单图片">简单图片</h3>
+<p>如果是想简单的显示图片，使用以下方式就好了：</p>
+<pre><code>![](图片地址)
+</code></pre>
+<p>图片链接地址可以是本地图片文件地址，也可以是网络图片地址。</p>
+<p>也可以给图片添加说明和标题：</p>
+<pre><code>![图片说明文字](图片链接地址 &quot;图片标题&quot;)
+</code></pre>
+<p>图片说明文字会在图片无法加载时显示，图片正常加载时说明文字不显示，下面是一个例子。</p>
+<pre><code>![这是一张无法加载的图片](错误的图片地址 &quot;title&quot;)
+</code></pre>
+<p>显示为<br>
+<img src="%E9%94%99%E8%AF%AF%E7%9A%84%E5%9B%BE%E7%89%87%E5%9C%B0%E5%9D%80" alt="这是一张无法加载的图片" title="title" loading="lazy"><br>
+如果图片有标题，当鼠标停在图片上时会显示出来，即使图片无法加载，鼠标停靠时也会显示，下面是一个例子，请读者自行尝试。</p>
+<pre><code>![涅普迪努](https://nchuxw.github.io//post-images/nepnep.png &quot;我可爱吗^_^&quot;)
+</code></pre>
+<figure data-type="image" tabindex="3"><img src="https://nchuxw.github.io//post-images/nepnep.png" alt="涅普迪努" title="我可爱吗^_^" loading="lazy"></figure>
+<h3 id="自定义图片">自定义图片</h3>
+<p>Markdown无法自定义图片的宽度和高度，如果想改变的话需要借助html的img标签。</p>
+<pre><code>&lt;img width=100 height=160 src=&quot;https://nchuxw.github.io//post-images/nepnep.png&quot; title=&quot;我是变小后的涅普迪努&quot;&gt;&lt;/img&gt;
+</code></pre>
+<p>下面是一张100×160的图片<br>
+<img width=100 height=160 src="https://nchuxw.github.io//post-images/nepnep.png" title="我是变小后的涅普迪努"></img></p>
+<h2 id="链接">链接</h2>
+<h3 id="外部链接">外部链接</h3>
+<p>markdown可以使用两种方法创建链接</p>
+<pre><code>[链接名称](链接地址)
+&lt;链接地址&gt;
+</code></pre>
+<p>以github主页为例：</p>
+<pre><code>[github](https://github.com)
+&lt;https://github.com&gt;
+</code></pre>
+<p>效果如下：<br>
+<a href="https://github.com">github</a><br>
+<a href="https://github.com">https://github.com</a></p>
+<h3 id="内部链接">内部链接</h3>
+<p>可以使用内部链接跳转到本文内某个标题的位置，语法如下：</p>
+<pre><code>[链接名字][#标题名字]
+</code></pre>
+<p>比如想跳转转到本文的“Markdown简介”的位置，可以用下面的代码实现：</p>
+<pre><code>[Markdown简介](#markdown简介)
+</code></pre>
+<p><a href="#markdown%E7%AE%80%E4%BB%8B">Markdown简介</a><br>
+这里的标题名字貌似不能是大写字母，如果包含大写字母无法跳转。</p>
+<h2 id="列表">列表</h2>
+<h3 id="无序列表">无序列表</h3>
+<p>无序列表使用星号(*)、加号(+)或是减号(-)作为列表标记：</p>
+<pre><code>* 第一项
+* 第二项
+* 第三项
+
++ 第一项
++ 第二项
++ 第三项
+
+- 第一项
+- 第二项
+- 第三项
+</code></pre>
+<ul>
+<li>第一项</li>
+<li>第二项</li>
+<li>第三项</li>
+</ul>
+<ul>
+<li>第一项</li>
+<li>第二项</li>
+<li>第三项</li>
+</ul>
+<ul>
+<li>第一项</li>
+<li>第二项</li>
+<li>第三项</li>
+</ul>
+<h3 id="有序列表">有序列表</h3>
+<p>有序列表使用数字并加上 . 号来表示，如：</p>
+<pre><code>1. 第一项
+2. 第二项
+3. 第三项
+</code></pre>
+<ol>
+<li>第一项</li>
+<li>第二项</li>
+<li>第三项</li>
+</ol>
+<p>markdown会对数字重新按顺序编号，比如下面代码显示的编号任然是1.2.3.</p>
+<pre><code>1. 第一项
+1. 第二项
+237. 第三项
+</code></pre>
+<ol>
+<li>第一项</li>
+<li>第二项</li>
+<li>第三项</li>
+</ol>
+<h3 id="嵌套列表">嵌套列表</h3>
+<p>列表嵌套只需在子列表中的选项添加四个空格即可：</p>
+<pre><code>1. 第一项：
+    - 第一项嵌套的第一个元素
+    - 第一项嵌套的第二个元素
+2. 第二项：
+    - 第二项嵌套的第一个元素
+    - 第二项嵌套的第二个元素
+</code></pre>
+<ol>
+<li>第一项：
+<ul>
+<li>第一项嵌套的第一个元素</li>
+<li>第一项嵌套的第二个元素</li>
+</ul>
+</li>
+<li>第二项：
+<ul>
+<li>第二项嵌套的第一个元素</li>
+<li>第二项嵌套的第二个元素</li>
+</ul>
+</li>
+</ol>
+<h2 id="表格">表格</h2>
+<p>Markdown 制作表格使用 | 来分隔不同的单元格，使用 - 来分隔表头和其他行。<br>
+语法格式如下：</p>
+<pre><code>|  表头   | 表头  |
+|  ----  | ----  |
+| 单元格  | 单元格 |
+| 单元格  | 单元格 |
+</code></pre>
+<p>显示效果：</p>
+<table>
+<thead>
+<tr>
+<th>表头</th>
+<th>表头</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单元格</td>
+<td>单元格</td>
+</tr>
+<tr>
+<td>单元格</td>
+<td>单元格</td>
+</tr>
+</tbody>
+</table>
+<p>设置表格的对齐方式：</p>
+<ul>
+<li>-: 设置内容和标题栏居右对齐。</li>
+<li>:- 设置内容和标题栏居左对齐。</li>
+<li>:-: 设置内容和标题栏居中对齐。<br>
+实例如下：</li>
+</ul>
+<pre><code>| 左对齐的一列 | 右对齐的一列 | 居中对齐的一列 |
+| :----| ----: | :----: |
+| 单元格 | 单元格 | 单元格 |
+| 单元格 | 单元格 | 单元格 |
+</code></pre>
+<p>显示效果：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">左对齐的一列</th>
+<th style="text-align:right">右对齐的一列</th>
+<th style="text-align:center">居中对齐的一列</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">单元格</td>
+<td style="text-align:right">单元格</td>
+<td style="text-align:center">单元格</td>
+</tr>
+<tr>
+<td style="text-align:left">单元格</td>
+<td style="text-align:right">单元格</td>
+<td style="text-align:center">单元格</td>
+</tr>
+</tbody>
+</table>
+<h2 id="代码">代码</h2>
+<h3 id="代码片段">代码片段</h3>
+<p>代码片段可以用一个或两个反引号&quot;`&quot;包起来，比如：</p>
+<pre><code>c语言常用`scanf()`和``printf()``函数来输入输出。
+</code></pre>
+<p>显示为：c语言常用<code>scanf()</code>和<code>printf()</code>函数来输入输出。</p>
+<h3 id="代码段落">代码段落</h3>
+<p>代码段落可以用三个反引号&quot;```&quot;或三个&quot;~~~&quot;来显示(三个以上也可以)，比如：</p>
+<pre><code>```
+#include &lt;stdio.h&gt;
+
+int main(int argc, int argv[])
+{
+    printf(&quot;hello world!\n&quot;);
+    return 0;
+}
+```
+</code></pre>
+<p>显示为：</p>
+<pre><code>#include &lt;stdio.h&gt;
+
+int main(int argc, int argv[])
+{
+    printf(&quot;hello world!\n&quot;);
+    return 0;
+}
+</code></pre>
+<p>在前面的三个反引号后面加入编程语言的关键字，还可以显示语法高亮，比如：</p>
+<pre><code>```python
+import numpy as np
+
+def sigmoid(self, input):
+    return 1.0 / (1.0 + np.exp(-input))
+```
+</code></pre>
+<p>显示为：</p>
+<pre><code class="language-python">import numpy as np
+
+def sigmoid(self, input):
+    return 1.0 / (1.0 + np.exp(-input))
+</code></pre>
+<p>以下为常用的语言的语法关键字</p>
+<table>
+<thead>
+<tr>
+<th>语言</th>
+<th>关键字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C</td>
+<td>cpp, c</td>
+</tr>
+<tr>
+<td>Java</td>
+<td>java</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>py, python</td>
+</tr>
+<tr>
+<td>Shell</td>
+<td>bash, shell</td>
+</tr>
+<tr>
+<td>C#</td>
+<td>csharp, c#</td>
+</tr>
+<tr>
+<td>CSS</td>
+<td>css</td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>js, jscript, javascript</td>
+</tr>
+<tr>
+<td>XML</td>
+<td>xml , xhtml, xslt, html</td>
+</tr>
+<tr>
+<td>PHP</td>
+<td>php</td>
+</tr>
+<tr>
+<td>SQL</td>
+<td>sql</td>
+</tr>
+</tbody>
+</table>
+<h2 id="转义字符">转义字符</h2>
+<p>  markdown里有些字符代表特殊功能，比如 * 代表无序列表开始标志，如果只是想显示这些符号，而不使用符号的特殊功能，需要在符号前加一个 \ ，markdown里需要转义的字符如下：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>原始字符</th>
+<th>显示效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>反斜杠</td>
+<td>\\</td>
+<td>\</td>
+</tr>
+<tr>
+<td>反引号</td>
+<td>\`</td>
+<td>`</td>
+</tr>
+<tr>
+<td>星号</td>
+<td>\*</td>
+<td>*</td>
+</tr>
+<tr>
+<td>井号</td>
+<td>\#</td>
+<td>#</td>
+</tr>
+<tr>
+<td>加号</td>
+<td>\+</td>
+<td>+</td>
+</tr>
+<tr>
+<td>减号</td>
+<td>\-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>点</td>
+<td>\.</td>
+<td>.</td>
+</tr>
+<tr>
+<td>感叹号</td>
+<td>\!</td>
+<td>\</td>
+</tr>
+<tr>
+<td>大括号</td>
+<td>\{\}</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>中括号</td>
+<td>\[\]</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>小括号</td>
+<td>\(\)</td>
+<td>()</td>
+</tr>
+</tbody>
+</table>
+<h2 id="其他">其他</h2>
+<h3 id="目录">目录</h3>
+<p>  部分markdown平台支持目录自动生成，比如gridea可以用<code>@[TOC]</code>来插入目录，Typora用<code>[TOC]</code>插入目录。如果平台不支持的话，可以使用mardown的编辑器来生成，或者使用上面提到的列表和内部链接自己做一个，当然这样比较麻烦，而且无法与标题同步</p>
+<h3 id="脚注">脚注</h3>
+<p>markdown支持添加脚注，点击脚注后，会跳转到文档的底部的说明位置，语法如下：</p>
+<pre><code>[^关键字]
+[^关键字]: 脚注说明内容
+</code></pre>
+<p>第一行代码添加了一个脚注，第二行代码对脚注进行了定义，如果对添加的脚注不进行定义的话，脚注无法显示。markdown在显示脚注的时候会按照顺序进行编号，下面是一个例子。</p>
+<pre><code>文本[^第一个脚注]
+[^第一个脚注]: 这里是第一个脚注的说明。
+
+文本[^第二脚注]
+[^第二脚注]: 这里是第二个脚注的说明。
+</code></pre>
+<p>显示结果：<br>
+文本<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
+<p>文本<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup></p>
+<h3 id="分割线">分割线</h3>
+<p>markdown可以在一行上连用三个或者三个以上的星号、减号、或者下划线来表示分割线。</p>
+<pre><code>***
+---
+___
+</code></pre>
+<p>显示效果：</p>
+<hr>
+<hr>
+<hr>
+<h3 id="数学公式和画图">数学公式和画图</h3>
+<p>详细请查看这个链接<a href="https://www.runoob.com/markdown/md-advance.html">https://www.runoob.com/markdown/md-advance.html</a><br>
+<br/></p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>这里是第一个脚注的说明。 <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>这里是第二个脚注的说明。 <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+]]></content>
+    </entry>
+</feed>
