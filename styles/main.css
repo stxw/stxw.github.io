@@ -17,7 +17,6 @@ html {
  */
 :root {
   -moz-tab-size: 4;
-  tab-size: 4;
 }
 /**
  * 1. Correct the line height in all browsers.
@@ -2713,7 +2712,6 @@ Orginal Style from ethanschoonover.com/solarized (c) Jeremy Hull <sourdrums@gmai
         
         .gt-post-content code {
 		  background: RGBA(101,182,135,0.14)!important;
-		  tab-size: 8;
         }
         
         .post-list-container .post{
