@@ -784,7 +784,9 @@ Orginal Style from ethanschoonover.com/solarized (c) Jeremy Hull <sourdrums@gmai
   background: #002b36;
   color: #839496;
 }
-.hljs-comment,
+.hljs-comment {
+  color: #a6bec5;
+}
 .hljs-quote {
   color: #586e75;
 }
