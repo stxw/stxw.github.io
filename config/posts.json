@@ -1,0 +1,282 @@
+{
+  "posts": [
+    {
+      "content": "关于常见的图像内插方法的介绍\n<!-- more -->\n\n&emsp;&emsp;内插是在诸如放大、收缩、旋转和几何校正等任务中广泛应用的基本工具，是一种基本的图像重取样方法，本质上，内插是用已知数据来估计未知位置的数值的处理。本文介绍的内插主要用于调整图像的大小（收缩和放大）。\n# 最近邻内插\n&emsp;&emsp;最近邻内插根据原图像和目标图像的尺寸，计算缩放的比例，然后根据缩放比例计算离目标像素最近的原像素，将该原像素作为目标像素。\n&emsp;&emsp;假设原图像大小为$W_s \\times H_s$，目标图像大小为$W_d \\times H_d$，原图像在$(x0,y0)$位置处的像素表示为$f_s(x0,y0)$，则目标图像在$(x, y)$位置处的像素$f_d(x,y)$的计算公式如下：\n\n$$f_d(x, y) = f_s(\\lfloor \\frac{W_s}{W_d} \\times x + 0.5 \\rfloor, \\lfloor \\frac{H_s}{H_d} \\times y + 0.5 \\rfloor)$$\n\n&emsp;&emsp;上式中$\\lfloor \\frac{W_s}{W_d} \\times x + 0.5 \\rfloor$表示对$\\frac{W_s}{W_d} \\times x$四舍五入。\n&emsp;&emsp;最近邻内插算法实现的图像缩放的原理很简单，但缺点是得到的图像效果不太好。[^最近邻内插] 代码可以参考下文的 nearest_interpolation() 函数。\n[^最近邻内插]: 有关最近邻内插的内容参考了<https://www.cnblogs.com/skyfsm/p/7578302.html>\n\n# 双线性内插\n&emsp;&emsp;双线型内插利用了源图中虚拟点四周的四个真实存在的像素，来共同决定目标图中的一个像素，使用双线性内插的缩放效果比简单的最邻近内插要好很多。\n计算方法：\n&emsp;&emsp;假设原图像大小为$W_s \\times H_s$，目标图像大小为$W_d \\times H_d$，首先根据源图像和目标图像的尺寸比例，计算目标图像像素坐标$(x_d,y_d)$在原图像中浮点坐标$(x_f,y_f)$，计算公式如下：\n\n$$x_f = \\frac{W_s}{W_d} \\times x_d$$\n\n$$y_f = \\frac{H_s}{H_d} \\times y_d$$\n\n&emsp;&emsp;接下来在原图像中寻找离浮点坐标$(x_f,y_f)$最近的四个像素点，分别是坐标为$(\\lfloor x_f \\rfloor,\\lfloor y_f \\rfloor)$，$(\\lfloor x_f + 1 \\rfloor,\\lfloor y_f \\rfloor)$，$(\\lfloor x_f \\rfloor,\\lfloor y_f + 1 \\rfloor)$，$(\\lfloor x_f + 1 \\rfloor,\\lfloor y_f + 1 \\rfloor)$的四个像素。根据这四个像素计算出浮点坐标的像素值，再将浮点坐标的像素值作为目标图像对应位置的像素值。浮点坐标的像素值的计算方法如下：\n&emsp;&emsp;首先，在$x$方向上进行两次线性插值计算，计算出$(x_f,\\lfloor y_f \\rfloor)$和$(x_f,\\lfloor y_f + 1 \\rfloor)$处的像素值，计算公式如下，设原图中在点$(x,y)$处的像素值为$f_s(x,y)$\n\n$$f_s(x_f,\\lfloor y_f \\rfloor) = (\\lfloor x_f + 1 \\rfloor - x_f) \\times f_s(\\lfloor x_f \\rfloor,\\lfloor y_f \\rfloor) + (x_f - \\lfloor x_f \\rfloor) \\times f_s(\\lfloor x_f + 1 \\rfloor,\\lfloor y_f \\rfloor$$\n\n$$f_s(x_f,\\lfloor y_f + 1 \\rfloor) = (\\lfloor x_f + 1 \\rfloor - x_f) \\times f_s(\\lfloor x_f \\rfloor,\\lfloor y_f + 1 \\rfloor) + (x_f - \\lfloor x_f \\rfloor) \\times f_s(\\lfloor x_f + 1 \\rfloor,\\lfloor y_f + 1 \\rfloor)$$\n\n&emsp;&emsp;然后利用$f_s(x_f,\\lfloor y_f \\rfloor)$和$f_s(x_f,\\lfloor y_f + 1 \\rfloor)$在$y$方向上进行一次插值计算，得出$f_s(x_f,y_f)$，计算公式如下：\n\n$$f_s(x_f,y_f) = (\\lfloor y_f + 1\\rfloor - y_f) \\times f_s(x_f,\\lfloor y_f \\rfloor) + (y_f - \\lfloor y_f \\rfloor) \\times f_s(x_f,\\lfloor y_f + 1 \\rfloor)$$\n\n&emsp;&emsp;实际上，双线性内插是根据四个像素点与浮点坐标的距离来计算四个像素点的权重，然后将四个像素点的加权平均和作为浮点坐标的像素值。图片使用双线性内插的缩放效果要优于最邻近内插，但是计算量要比最邻近内插大一点。[^双线性内插] 代码可以参考下文的 bilinear_interpolation() 函数。\n[^双线性内插]: 有关双线性内插的内容参考了<https://www.cnblogs.com/yssongest/p/5303151.html>\n\n# 双三次内插\n&emsp;&emsp;双三次内插的原理于双线性内插相似，都是根据浮点坐标附近的像素来计算出浮点坐标的像素值，计算时也是根据与浮点坐标之间的距离来计算附近像素点的权重，最后根据附近像素点的权重和像素值取加权平均和。与双线性内插不同的是，双三次内插计算了浮点坐标附近的16个像素点，而双线性内插只计算了4个。\n&emsp;&emsp;双三次内插的核心问题是，如何根据像素点与浮点坐标的距离计算权重，有关双三次内插的计算方法参考自<https://blog.csdn.net/qq_29058565/article/details/52769497>，我偷个懒，就不再详细解释了。\n&emsp;&emsp;与前面两种内插方法相比，双三次内插在保存细节方面比双线性内插相对要好一些，但是计算量比前两种方法都要高一些，是商业图像编辑程序如Adobe Photoshap和Corel Photopaint的标准内插方法。[^双三次内插]\n[^双三次内插]: 此处引用自冈萨雷斯的《数字图像处理》第三版第37页。\n\n# 代码\n&emsp;&emsp;使用opencv库实现的，只能处理灰度图。\n```cpp\n#include <opencv2/core.hpp>\n#include <opencv2/highgui.hpp>\n#include <opencv2/imgproc.hpp>\n\nusing namespace cv;\n\n/* 最近邻内插 */\nvoid nearest_interpolation(Mat src, Mat &dst, Size dst_size)\n{\n\tint i, j, x, y;\n\t/* 计算原图像与目标图像的宽度和高度比例 */\n\tdouble wsd = (double)src.cols / dst_size.width;\n\tdouble hsd = (double)src.rows / dst_size.height;\n\n\tdst = Mat(dst_size, src.type());\n\tfor(i = 0; i < dst.rows; i++)\n\t{\n\t\ty = hsd * i + 0.5;\n\t\tfor(j = 0; j < dst.cols; j++)\n\t\t{\n\t\t\tx = wsd * j + 0.5;\n\t\t\tdst.at<uchar>(i, j) = src.at<uchar>(y, x);\n\t\t}\n\t}\n}\n\n/* 双线性内插 */\nvoid bilinear_interpolation(Mat src, Mat &dst, Size dst_size)\n{\n\tint i, j;\n\t/* 计算原图像与目标图像的宽度和高度比例 */\n\tdouble wsd = (double)src.cols / dst_size.width;\n\tdouble hsd = (double)src.rows / dst_size.height;\n\t/* 表示原图中的浮点像素 */\n\tPoint2f sfp;\n\t/* 表示在原图中与浮点像素最近的四个整数坐标值(左x、右x、上y、下y) */\n\tdouble lx, rx, uy, dy;\n\t/* x方向的两个像素点值，xy两个方向上的像素点值 */\n\tdouble xf1, xf2, xyf;\n\n\tdst = Mat(dst_size, src.type());\n\tfor(i = 0; i < dst.rows; i++)\n\t{\n\t\tsfp.y = hsd * i;\n\t\tfor(j = 0; j < dst.cols; j++)\n\t\t{\n\t\t\tsfp.x = wsd * j;\n\t\t\tlx = (int)sfp.x;\n\t\t\trx = lx + 1;\n\t\t\tuy = (int)sfp.y;\n\t\t\tdy = uy + 1;\n\n\t\t\txf1 = (rx - sfp.x) * src.at<uchar>(uy, lx) + (sfp.x - lx) * src.at<uchar>(uy, rx);\n\t\t\txf2 = (rx - sfp.x) * src.at<uchar>(dy, lx) + (sfp.x - lx) * src.at<uchar>(dy, rx);\n\t\t\txyf = (dy - sfp.y) * xf1 + (sfp.y - uy) * xf2;\n\t\t\tdst.at<uchar>(i, j) = (uchar)xyf;\n\t\t}\n\t}\n}\n\nint main()\n{\n\tMat src, dst;\n\tSize dst_size = cv::Size(2000, 1000);\n\n\tsrc = cv::imread(\"img/img1.png\", cv::IMREAD_COLOR);\n\tcvtColor(src, src, COLOR_BGR2GRAY);\n\timshow(\"src\", src);\n\n\tnearest_interpolation(src, dst, dst_size);\n\timshow(\"nearest interpolation\", dst);\n\n\tbilinear_interpolation(src, dst, dst_size);\n\timshow(\"bilinear interpolation\", dst);\n\n\t/* opencv的双线性内插接口 */\n\tcv::resize(src, dst, dst_size, 0, 0, INTER_LINEAR);\n\timshow(\"opencv resize\", dst);\n\n\twaitKey(0);\n\treturn 0;\n}\n```",
+      "data": {
+        "title": "图像内插",
+        "date": "2020-03-23 23:05:39",
+        "tags": [
+          "图像处理",
+          "opencv"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "关于常见的图像内插方法的介绍",
+      "fileName": "tu-xiang-nei-cha"
+    },
+    {
+      "content": "舞蹈链重复覆盖问题\n\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://acm.fzu.edu.cn/problem.php?pid=1686>\n\n# 题意\n&emsp;&emsp;中文题，又可以偷懒了！\n\n# 题目解析\n&emsp;&emsp;计算出地图上所有怪物的个数，假设为$K$个，给怪物从1到K进行编号。然后枚举每一种神龙攻击的情况，也就是枚举神龙攻击范围的左上角坐标，行坐标一共有$n-n1+1$种情况，列坐标一共有$m-m1+1$种情况，所以一共有$(n-n1+1) \\times (m-m1+1)$种攻击情况，假设为$P=(n-n1+1) \\times (m-m1+1)$。然后构建一个$P \\times K$的矩阵$M$，然后第$i$种攻击情况能攻击到第$j$个怪物，则$M$的第$i$行的第$j$个元素为$1$，否则为$0$。最后用舞蹈链对$M$求重复覆盖问题就好了。\n\n# 代码\n```cpp\n/* http://acm.fzu.edu.cn/problem.php?pid=1686 */\n#include <stdio.h>\n#include <string.h>\n\nconst int MAX_N = 17;\n\ntypedef struct dance_link\n{\n\tconst static int MAX_ROWS = MAX_N * MAX_N;\n\tconst static int MAX_COLS = MAX_N * MAX_N;\n\n\ttypedef struct node\n\t{\n\t\tint u, d, l, r;\n\t\tint row, col;\n\t} node;\n\n\tint rows, cols, node_size;\n\tnode nd[MAX_ROWS * MAX_COLS];\n\tint row_head[MAX_ROWS], col_nds[MAX_COLS];\n\n\tbool is_min_ans;\n\tint limit;\n\tint ans, *select_rows;\n\t\n\tvoid init(int rows, int cols)\n\t{\n\t\tint i;\n\n\t\tthis -> rows = rows;\n\t\tthis -> cols = cols;\n\t\t/* 初始化每一列的头节点 */\n\t\tfor(i = 0; i <= cols; i++)\n\t\t{\n\t\t\tnd[i].u = i;\n\t\t\tnd[i].d = i;\n\t\t\tnd[i].l = i - 1;\n\t\t\tnd[i].r = i + 1;\n\t\t\tcol_nds[i] = 0;\n\t\t}\n\t\tnd[0].l = cols;\n\t\tnd[cols].r = 0;\n\t\tnode_size = cols + 1;\n\n\t\t/* 初始化每一行的行指针 */\n\t\tfor(i = 0; i <= rows; i++)\n\t\t{\n\t\t\trow_head[i] = -1;\n\t\t}\n\t}\n\n\tvoid add_node(int row, int col)\n\t{\n\t\t/* nd[node_size]为新添加的节点 */\n\t\tnd[node_size].row = row;\n\t\tnd[node_size].col = col;\n\n\t\t/* 将新添加的节点与其所在的列连接 */\n\t\tnd[node_size].u = col;\n\t\tnd[node_size].d = nd[col].d;\n\t\tnd[nd[col].d].u = node_size;\n\t\tnd[col].d = node_size;\n\n\t\t/* 将新添加的节点与其所在的行连接 */\n\t\tif(row_head[row] == -1)\n\t\t{\n\t\t\trow_head[row] = node_size;\n\t\t\tnd[node_size].l = node_size;\n\t\t\tnd[node_size].r = node_size;\n\t\t}\n\t\telse\n\t\t{\n\t\t\tint row_first = row_head[row];\n\t\t\tnd[node_size].r = row_first;\n\t\t\tnd[node_size].l = nd[row_first].l;\n\t\t\tnd[nd[row_first].l].r = node_size;\n\t\t\tnd[row_first].l = node_size;\n\t\t}\n\t\tcol_nds[col]++;\n\t\tnode_size++;\n\t}\n\n\tvoid remove_rep(int col)\n\t{\n\t\tint i;\n\t\tfor(i = nd[col].d; i != col; i = nd[i].d)\n\t\t{\n\t\t\tnd[nd[i].r].l = nd[i].l;\n\t\t\tnd[nd[i].l].r = nd[i].r;\n\t\t}\n\t}\n\n\tvoid resume_rep(int col)\n\t{\n\t\tint i;\n\t\tfor(i = nd[col].u; i != col; i = nd[i].u)\n\t\t{\n\t\t\tnd[nd[i].l].r = i;\n\t\t\tnd[nd[i].r].l = i;\n\t\t}\n\t}\n\n\t/* 计算取得答案最少需要的行数 */\n\tint get_min_rows()\n\t{\n\t\tint i, j, k, num = 0;\n\t\tbool v[MAX_COLS];\n\t\t\n\t\tfor(i = nd[0].r; i != 0; i = nd[i].r)\n\t\t{\n\t\t\tv[i] = true;\n\t\t}\n\t\tfor(i = nd[0].r; i != 0; i = nd[i].r)\n\t\t{\n\t\t\tif(v[i] == false)\n\t\t\t{\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tnum++;\n\t\t\tfor(j = nd[i].d; j != i; j = nd[j].d)\n\t\t\t{\n\t\t\t\tfor(k = nd[j].r; k != j; k = nd[k].r)\n\t\t\t\t{\n\t\t\t\t\tv[nd[k].col] = false;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\treturn num;\n\t}\n\n\tint dfs_rep(int len)\n\t{\n\t\tint i, j;\n\t\tint res, select_col;\n\n\t\t/* 判断是否超过了界限 */\n\t\tint mr = get_min_rows();\n\t\tif(limit != -1 && len + mr > limit)\n\t\t{\n\t\t\treturn -1;\n\t\t}\n\t\tif(is_min_ans == true && ans != -1 && len + mr >= ans)\n\t\t{\n\t\t\treturn -1;\n\t\t}\n\t\t/* 当前十字链表没有列 */\n\t\tif(nd[0].r == 0)\n\t\t{\n\t\t\treturn len;\n\t\t}\n\t\tselect_col = nd[0].r;\n\t\tfor(i = nd[0].r; i != 0; i = nd[i].r)\n\t\t{\n\t\t\tif(nd[i].d == i)\n\t\t\t{\n\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tif(col_nds[select_col] > col_nds[i])\n\t\t\t{\n\t\t\t\tselect_col = i;\n\t\t\t}\n\t\t}\n\t\tfor(i = nd[select_col].d; i != select_col; i = nd[i].d)\n\t\t{\n\t\t\tif(select_rows != NULL)\n\t\t\t{\n\t\t\t\tselect_rows[len] = nd[i].row;\n\t\t\t}\n\t\t\tremove_rep(i);\n\t\t\tfor(j = nd[i].r; j != i; j = nd[j].r)\n\t\t\t{\n\t\t\t\tremove_rep(j);\n\t\t\t}\n\t\t\tres = dfs_rep(len + 1);\n\t\t\tif(res >= 0)\n\t\t\t{\n\t\t\t\tif(is_min_ans == false)\n\t\t\t\t{\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\t\t\t\telse if(ans < 0 || ans > res)\n\t\t\t\t{\n\t\t\t\t\tans = res;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfor(j = nd[i].l; j != i; j = nd[j].l)\n\t\t\t{\n\t\t\t\tresume_rep(j);\n\t\t\t}\n\t\t\tresume_rep(i);\n\t\t}\n\t\treturn ans;\n\t}\n\n\t/*\n\tbool is_min_ans: 是否求答案最小值，如果不是，得到一个可行解就返回，默认求最小值。\n\tint select_rows[]: 用于保存选择的行，取NULL时不保存，默认取NULL。\n\tint limit：答案的上限，取-1时无上限，默认为-1。\n\t*/\n\tint solve(bool is_min_ans = true, int select_rows[] = NULL, int limit = -1)\n\t{\n\t\tthis->is_min_ans = is_min_ans;\n\t\tthis->select_rows = select_rows;\n\t\tthis->limit = limit;\n\t\tans = -1;\n\t\tans = dfs_rep(0);\n\t\treturn ans;\n\t}\n\n} dance_link;\n\ndance_link dl;\n\nint main()\n{\n\tint n, m, n1, m1;\n\tint i, j, k, x, y, ans;\n\tint map[MAX_N][MAX_N];\n\n\twhile(scanf(\"%d %d\", &n, &m) != EOF)\n\t{\n\t\tk = 0;\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tfor(j = 0; j < m; j++)\n\t\t\t{\n\t\t\t\tscanf(\"%d\", &map[i][j]);\n\t\t\t\tif(map[i][j] != 0)\n\t\t\t\t{\n\t\t\t\t\tk++;\n\t\t\t\t\tmap[i][j] = k;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tscanf(\"%d %d\", &n1, &m1);\n\n\t\tdl.init((n - n1 + 1) * (m - m1 + 1), k);\n\t\tk = 0;\n\t\tfor(x = 0; x + n1 <= n; x++)\n\t\t{\n\t\t\tfor(y = 0; y + m1 <= m; y++)\n\t\t\t{\n\t\t\t\tfor(i = x; i < x + n1; i++)\n\t\t\t\t{\n\t\t\t\t\tfor(j = y; j < y + m1; j++)\n\t\t\t\t\t{\n\t\t\t\t\t\tif(map[i][j] != 0)\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tdl.add_node(k + 1, map[i][j]);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\tk++;\n\t\t\t}\n\t\t}\n\n\t\tans = dl.solve(true);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```",
+      "data": {
+        "title": "FZU-1686 神龙的难题",
+        "date": "2020-03-19 19:00:07",
+        "tags": [
+          "acm",
+          "舞蹈链"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "舞蹈链重复覆盖问题",
+      "fileName": "fzu-1686-shen-long-de-nan-ti"
+    },
+    {
+      "content": "舞蹈链重复覆盖问题\n\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://acm.hdu.edu.cn/showproblem.php?pid=2295>\n\n# 题意\n&emsp;&emsp;给出n个城市，m个雷达站，以及它们的坐标，每个雷达站有一个自身为中心的圆形覆盖范围，每个雷达站的覆盖范围半径R相等。现在要使得每个城市都能被雷达站覆盖，且最多只能启用k个雷达站，求满足条件的R的最小值。\n\n# 题目解析\n&emsp;&emsp;二分搜索R的范围，对于每个范围的中值，先假设R等于这个中值，然后构建一个m×n的矩阵，矩阵的第i行第j列表示第i个雷达是否能覆盖第j个城市，如果能为1，否则为0。然后用舞蹈链的重复覆盖算法来，判断覆盖所有城市最少需要的雷达站个数p。最后根据p是否大于k来更新R的范围，直到小于精度值。\n&emsp;&emsp;这里精度值最好设小一点，设成1e-6就WA了。\n\n# 代码\n```cpp\n/* http://acm.hdu.edu.cn/showproblem.php?pid=2295 */\n#include <stdio.h>\n#include <string.h>\n#include <math.h>\n\nconst int MAX_N = 50 + 5;\nconst double EXP = 1e-8;\n\ntypedef struct point\n{\n\tdouble x, y;\n\tdouble distance(point b)\n\t{\n\t\treturn sqrt((x - b.x) * (x - b.x) + (y - b.y) * (y - b.y));\n\t}\n} point;\n\ntypedef struct dance_link\n{\n\tconst static int MAX_ROWS = MAX_N;\n\tconst static int MAX_COLS = MAX_N;\n\n\ttypedef struct node\n\t{\n\t\tint u, d, l, r;\n\t\tint row, col;\n\t} node;\n\n\tint rows, cols, node_size;\n\tnode nd[MAX_ROWS * MAX_COLS];\n\tint row_head[MAX_ROWS], col_nds[MAX_COLS];\n\n\tbool is_min_ans;\n\tint limit;\n\tint ans, *select_rows;\n\t\n\tvoid init(int rows, int cols)\n\t{\n\t\tint i;\n\n\t\tthis -> rows = rows;\n\t\tthis -> cols = cols;\n\t\t/* 初始化每一列的头节点 */\n\t\tfor(i = 0; i <= cols; i++)\n\t\t{\n\t\t\tnd[i].u = i;\n\t\t\tnd[i].d = i;\n\t\t\tnd[i].l = i - 1;\n\t\t\tnd[i].r = i + 1;\n\t\t}\n\t\tnd[0].l = cols;\n\t\tnd[cols].r = 0;\n\t\tmemset(col_nds, 0, sizeof(col_nds));\n\t\tnode_size = cols + 1;\n\n\t\t/* 初始化每一行的行指针 */\n\t\tmemset(row_head, -1, sizeof(row_head));\n\t}\n\n\tvoid add_node(int row, int col)\n\t{\n\t\t/* nd[node_size]为新添加的节点 */\n\t\tnd[node_size].row = row;\n\t\tnd[node_size].col = col;\n\n\t\t/* 将新添加的节点与其所在的列连接 */\n\t\tnd[node_size].u = col;\n\t\tnd[node_size].d = nd[col].d;\n\t\tnd[nd[col].d].u = node_size;\n\t\tnd[col].d = node_size;\n\n\t\t/* 将新添加的节点与其所在的行连接 */\n\t\tif(row_head[row] == -1)\n\t\t{\n\t\t\trow_head[row] = node_size;\n\t\t\tnd[node_size].l = node_size;\n\t\t\tnd[node_size].r = node_size;\n\t\t}\n\t\telse\n\t\t{\n\t\t\tint row_first = row_head[row];\n\t\t\tnd[node_size].r = row_first;\n\t\t\tnd[node_size].l = nd[row_first].l;\n\t\t\tnd[nd[row_first].l].r = node_size;\n\t\t\tnd[row_first].l = node_size;\n\t\t}\n\t\tcol_nds[col]++;\n\t\tnode_size++;\n\t}\n\n\tvoid remove(int col)\n\t{\n\t\tint i;\n\t\tfor(i = nd[col].d; i != col; i = nd[i].d)\n\t\t{\n\t\t\tnd[nd[i].l].r = nd[i].r;\n\t\t\tnd[nd[i].r].l = nd[i].l;\n\t\t}\n\t}\n\n\tvoid resume(int col)\n\t{\n\t\tint i;\n\t\tfor(i = nd[col].d; i != col; i = nd[i].d)\n\t\t{\n\t\t\tnd[nd[i].l].r = i;\n\t\t\tnd[nd[i].r].l = i;\n\t\t}\n\t}\n\n\t/* 计算取得答案最少需要的行数 */\n\tint get_min_rows()\n\t{\n\t\tint i, j, k, num = 0;\n\t\tbool v[MAX_COLS];\n\t\t\n\t\tfor(i = nd[0].r; i != 0; i = nd[i].r)\n\t\t{\n\t\t\tv[i] = true;\n\t\t}\n\t\tfor(i = nd[0].r; i != 0; i = nd[i].r)\n\t\t{\n\t\t\tif(v[i] == false)\n\t\t\t{\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tnum++;\n\t\t\tfor(j = nd[i].d; j != i; j = nd[j].d)\n\t\t\t{\n\t\t\t\tfor(k = nd[j].r; k != j; k = nd[k].r)\n\t\t\t\t{\n\t\t\t\t\tv[nd[k].col] = false;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\treturn num;\n\t}\n\n\tint dfs(int len)\n\t{\n\t\tint i, j;\n\t\tint res, select_col;\n\n\t\t/* 判断是否超过了界限 */\n\t\tif(limit != -1 && len + get_min_rows() > limit)\n\t\t{\n\t\t\treturn -1;\n\t\t}\n\t\t/* 当前十字链表没有列 */\n\t\tif(nd[0].r == 0)\n\t\t{\n\t\t\treturn len;\n\t\t}\n\t\tselect_col = nd[0].r;\n\t\tfor(i = nd[0].r; i != 0; i = nd[i].r)\n\t\t{\n\t\t\tif(nd[i].d == i)\n\t\t\t{\n\t\t\t\treturn -1;\n\t\t\t}\n\t\t\tif(col_nds[select_col] > col_nds[i])\n\t\t\t{\n\t\t\t\tselect_col = i;\n\t\t\t}\n\t\t}\n\t\tfor(i = nd[select_col].d; i != select_col; i = nd[i].d)\n\t\t{\n\t\t\tif(select_rows != NULL)\n\t\t\t{\n\t\t\t\tselect_rows[len] = nd[i].row;\n\t\t\t}\n\t\t\tremove(i);\n\t\t\tfor(j = nd[i].r; j != i; j = nd[j].r)\n\t\t\t{\n\t\t\t\tremove(j);\n\t\t\t}\n\t\t\tres = dfs(len + 1);\n\t\t\tif(res >= 0)\n\t\t\t{\n\t\t\t\tif(is_min_ans == false)\n\t\t\t\t{\n\t\t\t\t\treturn res;\n\t\t\t\t}\n\t\t\t\telse if(ans < 0 || ans > res)\n\t\t\t\t{\n\t\t\t\t\tans = res;\n\t\t\t\t}\n\t\t\t}\n\t\t\tfor(j = nd[i].l; j != i; j = nd[j].l)\n\t\t\t{\n\t\t\t\tresume(j);\n\t\t\t}\n\t\t\tresume(i);\n\t\t}\n\t\treturn ans;\n\t}\n\n\t/*\n\tbool is_min_ans: 是否求答案最小值，如果不是，得到一个可行解就返回，默认求最小值。\n\tint select_rows[]: 用于保存选择的行，取NULL时不保存，默认取NULL。\n\tint limit：答案的上限，取-1时无上限，默认为-1。\n\t*/\n\tint solve(bool is_min_ans = true, int select_rows[] = NULL, int limit = -1)\n\t{\n\t\tthis->is_min_ans = is_min_ans;\n\t\tthis->select_rows = select_rows;\n\t\tthis->limit = limit;\n\t\tans = -1;\n\t\tans = dfs(0);\n\t\treturn ans;\n\t}\n\n} dance_link;\n\ndance_link dl;\n\nint main()\n{\n\tint t, n, m, k;\n\tint i, j;\n\tdouble left, right, mid;\n\tpoint city[MAX_N], radar[MAX_N];\n\n\tdouble dist;\n\tint len;\n\n\tscanf(\"%d\", &t);\n\twhile(t--)\n\t{\n\t\tscanf(\"%d %d %d\", &n, &m, &k);\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tscanf(\"%lf %lf\", &city[i].x, &city[i].y);\n\t\t}\n\t\tfor(i = 0; i < m; i++)\n\t\t{\n\t\t\tscanf(\"%lf %lf\", &radar[i].x, &radar[i].y);\n\t\t}\n\n\t\tleft = 0.0;\n\t\tright = 1500.0;\n\t\twhile(right - left >= EXP)\n\t\t{\n\t\t\tmid = (right + left) / 2.0;\n\t\t\tdl.init(m, n);\n\t\t\tfor(i = 0; i < m; i++)\n\t\t\t{\n\t\t\t\tfor(j = 0; j < n; j++)\n\t\t\t\t{\n\t\t\t\t\tdist = radar[i].distance(city[j]);\n\t\t\t\t\tif(radar[i].distance(city[j]) <= mid)\n\t\t\t\t\t{\n\t\t\t\t\t\tdl.add_node(i + 1, j + 1);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t\tlen = dl.solve(false, NULL, k);\n\t\t\tif(len != -1 && dl.solve() <= k)\n\t\t\t{\n\t\t\t\tright = mid;\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tleft = mid;\n\t\t\t}\n\t\t}\n\t\tprintf(\"%.6lf\\n\", right);\n\t}\n\treturn 0;\n}\n\n```",
+      "data": {
+        "title": "HDU-2295 Radar",
+        "date": "2020-03-19 18:58:57",
+        "tags": [
+          "acm",
+          "hdu",
+          "舞蹈链"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "舞蹈链重复覆盖问题",
+      "fileName": "hdu-2295-radar"
+    },
+    {
+      "content": "二维精确覆盖问题\n\n<!-- more -->\n\n\n# 题目\n&emsp;&emsp;<https://zoj.pintia.cn/problem-sets/91827364500/problems/91827367871>\n\n# 题意\n&emsp;&emsp;给出p个小矩形和每个小矩形的左下角、右上角坐标，问能否用这些小矩形拼成一个m×n的大矩形，拼接的时候小矩形的位置不能改变，且小矩形之间不能重叠。\n\n# 题目解析\n&emsp;&emsp;这是一个二维的精确覆盖问题，可以转化为一维来处理。对于每一个小矩形，将其能覆盖的区域赋值为1，不能覆盖的区域赋值为0，这样就构建了一个m×n的矩阵，然后将这个二维的矩阵转化为一维的向量。转化的方法就是，把矩阵的m行元素按顺利排一行，比如矩阵的第一行的第1、2、...、n-1、n个元素的作为向量的第1、2、...、n-1、n个元素，第二行的第1、2、...、n-1、n个元素作为向量的第n+1、n+2、....、2n-1、2n个元素，第i行的第j个元素的作为第i×n+j元素。接下来将p个小矩形转化成的p个向量组成一个p行m×n列的的矩阵，这样题目就转化为对这个矩阵求标准的精确覆盖问题，用舞蹈链算法处理一下就好了。\n&emsp;&emsp;需要注意的是，这题需要求覆盖整个大矩形，最少使用的小矩形，求出可行解后需要继续搜索出最优解。\n\n# 代码\n```\n/* https://zoj.pintia.cn/problem-sets/91827364500/problems/91827367871 */\n#include <stdio.h>\n#include <string.h>\n\nconst int MAX_COLS = 30 * 30 + 10;\nconst int MAX_ROWS = 500 + 10;\n\ntypedef struct node\n{\n\tint u, d, l, r;\n\tint row, col;\n} node;\n\nint rows, cols, node_size;\nnode nd[MAX_ROWS * MAX_COLS];\nint row_head[MAX_ROWS], col_nds[MAX_COLS];\n\nint ans;\n\nvoid init()\n{\n\tint i;\n\n\t/* 初始化每一列的头节点 */\n\tfor(i = 0; i <= cols; i++)\n\t{\n\t\tnd[i].u = i;\n\t\tnd[i].d = i;\n\t\tnd[i].l = i - 1;\n\t\tnd[i].r = i + 1;\n\t}\n\tnd[0].l = cols;\n\tnd[cols].r = 0;\n\tmemset(col_nds, 0, sizeof(col_nds));\n\tnode_size = cols + 1;\n\n\t/* 初始化每一行的行指针 */\n\tmemset(row_head, -1, sizeof(row_head));\n}\n\nvoid add_node(int row, int col)\n{\n\t/* nd[node_size]为新添加的节点 */\n\tnd[node_size].row = row;\n\tnd[node_size].col = col;\n\n\t/* 将新添加的节点与其所在的列连接 */\n\tnd[node_size].u = col;\n\tnd[node_size].d = nd[col].d;\n\tnd[nd[col].d].u = node_size;\n\tnd[col].d = node_size;\n\n\t/* 将新添加的节点与其所在的行连接 */\n\tif(row_head[row] == -1)\n\t{\n\t\trow_head[row] = node_size;\n\t\tnd[node_size].l = node_size;\n\t\tnd[node_size].r = node_size;\n\t}\n\telse\n\t{\n\t\tint row_first = row_head[row];\n\t\tnd[node_size].r = row_first;\n\t\tnd[node_size].l = nd[row_first].l;\n\t\tnd[nd[row_first].l].r = node_size;\n\t\tnd[row_first].l = node_size;\n\t}\n\tcol_nds[col]++;\n\tnode_size++;\n}\n\nvoid remove(int col)\n{\n\tint i, j;\n\n\t/* 将第col列从十字链表里移除 */\n\tnd[nd[col].l].r = nd[col].r;\n\tnd[nd[col].r].l = nd[col].l;\n\n\t/* 将与第col列里节点有关的行移除 */\n\tfor(i = nd[col].d; i != col; i = nd[i].d)\n\t{\n\t\tfor(j = nd[i].r; j != i; j = nd[j].r)\n\t\t{\n\t\t\tnd[nd[j].u].d = nd[j].d;\n\t\t\tnd[nd[j].d].u = nd[j].u;\n\t\t\tcol_nds[nd[j].col]--;\n\t\t}\n\t}\n}\n\nvoid resume(int col)\n{\n\tint i, j;\n\n\t/* 将第col列从十字链表里恢复 */\n\tnd[nd[col].l].r = col;\n\tnd[nd[col].r].l = col;\n\n\t/* 将与第col列里节点有关的行恢复 */\n\tfor(i = nd[col].d; i != col; i = nd[i].d)\n\t{\n\t\tfor(j = nd[i].r; j != i; j = nd[j].r)\n\t\t{\n\t\t\tnd[nd[j].u].d = j;\n\t\t\tnd[nd[j].d].u = j;\n\t\t\tcol_nds[nd[j].col]++;\n\t\t}\n\t}\n}\n\nvoid dfs(int len)\n{\n\tint i, j, res, select_col;\n\tint min;\n\n\tif(len >= ans)\n\t{\n\t\treturn ;\n\t}\n\t/* 当前十字链表没有列 */\n\tif(nd[0].r == 0)\n\t{\n\t\tans = len;\n\t\treturn ;\n\t}\n\tmin = MAX_ROWS;\n\tfor(i = nd[0].r; i != 0; i = nd[i].r)\n\t{\n\t\tif(nd[i].d == i)\n\t\t{\n\t\t\treturn ;\n\t\t}\n\t\tif(min > col_nds[i])\n\t\t{\n\t\t\tselect_col = i;\n\t\t\tmin = col_nds[i];\n\t\t}\n\t}\n\tremove(select_col);\n\tfor(i = nd[select_col].d; i != select_col; i = nd[i].d)\n\t{\n\t\tfor(j = nd[i].r; j != i; j = nd[j].r)\n\t\t{\n\t\t\tremove(nd[j].col);\n\t\t}\n\t\tdfs(len + 1);\n\t\tfor(j = nd[i].l; j != i; j = nd[j].l)\n\t\t{\n\t\t\tresume(nd[j].col);\n\t\t}\n\t}\n\tresume(select_col);\n}\n\nint main()\n{\n\tint t, n, m, p, x1, x2, y1, y2;\n\tint i, j, k, len;\n\n\tscanf(\"%d\", &t);\n\twhile(t--)\n\t{\n\t\tscanf(\"%d %d %d\", &n, &m, &p);\n\t\trows = p;\n\t\tcols = n * m;\n\t\tinit();\n\t\tfor(k = 0; k < p; k++)\n\t\t{\n\t\t\tscanf(\"%d %d %d %d\", &x1, &y1, &x2, &y2);\n\t\t\tfor(i = y1; i < y2; i++)\n\t\t\t{\n\t\t\t\tfor(j = x1; j < x2; j++)\n\t\t\t\t{\n\t\t\t\t\tadd_node(k + 1, i * n + j + 1);\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tans = MAX_ROWS;\n\t\tdfs(0);\n\t\tif(ans == MAX_ROWS)\n\t\t{\n\t\t\tans = -1;\n\t\t}\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```",
+      "data": {
+        "title": "ZOJ-1017 Treasure Map",
+        "date": "2020-03-16 23:26:32",
+        "tags": [
+          "舞蹈链",
+          "acm"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "二维精确覆盖问题",
+      "fileName": "zoj-1017-treasure-map"
+    },
+    {
+      "content": "精确覆盖问题\n\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://www.hustoj.org/problem/1017>\n\n# 题意\n&emsp;&emsp;给出一个大小为n×m，只包含0和1的矩阵，需要选出矩阵中的某些行，使得这些行组成的子矩阵在每一列上有且只有一个1。\n\n# 题目解析\n&emsp;&emsp;这题是舞蹈链的模板题，标准的精确覆盖问题。第一次接触舞蹈链算法，参考大佬的博客才看懂的，关于舞蹈链算法，参考自<https://www.cnblogs.com/grenet/p/3145800.html>，大佬解释的非常详细了，在此感谢[万仓一黍](https://www.cnblogs.com/grenet/)大佬的解释，我比较懒，就不复述了。代码参考了<https://www.cnblogs.com/ZShogg/p/3288980.html>，也感谢[Hogg](https://www.cnblogs.com/ZShogg/)大佬的代码。\n\n# 代码\n```cpp\n/* http://www.hustoj.org/problem/1017 */\n/* 测试样例通过了，因为oj的问题（HUST OJ不支持特判），无法提交 */\n#include <stdio.h>\n#include <string.h>\n\nconst int MAX_N = 1000 + 10;\nconst int MAX_NODE = MAX_N * 100;\n\ntypedef struct node\n{\n\tint u, d, l, r;\n\tint row, col;\n} node;\n\nint n, m, node_size;\nnode nd[MAX_NODE];\nint row_head[MAX_N];\n\nvoid init()\n{\n\tint i;\n\n\t/* 初始化每一列的头节点 */\n\tfor(i = 0; i <= m; i++)\n\t{\n\t\tnd[i].u = i;\n\t\tnd[i].d = i;\n\t\tnd[i].l = i - 1;\n\t\tnd[i].r = i + 1;\n\t}\n\tnd[0].l = m;\n\tnd[m].r = 0;\n\tnode_size = m + 1;\n\n\t/* 初始化每一行的行指针 */\n\tmemset(row_head, -1, sizeof(row_head));\n}\n\nvoid add_node(int row, int col)\n{\n\t/* nd[node_size]为新添加的节点 */\n\tnd[node_size].row = row;\n\tnd[node_size].col = col;\n\n\t/* 将新添加的节点与其所在的列连接 */\n\tnd[node_size].u = col;\n\tnd[node_size].d = nd[col].d;\n\tnd[nd[col].d].u = node_size;\n\tnd[col].d = node_size;\n\n\t/* 将新添加的节点与其所在的行连接 */\n\tif(row_head[row] == -1)\n\t{\n\t\trow_head[row] = node_size;\n\t\tnd[node_size].l = node_size;\n\t\tnd[node_size].r = node_size;\n\t}\n\telse\n\t{\n\t\tint row_first = row_head[row];\n\t\tnd[node_size].r = row_first;\n\t\tnd[node_size].l = nd[row_first].l;\n\t\tnd[nd[row_first].l].r = node_size;\n\t\tnd[row_first].l = node_size;\n\t}\n\tnode_size++;\n}\n\nvoid remove(int col)\n{\n\tint i, j;\n\n\t/* 将第col列从十字链表里移除 */\n\tnd[nd[col].l].r = nd[col].r;\n\tnd[nd[col].r].l = nd[col].l;\n\n\t/* 将与第col列里节点有关的行移除 */\n\tfor(i = nd[col].d; i != col; i = nd[i].d)\n\t{\n\t\tfor(j = nd[i].r; j != i; j = nd[j].r)\n\t\t{\n\t\t\tnd[nd[j].u].d = nd[j].d;\n\t\t\tnd[nd[j].d].u = nd[j].u;\n\t\t}\n\t}\n}\n\nvoid resume(int col)\n{\n\tint i, j;\n\n\t/* 将第col列从十字链表里恢复 */\n\tnd[nd[col].l].r = col;\n\tnd[nd[col].r].l = col;\n\n\t/* 将与第col列里节点有关的行恢复 */\n\tfor(i = nd[col].d; i != col; i = nd[i].d)\n\t{\n\t\tfor(j = nd[i].r; j != i; j = nd[j].r)\n\t\t{\n\t\t\tnd[nd[j].u].d = j;\n\t\t\tnd[nd[j].d].u = j;\n\t\t}\n\t}\n}\n\nint dfs(int ans[], int len)\n{\n\tint i, j, res, select_col;\n\n\t/* 当前十字链表没有列 */\n\tif(nd[0].r == 0)\n\t{\n\t\treturn len;\n\t}\n\tfor(i = nd[0].r; i != 0; i = nd[i].r)\n\t{\n\t\tif(nd[i].d == i)\n\t\t{\n\t\t\treturn -1;\n\t\t}\n\t}\n\tselect_col = nd[0].r;\n\tremove(select_col);\n\tfor(i = nd[select_col].d; i != select_col; i = nd[i].d)\n\t{\n\t\tans[len] = nd[i].row;\n\t\tfor(j = nd[i].r; j != i; j = nd[j].r)\n\t\t{\n\t\t\tremove(nd[j].col);\n\t\t}\n\t\tres = dfs(ans, len + 1);\n\t\tif(res >= 0)\n\t\t{\n\t\t\treturn res;\n\t\t}\n\t\tfor(j = nd[i].l; j != i; j = nd[j].l)\n\t\t{\n\t\t\tresume(nd[j].col);\n\t\t}\n\t}\n\tresume(select_col);\n\treturn -1;\n}\n\nint main()\n{\n\tint i, j, k, c, len;\n\tint ans[MAX_N];\n\n\twhile(scanf(\"%d %d\", &n, &m) != EOF)\n\t{\n\t\tinit();\n\t\tfor(i = 1; i <= n; i++)\n\t\t{\n\t\t\tscanf(\"%d\", &c);\n\t\t\tfor(j = 0; j < c; j++)\n\t\t\t{\n\t\t\t\tscanf(\"%d\", &k);\n\t\t\t\tadd_node(i, k);\n\t\t\t}\n\t\t}\n\n\t\tlen = dfs(ans, 0);\n\t\tif(len < 0)\n\t\t{\n\t\t\tprintf(\"NO\\n\");\n\t\t}\n\t\telse\n\t\t{\n\t\t\tprintf(\"%d\", len);\n\t\t\tfor(i = 0; i < len; i++)\n\t\t\t{\n\t\t\t\tprintf(\" %d\", ans[i]);\n\t\t\t}\n\t\t\tprintf(\"\\n\");\n\t\t}\n\t}\n\t\n\treturn 0;\n}\n\n/*\n\n6 7\n3 1 4 7\n2 1 4\n3 4 5 7\n3 3 5 6\n4 2 3 6 7\n2 2 7\n\n*/\n```",
+      "data": {
+        "title": "HUST-1017 Exact cover",
+        "date": "2020-03-10 20:45:59",
+        "tags": [
+          "hust",
+          "舞蹈链",
+          "acm"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "精确覆盖问题",
+      "fileName": "hust-1017-exact-cover"
+    },
+    {
+      "content": "简单搜索题\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://acm.hdu.edu.cn/showproblem.php?pid=2102>\n\n# 题意\n&emsp;&emsp;中文题，就不解释了哈。\n\n# 解题思路\n&emsp;&emsp;从起点开始搜索四个方向就好了，用深度优先搜索和广度优先搜索都行，遇到#就搜索另一层。需要注意的是传送到另一层后，不只是要判断是不是墙，还要判断是不是#，因为按题意来说，这种情况会一直在两层之间传送，然后走不出去，如果不特判的话，会在另一层继续搜索。\n\n# 代码\n```cpp\n#include <stdio.h>\n#include <string.h>\n\nconst int MAX_N = 12;\n\ntypedef struct node\n{\n\tint x, y, z;\n\tint t;\n} node;\n\nint n, m, t;\nchar map[2][MAX_N][MAX_N];\n\nint solve()\n{\n\tint i, j, front, back;\n\tint book[2][MAX_N][MAX_N];\n\tnode que[2 * MAX_N * MAX_N];\n\tnode tep;\n\tint dir[4][2] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};\n\n\tque[0] = (node){0, 0, 0, 0};\n\tfront = 0;\n\tback = 1;\n\tmemset(book, 0, sizeof(book));\n\tbook[0][0][0] = 1;\n\twhile(front != back)\n\t{\n\t\tfor(i = 0; i < 4; i++)\n\t\t{\n\t\t\ttep = que[front];\n\t\t\ttep.x += dir[i][0];\n\t\t\ttep.y += dir[i][1];\n\t\t\ttep.t++;\n\t\t\tif(tep.x < 0 || tep.x >= n || tep.y < 0 || tep.y >= m || tep.t > t)\n\t\t\t{\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tif(map[tep.z][tep.x][tep.y] == '#')\n\t\t\t{\n\t\t\t\ttep.z = !tep.z;\n\t\t\t}\n\t\t\tif(map[tep.z][tep.x][tep.y] == '*' || map[tep.z][tep.x][tep.y] == '#' || book[tep.z][tep.x][tep.y] == 1)\n\t\t\t{\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tif(map[tep.z][tep.x][tep.y] == 'P')\n\t\t\t{\n\t\t\t\treturn tep.t;\n\t\t\t}\n\t\t\tbook[tep.z][tep.x][tep.y] = 1;\n\t\t\tque[back] = tep;\n\t\t\tback++;\n\t\t}\n\t\tfront++;\n\t}\n\treturn 0;\n}\n\nint main()\n{\n\tint c, i, ans;\n\n\tscanf(\"%d\", &c);\n\twhile(c--)\n\t{\n\t\tscanf(\"%d %d %d\", &n, &m, &t);\n\t\tgetchar();\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tscanf(\"%s\", map[0][i]);\n\t\t}\n\t\tgetchar();\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tscanf(\"%s\", map[1][i]);\n\t\t}\n\n\t\tans = solve();\n\t\tif(ans == 0)\n\t\t{\n\t\t\tprintf(\"NO\\n\");\n\t\t}\n\t\telse\n\t\t{\n\t\t\tprintf(\"YES\\n\");\n\t\t}\n\t}\n\treturn 0;\n}\n```",
+      "data": {
+        "title": "HDU-2102 A计划",
+        "date": "2020-02-26 19:36:55",
+        "tags": [
+          "acm",
+          "搜索",
+          "hdu"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "简单搜索题",
+      "fileName": "hdu-2102-a-ji-hua"
+    },
+    {
+      "content": "广度优先搜索＋map标记状态\n<!-- more -->\n# 题目\n<http://acm.hdu.edu.cn/showproblem.php?pid=1067>\n# 题意\n&emsp;&emsp;首先给出28（4×7）张卡片和一个4×8的表格，每张卡片都有一个数字，分别是11～17、21～27、31～37和41～47。初始时将卡片随机放入表格里除第一列以外的其他位置，如下图：\n![](https://nchuxw.github.io//post-images/1582445042932.gif)\n然后将数字11的卡片放到第一列的第一行，数字21的卡片放到第一列的第二行，数字31和41的卡片类似，如下图：\n![](https://nchuxw.github.io//post-images/1582445276370.gif)\n接下来需要移动卡片，移动的规则是，只能将卡片移动到空白格子上，且移动到空白格子上的卡片，必须是比空白格子左边卡片上的数字大1的那张。比如上图的第一行的第二列空白格子，其左边卡片上的数字是42，那么只能将数字为43的卡片移动到该空白格子上。在移动过若干次卡片后，如果卡片的位置能变成下图所示的样子，输出最小移动的次数，否则输出-1。\n![](https://nchuxw.github.io//post-images/1582446099263.gif)\n# 解题思路\n&emsp;&emsp;这题要计算最小移动的次数，首先想到的是用广度优先搜索，比较麻烦的是标记每次移动后状态。可以将表格的状态转化为一个长度为28的字符串（4×7，表格第一列不会被移动，所以不用标记），然后用map的这个字符串来判断该状态是否被标记过。\n# 代码\n```cpp\n#include <stdio.h>\n#include <string.h>\n#include <string>\n#include <queue>\n#include <map>\n\nusing namespace std;\n\ntypedef struct node\n{\n\tchar index[4];\n\tchar a[30];\n\tint t;\n} node;\n\nint solve(node start)\n{\n\tint i, j, k, si, di, dnum;\n\tnode tep;\n\tqueue<node> que;\n\tmap<string, bool> mp;\n\tchar end[30] = \n\t{\n\t\t12, 13, 14, 15, 16, 17, 1,\n\t\t22, 23, 24, 25, 26, 27, 1,\n\t\t32, 33, 34, 35, 36, 37, 1,\n\t\t42, 43, 44, 45, 46, 47, 1, 0\n\t};\n\n\tif(strcmp(start.a, end) == 0)\n\t{\n\t\treturn 0;\n\t}\n\tque.push(start);\n\tmp[start.a] = true;\n\twhile(que.empty() == false)\n\t{\n\t\tfor(k = 0; k < 4; k++)\n\t\t{\n\t\t\ttep = que.front();\n\t\t\tsi = tep.index[k];\n\t\t\tdnum = (si % 7 == 0) ? si / 7 * 10 + 12 : tep.a[si - 1] + 1;\n\t\t\tif(dnum == 2 || dnum % 10 == 8)\n\t\t\t{\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tfor(i = 0; i < 28; i++)\n\t\t\t{\n\t\t\t\tif(tep.a[i] == dnum)\n\t\t\t\t{\n\t\t\t\t\tdi = i;\n\t\t\t\t\tbreak;\n\t\t\t\t}\n\t\t\t}\n\t\t\ttep.a[di] = 1;\n\t\t\ttep.a[si] = dnum;\n\t\t\ttep.index[k] = di;\n\t\t\ttep.t++;\n\t\t\tif(strcmp(tep.a, end) == 0)\n\t\t\t{\n\t\t\t\treturn tep.t;\n\t\t\t}\n\t\t\tif(mp.count(tep.a) == 1)\n\t\t\t{\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tmp[tep.a] = true;\n\t\t\tque.push(tep);\n\t\t}\n\t\tque.pop();\n\t}\n\treturn -1;\n}\n\nint main()\n{\n\tint n, i, j, k, ans, in;\n\tnode start;\n\t\n\tscanf(\"%d\", &n);\n\twhile(n--)\n\t{\n\t\tk = 0;\n\t\tfor(i = 0; i < 4; i++)\n\t\t{\n\t\t\tfor(j = 0; j < 7; j++)\n\t\t\t{\n\t\t\t\tscanf(\"%d\", &in);\n\t\t\t\tstart.a[i * 7 + j] = (char)in;\n\t\t\t\tif(start.a[i * 7 + j] % 10 == 1)\n\t\t\t\t{\n\t\t\t\t\tstart.a[i * 7 + j] = 1;\n\t\t\t\t\tstart.index[k] = i * 7 + j;\n\t\t\t\t\tk++;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tstart.a[28] = '\\0';\n\t\tstart.t = 0;\n\t\tans = solve(start);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n```",
+      "data": {
+        "title": "HDU-1067 Gap",
+        "date": "2020-02-23 15:45:01",
+        "tags": [
+          "acm",
+          "搜索",
+          "hdu"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "广度优先搜索＋map标记状态",
+      "fileName": "hdu-1067-gap"
+    },
+    {
+      "content": "一些关于数字图像处理的基本知识\n<!-- more -->\n\n# 基本概念\n**单色光**：没有颜色的光，单色光的唯一属性是强度。\n**灰度级**：单色光的强度，从黑到白的单色光的度量值范围。\n**灰度图像**：用单色光来表示的图像。\n\n一幅图像可以用一个矩阵来表示，矩阵中某点的值表示图像在该点的灰度级。\n**空间域**：一幅数字图像的坐标张成的实平面部分。\n**像素**：图像矩阵中的元素，也可以称之为图像单元或图像元素。\n\n**噪声**：存在于图像数据中的不必要的或多余的干扰信息。\n**对比度**：图像中最高和最低灰度级间的灰度差。\n**饱和度**：指图像色彩的纯净程度。\n\n**空间分辨率**：用来度量图像中可辨别的最小细节，，通常用单位距离的线对数或单位距离的点数（像素数）来衡量。\n**dpi**：每英寸点数，通常作为单位距离点数的单位。\n**灰度分辨率**：指灰度级中可分辨的最小变化，用于量化灰度的比特数。例如，通常说一幅被量化为256级的图像有8比特的灰度分辨率。\n\n# 像素间的基本关系\n## 相邻像素\n&emsp;&emsp;**4邻域**：与像素相邻的四个水平和垂直的相邻像素，坐标为$(x,y)$的像素的4邻域坐标为$(x+1,y)、(x-1,y)、(x,y+1)、(x,y-1)$，像素点p的4邻域可以用$N_4(p)$表示。\n&emsp;&emsp;**D邻域**：与像素相邻的四个对角相邻像素，坐标为$(x,y)$的像素的D邻域坐标为$(x-1,y-1)、(x-1,y+1)、(x+1,y-1)、(x+1,y+1)$，像素点p的4邻域可以用$N_D(p)$表示。\n&emsp;&emsp;**8邻域**：由像素的4邻域和D邻域组成。像素点p的8邻域可以用$N_8(p)$表示。\n&emsp;&emsp;位于图像边界的像素点的4邻域、D邻域和8邻域会落入图像的外部。\n\n## 邻接性\n&emsp;&emsp;令$V$是定义邻接的灰度值集合，假设像素$p$和$q$的像素值在集合$V$中，像素$p$和$q$的4邻接、8邻接和m邻接定义如下\n&emsp;&emsp;**4邻接**：如果$q$在$p$的4邻域中，则$p$和$q$是4邻接的。\n&emsp;&emsp;**8邻接**：如果$q$在$p$的8邻域中，则$p$和$q$是8邻接的。\n&emsp;&emsp;**m邻接**：如果像素$p$和$q$满足以下两个条件之一，则$p$和$q$是m邻接的。\n&emsp;&emsp;&emsp;&emsp; 1. $q$在$p$的4邻域中。\n&emsp;&emsp;&emsp;&emsp; 2. $q$在$p$的D邻域中，且$p$和$q$的4邻域交集中没有没有来自$V$中数值的像素。\n&emsp;&emsp;m邻接也叫混合邻接，m邻接是8邻接的改进，目的是消除8邻接带来的对角相邻像素之间可能产生的多余的斜向路径。\n\n## 连通性\n&emsp;&emsp;**通路**：像素$p$到像素$q$之间的通路是由不同像素组成的一个序列，序列中左右相邻的两个像素之间都是邻接的。可根据不同的邻接类型（4邻接、8邻接、m邻接）定义不同的通路类型（4通路、8通路、m通路），其中8通路可能不唯一。\n&emsp;&emsp;**连通**：令$S$是图像中的一个像素子集（图像中像素点组成的集合）。如果两个像素$p$和$q$之间存在一条完全由$S$中的像素构成的通路（像素$p$和$q$均在$S$中），那么称像素$p$和$q$在$S$中连通。\n&emsp;&emsp;**连通分量**：对于$S$中的任意一个像素$p$，在$S$中与像素$p$连通的像素构成的像素集合称为$S$的连通分量。\n&emsp;&emsp;**连通集**：如果$S$仅有一个连通分量，即$S$中的所有像素互相都连通，则$S$称为连通集。\n\n## 区域和边界\n&emsp;&emsp;**区域**：令$R$是图像中的一个像素子集，如果$R$是一个连通集，则称$R$为图像的一个区域。\n&emsp;&emsp;**邻接区域**：两个区域$R_i$和$R_j$，如果将他们合并后能够形成一个连通集，则称区域$R_i$和$R_j$为邻接区域。不邻接的区域称为不邻接区域。\n&emsp;&emsp;**边界**：区域$R$的边界（也叫边框或者轮廓）是区域$R$中与$R$的补集邻接的像素点组成的集合。\n&emsp;&emsp;假设一幅图像中含有$K$个不邻接的区域$R_k,k=1,2,...,K$，且这些区域都不接触图像的边界。令$Ru$表示这$K$个区域的并集，$(Ru)c$表示$Ru$的补集，那么$Ru$称中的所有像素点为图像的前景，$(Ru)c$中的所有像素点为图像的背景。\n&emsp;&emsp;上述边界的定义有时称为区域的**内边界**，即边界像素是在区域内部。与内边界相区分的是**外边界**，即边界像素在背景区域内。\n\n## 距离度量\n&emsp;&emsp;设像素点$p$的坐标为$(x_p,y_p)$，$q$的坐标为$(x_q,y_q)$，则$p$和$q$之间的三种距离定义如下。\n&emsp;&emsp;**欧式距离**：用$D_e(p,q)$来表示。\n$$D_e(p,q) = \\sqrt{(x_p - x_q)^2 + (y_p - y_q)^2}$$\n&emsp;&emsp;在欧式距离度量下，到像素点$(x,y)$的距离小于等于某一特定值$r$的像素都在以$(x,y)$为中心、半径为$r$的圆形区域内。\n\n&emsp;&emsp;**城市距离**：用$D_4(p,q)$来表示。\n$$D_4(p,q) = |x_p - x_q| + |y_p - y_q|$$\n&emsp;&emsp;在城市距离度量下，到像素点$(x,y)$的距离小于等于某一特定值$r$的像素形成一个以$(x,y)$为中心的菱形区域。\n\n&emsp;&emsp;**棋盘距离**：用$D_8(p,q)$来表示。\n$$D_8(p,q) = max(|x_p - x_q|,|y_p - y_q|)$$\n&emsp;&emsp;在棋盘距离度量下，到像素点$(x,y)$的距离小于等于某一特定值$r$的像素形成一个以$(x,y)$为中心的方形区域。\n",
+      "data": {
+        "title": "数字图像基础",
+        "date": "2020-02-18 20:44:55",
+        "tags": [
+          "图像处理"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "一些关于数字图像处理的基本知识",
+      "fileName": "shu-zi-tu-xiang-chu-li-ji-chu-zhi-shi"
+    },
+    {
+      "content": "双向广度优先搜索\n<!-- more -->\n\n# 题目\n&emsp;&emsp;地址：<http://acm.hdu.edu.cn/showproblem.php?pid=3085>\n\n# 题意\n&emsp;&emsp;给出一个n×m的迷宫，迷宫里有些地方是墙，有些地方是空地，迷宫里还有两只鬼，鬼可以分身，以每秒两步的速度向附近扩散，而且鬼可以穿墙。erriyue和他的女朋友在迷宫里面，erriyue每秒钟可以走3步，他的女朋友每秒钟可以走一步。问erriyue能否在在鬼抓到他或他女朋友之前，与他女朋友会合，如果可以输出最少需要的时间，否则输出-1。\n* 墙用#表示\n*  空地用.表示\n*  鬼的初始位置用M表示\n*  erriyue的初始位置用M表示\n*  erriyue的女朋友初始位置用G表示\n\n# 解题思路\n&emsp;&emsp;以erriyue和他女朋友为原点，使用双向广度优先搜索路径，同时使用曼哈顿距离（也就是两个方向上的距离和）来判断会不会被鬼追上。双向的广度优先搜索相当单向的耗时少一点，用曼哈顿距离就可以不用把鬼加到队列里了，省了空间。\n\n# 代码\n```cpp\n#include <stdio.h>\n#include <string.h>\n#include <queue>\n\nusing namespace std;\n\nconst int MAX_N = 800 + 10;\n// const int MAX_N = 2 + 10;\n\ntypedef struct point\n{\n\tint x, y;\n} point;\n\nint n, m;\nchar mp[MAX_N][MAX_N];\nchar book[2][MAX_N][MAX_N];\nqueue<point> que[2];\nint dir[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};\n\nint abs(int a, int b)\n{\n\treturn (a > b) ? a - b : b - a;\n}\n\nint check_point(point p, point zs[], int t)\n{\n\tif (abs(p.x, zs[0].x) + abs(p.y, zs[0].y) <= 2 * t || \n\t\tabs(p.x, zs[1].x) + abs(p.y, zs[1].y) <= 2 * t)\n\t{\n\t\treturn 1;\n\t}\n\treturn 0;\n}\n\nint step_one(int mg, point zs[], int t)\n{\n\tint i, pn;\n\tpoint front, tep;\n\n\tpn = que[mg].size();\n\twhile(pn--)\n\t{\n\t\tfront = que[mg].front();\n\t\tque[mg].pop();\n\t\tif(check_point(front, zs, t))\n\t\t{\n\t\t\tcontinue;\n\t\t}\n\t\tfor(i = 0; i < 4; i++)\n\t\t{\n\t\t\ttep = front;\n\t\t\ttep.x += dir[i][0];\n\t\t\ttep.y += dir[i][1];\n\t\t\tif(tep.x < 0 || tep.x >= n || tep.y < 0 || tep.y >= m)\n\t\t\t{\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tif(check_point(tep, zs, t) || mp[tep.x][tep.y] == 'X' || book[mg][tep.x][tep.y] == 1)\n\t\t\t{\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tif(book[!mg][tep.x][tep.y] == 1)\n\t\t\t{\n\t\t\t\treturn 1;\n\t\t\t}\n\t\t\tbook[mg][tep.x][tep.y] = 1;\n\t\t\tque[mg].push(tep);\n\t\t}\n\t}\n\treturn 0;\n}\n\nint solve(point ms, point gs, point zs[])\n{\n\tint t;\n\n\tmemset(book, 0, sizeof(book));\n\tbook[0][ms.x][ms.y] = 1;\n\tbook[1][gs.x][gs.y] = 1;\n\tque[0].push(ms);\n\tque[1].push(gs);\n\tt = 0;\n\twhile(que[0].empty() == false || que[1].empty() == false)\n\t{\n\t\tt++;\n\t\tif(step_one(0, zs, t) == 1) return t;\n\t\tif(step_one(0, zs, t) == 1) return t;\n\t\tif(step_one(0, zs, t) == 1) return t;\n\t\tif(step_one(1, zs, t) == 1) return t;\n\t}\n\treturn -1;\n}\n\nint main()\n{\n\tint t, i, j, k, ans;\n\tpoint ms, gs, zs[2];\n\n\tscanf(\"%d\", &t);\n\twhile(t--)\n\t{\n\t\tscanf(\"%d %d\", &n, &m);\n\t\tgetchar();\n\t\tk = 0;\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tscanf(\"%s\", mp[i]);\n\t\t\tfor(j = 0; j < m; j++)\n\t\t\t{\n\t\t\t\tif(mp[i][j] == 'M')\n\t\t\t\t{\n\t\t\t\t\tms = (point){i, j};\n\t\t\t\t}\n\t\t\t\telse if(mp[i][j] == 'G')\n\t\t\t\t{\n\t\t\t\t\tgs = (point){i, j};\n\t\t\t\t}\n\t\t\t\telse if(mp[i][j] == 'Z')\n\t\t\t\t{\n\t\t\t\t\tzs[k] = (point){i, j};\n\t\t\t\t\tk++;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\twhile(que[0].empty() == false) que[0].pop();\n\t\twhile(que[1].empty() == false) que[1].pop();\t\t\n\t\tans = solve(ms, gs, zs);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n```",
+      "data": {
+        "title": "HDU-3085 Nightmare Ⅱ",
+        "date": "2020-02-15 16:57:20",
+        "tags": [
+          "acm",
+          "搜索",
+          "hdu"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "双向广度优先搜索",
+      "fileName": "hdu-3085-nightmare-ii"
+    },
+    {
+      "content": "从网上收集的markdown语法教程\n<!-- more -->\n\n@[TOC]\n\n\n# 写在前面\n&emsp;&emsp;前两天用Gridea和Github Pages搭好了我的博客，不得不说，这两个都是好东西，而且都是免费的。Gridea用来搭建个人博客容易，而且人性化，适合像我这样的菜鸟上手，Github Pages提供平台展示博客。在这里感谢一下[Gridea](https://gridea.dev/)和[Github Pages](https://pages.github.com/)的开发者们。\n&emsp;&emsp;Gridea支持Markdown语法，我这个菜鸟又不会，所以打算学一下，顺便写一篇介绍基本语法的博文，作为我的第一篇博文，下面进入正题吧！\n\n\n# Markdown简介\n&emsp;&emsp;Markdown 语言由约翰·格鲁伯(John Gruber)于2004年创建，是一种轻量级标记语言。Markdown允许人们使用易读易写的纯文本来编写带样式的文档，有点类似html，不过它比html简单一些。Markdown 编写的文档可以导出 HTML 、Word、图像、PDF、Epub 等多种格式的文档。使用Markdown 编写的文档后缀为 .md, .markdown，比如github仓库里的README.md文档。\n\n&emsp;&emsp;关于Markdown的编辑器，可分为以下三类：\n1. 平台集成工具：各大在线博客、社区平台自带的写作工具，比如CSDN、博客园、简书等。\n2. 独立软件类：在本地上使用的独立软件，可以编辑本地文件，比如Typora、Haroopad等。\n3. 插件类：有些编辑器安装相应的插件，可以具有Markdown的功能，比如Atom、VS code、Sublime Text等。\n\n\n# Markdown基本语法\n## 标题\n&emsp;&emsp;标题可以使用两种方式来设置，一种是用“=”和“-”，一种是用“#”。\n1. 使用“=”和“-”符号，在标题的下一行加一个“=”，就会有一级标题的效果，如果加“-”的话就是二级标题。\n```\n 一级标题\n=\n二级标题\n-\n```\n效果如下：\n\n![](https://nchuxw.github.io//post-images/1581056192563.png)\n\n&emsp;&emsp;需要注意的是，使用这种方式的标题，上一行如果是普通文本，两行之间要加一个换行，不然上一行文本也会有标题的样式。\n\n2. 使用“#”符号，在标题的前面加“#”符号就好了，加几个“#”就代表几级标题，最多支持6级标题。\n```\n# 一级标题\n## 二级标题\n### 三级标题\n#### 四级标题\n##### 五级标题\n###### 六级标题\n```\n效果如下：\n\n![](https://nchuxw.github.io//post-images/1581056288407.png)\n\n## 字体\n### 简单字体\nMarkdown 可以使用以下几种字体：\n```\n*斜体文本*\n_斜体文本_\n**粗体文本**\n__粗体文本__\n***粗斜体文本***\n___粗斜体文本___\n<u>带下划线文本</u>\n~~带删除线文本~~\n```\n效果如下：\n&emsp;&emsp; *斜体文本*\n&emsp;&emsp; _斜体文本_\n&emsp;&emsp; **粗体文本**\n&emsp;&emsp; __粗体文本__\n&emsp;&emsp; ***粗斜体文本***\n&emsp;&emsp; ___粗斜体文本___\n&emsp;&emsp; <u>带下划线文本</u>\n&emsp;&emsp; ~~带删除线文本~~\n\n### 自定义字体\nMarkdown的最初目标就是为纯写作而生的，因此，它并没有考虑文字的更多样式。如果想使用更多字体样式，可以借助html的font标签。\n```\n<font color=red>红色字体</font>\n<font size=6>6号字体</font>\n<font color=red size=6>6号红色字体</font>\n```\n效果如下：\n\n&emsp;&emsp; <font color=red>红色字体</font>\n\n&emsp;&emsp; <font size=6>6号字体</font>\n\n&emsp;&emsp; <font color=red size=6>6号红色字体</font>\n\n## 空格\nMarkdown不能直接用键盘输入的空格和回车来表示空格，需要用特殊符号。\n`&ensp;`或`&#8194;`表示半角空格(En Space)，占一个字符，相当于半个汉字的长度。\n`&emsp;`或`&#8195;`表示全角空格(Em Space)，占两个字符，相当于一个汉字的长度。\n`&nbsp;`或`&#160;`不换行空格(No-Break Space)，占一个字符，相当于一个字符\"n\"的长度。\n半角空格和全角空格推荐在中文里使用，不换行空格推荐在英文里使用。\n\n## 换行\nmarkdown里敲多个换行只能显示一个，如果想显示多个换行，需要用`<br>`或者`<br/>`来表示。\n\n## 引用\n引用的文字段落会高亮显示，方法是在文字开头加\">\"符号。\n```\n> 最外层\n>> 第一层嵌套\n>>> 第二层嵌套\n```\n> 最外层\n>> 第一层嵌套\n>>> 第二层嵌套\n\n## 图片\n### 简单图片\n如果是想简单的显示图片，使用以下方式就好了：\n```\n![](图片地址)\n```\n图片链接地址可以是本地图片文件地址，也可以是网络图片地址。\n\n也可以给图片添加说明和标题：\n```\n![图片说明文字](图片链接地址 \"图片标题\")\n```\n图片说明文字会在图片无法加载时显示，图片正常加载时说明文字不显示，下面是一个例子。\n```\n![这是一张无法加载的图片](错误的图片地址 \"title\")\n```\n显示为\n![这是一张无法加载的图片](错误的图片地址 \"title\")\n如果图片有标题，当鼠标停在图片上时会显示出来，即使图片无法加载，鼠标停靠时也会显示，下面是一个例子，请读者自行尝试。\n```\n![涅普迪努](https://nchuxw.github.io//post-images/nepnep.png \"我可爱吗^_^\")\n```\n![涅普迪努](https://nchuxw.github.io//post-images/nepnep.png \"我可爱吗^_^\")\n\n### 自定义图片\nMarkdown无法自定义图片的宽度和高度，如果想改变的话需要借助html的img标签。\n```\n<img width=100 height=160 src=\"https://nchuxw.github.io//post-images/nepnep.png\" title=\"我是变小后的涅普迪努\"></img>\n```\n下面是一张100×160的图片\n<img width=100 height=160 src=\"https://nchuxw.github.io//post-images/nepnep.png\" title=\"我是变小后的涅普迪努\"></img>\n\n## 链接\n### 外部链接\nmarkdown可以使用两种方法创建链接\n```\n[链接名称](链接地址)\n<链接地址>\n```\n以github主页为例：\n```\n[github](https://github.com)\n<https://github.com>\n```\n效果如下：\n[github](https://github.com)\n<https://github.com>\n\n### 内部链接\n可以使用内部链接跳转到本文内某个标题的位置，语法如下：\n```\n[链接名字][#标题名字]\n```\n比如想跳转转到本文的“Markdown简介”的位置，可以用下面的代码实现：\n```\n[Markdown简介](#markdown简介)\n```\n[Markdown简介](#markdown简介)\n这里的标题名字貌似不能是大写字母，如果包含大写字母无法跳转。\n\n## 列表\n### 无序列表\n无序列表使用星号(*)、加号(+)或是减号(-)作为列表标记：\n```\n* 第一项\n* 第二项\n* 第三项\n\n+ 第一项\n+ 第二项\n+ 第三项\n\n- 第一项\n- 第二项\n- 第三项\n```\n* 第一项\n* 第二项\n* 第三项\n\n+ 第一项\n+ 第二项\n+ 第三项\n\n- 第一项\n- 第二项\n- 第三项\n\n### 有序列表\n有序列表使用数字并加上 . 号来表示，如：\n```\n1. 第一项\n2. 第二项\n3. 第三项\n```\n1. 第一项\n2. 第二项\n3. 第三项\n\nmarkdown会对数字重新按顺序编号，比如下面代码显示的编号任然是1.2.3.\n```\n1. 第一项\n1. 第二项\n237. 第三项\n```\n1. 第一项\n1. 第二项\n237. 第三项\n\n### 嵌套列表\n列表嵌套只需在子列表中的选项添加四个空格即可：\n```\n1. 第一项：\n    - 第一项嵌套的第一个元素\n    - 第一项嵌套的第二个元素\n2. 第二项：\n    - 第二项嵌套的第一个元素\n    - 第二项嵌套的第二个元素\n```\n1. 第一项：\n    - 第一项嵌套的第一个元素\n    - 第一项嵌套的第二个元素\n2. 第二项：\n    - 第二项嵌套的第一个元素\n    - 第二项嵌套的第二个元素\n\n## 表格\nMarkdown 制作表格使用 | 来分隔不同的单元格，使用 - 来分隔表头和其他行。\n语法格式如下：\n```\n|  表头   | 表头  |\n|  ----  | ----  |\n| 单元格  | 单元格 |\n| 单元格  | 单元格 |\n```\n显示效果：\n|  表头   | 表头  |\n|  ----  | ----  |\n| 单元格  | 单元格 |\n| 单元格  | 单元格 |\n\n设置表格的对齐方式：\n* -: 设置内容和标题栏居右对齐。\n* :- 设置内容和标题栏居左对齐。\n* :-: 设置内容和标题栏居中对齐。\n实例如下：\n```\n| 左对齐的一列 | 右对齐的一列 | 居中对齐的一列 |\n| :----| ----: | :----: |\n| 单元格 | 单元格 | 单元格 |\n| 单元格 | 单元格 | 单元格 |\n```\n 显示效果：\n| 左对齐的一列 | 右对齐的一列 | 居中对齐的一列 |\n| :----| ----: | :----: |\n| 单元格 | 单元格 | 单元格 |\n| 单元格 | 单元格 | 单元格 |\n\n## 代码\n### 代码片段\n代码片段可以用一个或两个反引号\"\\`\"包起来，比如：\n```\nc语言常用`scanf()`和``printf()``函数来输入输出。\n```\n显示为：c语言常用`scanf()`和``printf()``函数来输入输出。\n\n### 代码段落\n代码段落可以用三个反引号\"\\```\"或三个\"\\~~~\"来显示(三个以上也可以)，比如：\n````\n```\n#include <stdio.h>\n\nint main(int argc, int argv[])\n{\n    printf(\"hello world!\\n\");\n    return 0;\n}\n```\n````\n显示为：\n```\n#include <stdio.h>\n\nint main(int argc, int argv[])\n{\n    printf(\"hello world!\\n\");\n    return 0;\n}\n```\n在前面的三个反引号后面加入编程语言的关键字，还可以显示语法高亮，比如：\n````\n```python\nimport numpy as np\n\ndef sigmoid(self, input):\n    return 1.0 / (1.0 + np.exp(-input))\n```\n````\n显示为：\n```python\nimport numpy as np\n\ndef sigmoid(self, input):\n    return 1.0 / (1.0 + np.exp(-input))\n```\n以下为常用的语言的语法关键字\n|语言              |关键字|\n|---------------|--------|\n|C                    |cpp, c|\n|Java             |java|\n|Python        |py, python|\n|Shell             |bash, shell|\n|C#                  |csharp, c#|\n|CSS               |css|\n|JavaScript |js, jscript, javascript|\n|XML              |xml , xhtml, xslt, html|\n|PHP              |php|\n|SQL               |sql|\n\n## 转义字符\n&emsp;&emsp;markdown里有些字符代表特殊功能，比如 * 代表无序列表开始标志，如果只是想显示这些符号，而不使用符号的特殊功能，需要在符号前加一个 \\\\ ，markdown里需要转义的字符如下：\n| |原始字符|显示效果|\n|-|-|-|\n|反斜杠|\\\\\\\\|\\\\|\n|反引号|\\\\\\`|\\`|\n|星号|\\\\\\*|\\*|\n|井号|\\\\\\#|\\#|\n|加号|\\\\\\+|\\+|\n|减号|\\\\\\-|\\-|\n|点|\\\\\\.|\\.|\n|感叹号|\\\\\\!|\\!|\n|大括号|\\\\\\{\\\\\\}|\\{\\}|\n|中括号|\\\\\\[\\\\\\]|\\[\\]|\n|小括号|\\\\\\(\\\\\\)|\\(\\)|\n\n## 其他\n### 目录\n&emsp;&emsp;部分markdown平台支持目录自动生成，比如gridea可以用`@[TOC]`来插入目录，Typora用`[TOC]`插入目录。如果平台不支持的话，可以使用mardown的编辑器来生成，或者使用上面提到的列表和内部链接自己做一个，当然这样比较麻烦，而且无法与标题同步\n\n### 脚注\nmarkdown支持添加脚注，点击脚注后，会跳转到文档的底部的说明位置，语法如下：\n```\n[^关键字]\n[^关键字]: 脚注说明内容\n```\n第一行代码添加了一个脚注，第二行代码对脚注进行了定义，如果对添加的脚注不进行定义的话，脚注无法显示。markdown在显示脚注的时候会按照顺序进行编号，下面是一个例子。\n```\n文本[^第一个脚注]\n[^第一个脚注]: 这里是第一个脚注的说明。\n\n文本[^第二脚注]\n[^第二脚注]: 这里是第二个脚注的说明。\n```\n显示结果：\n文本[^第一个脚注]\n[^第一个脚注]: 这里是第一个脚注的说明。\n\n文本[^第二脚注]\n[^第二脚注]: 这里是第二个脚注的说明。\n\n### 分割线\nmarkdown可以在一行上连用三个或者三个以上的星号、减号、或者下划线来表示分割线。\n```\n***\n---\n___\n```\n显示效果：\n***\n---\n___\n\n### 数学公式和画图\n详细请查看这个链接<https://www.runoob.com/markdown/md-advance.html>\n<br/>\n",
+      "data": {
+        "title": "Markdown语法教程",
+        "date": "2020-02-07 13:00:05",
+        "tags": [],
+        "published": true,
+        "hideInList": false,
+        "feature": "/post-images/markdown-ji-ben-yu-fa.JPG",
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "从网上收集的markdown语法教程",
+      "fileName": "markdown-ji-ben-yu-fa"
+    },
+    {
+      "content": "\n## 🏠 关于本站\n\n## 👨‍💻 博主是谁\n\n## ⛹ 兴趣爱好\n\n## 📬 联系我呀\n",
+      "data": {
+        "title": "关于",
+        "date": "2019-01-25 19:09:48",
+        "tags": [],
+        "published": true,
+        "hideInList": true,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "",
+      "fileName": "about"
+    }
+  ],
+  "tags": [
+    {
+      "index": -1,
+      "name": "opencv",
+      "slug": "opencv",
+      "used": true
+    },
+    {
+      "index": -1,
+      "name": "hust",
+      "slug": "hust",
+      "used": true
+    },
+    {
+      "index": -1,
+      "name": "舞蹈链",
+      "slug": "dance_link",
+      "used": true
+    },
+    {
+      "index": -1,
+      "name": "图像处理",
+      "slug": "syut0Ktn3",
+      "used": true
+    },
+    {
+      "index": 0,
+      "name": "acm",
+      "slug": "acm",
+      "used": true
+    },
+    {
+      "index": -1,
+      "name": "搜索",
+      "slug": "5n4QBd977",
+      "used": true
+    },
+    {
+      "index": -1,
+      "name": "hdu",
+      "slug": "hdu",
+      "used": true
+    },
+    {
+      "name": "Gridea",
+      "slug": "8OiDvzV1t",
+      "used": false
+    }
+  ],
+  "menus": [
+    {
+      "link": "/",
+      "name": "首页",
+      "openType": "Internal"
+    },
+    {
+      "link": "/archives",
+      "name": "归档",
+      "openType": "Internal"
+    },
+    {
+      "link": "/tags",
+      "name": "标签",
+      "openType": "Internal"
+    },
+    {
+      "link": "/post/about",
+      "name": "关于",
+      "openType": "Internal"
+    }
+  ]
+}

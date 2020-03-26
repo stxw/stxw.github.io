@@ -1,0 +1,27 @@
+{
+  "config": {
+    "branch": "master",
+    "domain": "https://nchuxw.github.io/",
+    "email": "",
+    "platform": "github",
+    "privateKey": "",
+    "repository": "nchuxw.github.io",
+    "token": "27e320b9afd97fcfe230455f26b53448b06c79da",
+    "username": "nchuxw"
+  },
+  "comment": {
+    "commentPlatform": "gitalk",
+    "disqusSetting": {
+      "api": "",
+      "apikey": "",
+      "shortname": ""
+    },
+    "gitalkSetting": {
+      "clientId": "badd7fd86499adbb42b2",
+      "clientSecret": "53f0ff7e4b76c0934daf8ab2cbf5359b86930ae1",
+      "owner": "nchuxw",
+      "repository": "nchuxw.github.io"
+    },
+    "showComment": true
+  }
+}

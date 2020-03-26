@@ -1,0 +1,35 @@
+{
+  "config": {
+    "archivesPageSize": 50,
+    "archivesPath": "archives",
+    "dateFormat": "YYYY-MM-DD",
+    "feedCount": 10,
+    "feedFullText": true,
+    "footerInfo": "Powered by <a href=\"https://github.com/getgridea/gridea\" target=\"_blank\">Gridea</a>",
+    "postPageSize": 10,
+    "postPath": "post",
+    "postUrlFormat": "SLUG",
+    "showFeatureImage": true,
+    "siteDescription": "欢迎来到nchuxw的博客",
+    "siteName": "nchuxw",
+    "tagPath": "tag",
+    "tagUrlFormat": "SHORT_ID",
+    "themeName": "pure"
+  },
+  "customConfig": {
+    "caf": "#84fab0",
+    "ccf": "#5f6169",
+    "ccs": "#999fa7",
+    "ctf": "#ffffff",
+    "cts": "#dddddd",
+    "customCss": "",
+    "dribbble": "",
+    "facebook": "",
+    "github": "https://github.com/nchuxw",
+    "isEnabledCustomColor": false,
+    "skin": "green",
+    "twitter": "",
+    "weibo": "",
+    "zhihu": ""
+  }
+}
