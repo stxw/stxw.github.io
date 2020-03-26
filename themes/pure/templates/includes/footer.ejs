@@ -1,0 +1,51 @@
+<div class="site-footer gt-c-content-color-first">
+	<div class="slogan gt-c-content-color-first"><%- themeConfig.siteDescription %></div>
+	<div class="social-container">
+		<% ['github', 'twitter', 'weibo', 'zhihu', 'dribbble', 'facebook'].forEach((item) => { %>
+		<% if (site.customConfig[item]) { %>
+		<a href="<%= site.customConfig[item] %>" target="_blank">
+			<i class="fab fa-<%= item %> gt-c-content-color-first"></i>
+		</a>
+		<% } %>
+		<% }) %>
+	</div>
+	<%- themeConfig.footerInfo %> | <a href="<%= themeConfig.domain %>/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+	//var codes = document.querySelectorAll("pre code");
+	//for (var i = 0; i < codes.length; i++) {
+	//	codes[i].innerHTML = "<ol><li>" + codes[i].innerHTML.replace(/\n/g, "\n</li><li>") + "\n</li></ol>";
+	//}
+	hljs.initHighlightingOnLoad();
+	hljs.initLineNumbersOnLoad();
+</script>
+
+
+<script>
+	var link = document.createElement('link');
+	link.type = 'text/css';
+	link.rel = 'stylesheet';
+	link.href = "<%= themeConfig.domain %>/media/live2d/waifu.css";
+	var head = document.getElementsByTagName('head')[0];
+	head.appendChild(link);
+</script>
+<div class="waifu" style="bottom: -120px;">
+	<div class="waifu-tips"></div>
+	<div style="overflow:hidden;">
+		<canvas id="live2d" width="300px" height="500px" style="top: -120px" class="live2d"></canvas>
+	</div>
+	<div class="waifu-tool">
+		<span class="fui-chat"></span>
+		<!--<span class="fui-user"></span>-->
+		<span class="fui-photo"></span>
+		<span class="fui-home"></span>
+	</div>
+</div>
+<script src="<%= themeConfig.domain %>/media/live2d/jquery.min.js"></script>
+<script src="<%= themeConfig.domain %>/media/live2d/live2d.js"></script>
+<script src="<%= themeConfig.domain %>/media/live2d/model.js"></script>
+<script src="<%= themeConfig.domain %>/media/live2d/message.js"></script>
+<script>
+	loadlive2d('live2d', "<%= themeConfig.domain %>/media/" + models[0].models[0].link);
+</script>
