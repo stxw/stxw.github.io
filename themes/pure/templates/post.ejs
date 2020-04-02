@@ -65,4 +65,10 @@
     </div>
 </div>
 </body>
+<script>
+	var post_links =document.getElementsByClassName("post-content")[0].getElementsByTagName("a");
+	for(var i = 0; i < post_links.length; i++){
+		post_links[i].setAttribute("target","_blank");
+	}
+</script>
 </html>
