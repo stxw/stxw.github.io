@@ -140,12 +140,6 @@ const generateOverride = (params = {}) => {
         .gt-post-content code {
 		  background: ${colors["accent-color-second"][params.skin]}!important;
         }
-        `
-        +
-        `
-        .post-list-container .post{
-        	background: #fbd6d6;
-        }
         `;
     if (params.customCss) {
         result += `
