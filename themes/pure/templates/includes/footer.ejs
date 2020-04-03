@@ -13,10 +13,6 @@
 </div>
 
 <script>
-	//var codes = document.querySelectorAll("pre code");
-	//for (var i = 0; i < codes.length; i++) {
-	//	codes[i].innerHTML = "<ol><li>" + codes[i].innerHTML.replace(/\n/g, "\n</li><li>") + "\n</li></ol>";
-	//}
 	hljs.initHighlightingOnLoad();
 	hljs.initLineNumbersOnLoad();
 </script>
@@ -30,10 +26,10 @@
 	var head = document.getElementsByTagName('head')[0];
 	head.appendChild(link);
 </script>
-<div class="waifu" style="bottom: -120px;">
+<div class="waifu">
 	<div class="waifu-tips"></div>
 	<div style="overflow:hidden;">
-		<canvas id="live2d" width="300px" height="500px" style="top: -120px" class="live2d"></canvas>
+		<canvas id="live2d" class="live2d" width="300" height="370" ></canvas>
 	</div>
 	<div class="waifu-tool">
 		<span class="fui-chat"></span>
