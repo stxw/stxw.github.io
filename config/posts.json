@@ -1,6 +1,26 @@
 {
   "posts": [
     {
+      "content": "简单的并查集\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=2236>\n\n# 题意\n&emsp;&emsp;网断了！要把网络修好，电脑是通过无线来通信的，通信范围是d。也就是如果两台电脑没坏，且之间的距离小于d，那这两台电脑就可以相互通信。\n&emsp;&emsp;一共有n台电脑，初始时每台电脑都是坏的，首先给出每台电脑的坐标，然后每次可以进行两种操作：\n&emsp;&emsp;&emsp;&emsp;1. 'O'操作，修好一台电脑\n&emsp;&emsp;&emsp;&emsp;2. 'S'操作，测试两台电脑是否可以通信\n&emsp;&emsp;输出所有的测试结果，如果可以通信输出“SUCCESS”，否则输出“FAIL”。\n\n# 题目解析\n&emsp;&emsp;简单的并查集问题，对于'O'操作，遍历所有已经修好的电脑，如果之间的距离小于d，就合并。对于'S'操作，判断两台电脑是否在一个集合里。\n&emsp;&emsp;注意'O'和'S'的输入，会接收终端的换行符。\n\n# 代码\n```cpp\n/* http://poj.org/problem?id=2236 */\n/* AC 3329MS 328K */\n#include <stdio.h>\n#include <math.h>\n\nconst int MAX_N = 1000 + 10;\n\ntypedef struct point\n{\n\tint x, y;\n\tdouble distance(point p)\n\t{\n\t\treturn sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y));\n\t}\n} point;\n\nint find_root(int set[], int i)\n{\n\tif(set[i] != i)\n\t{\n\t\tset[i] = find_root(set, set[i]);\n\t}\n\treturn set[i];\n}\n\nint main()\n{\n\tint n, d;\n\tchar opt;\n\tint i, j, a, b, ar, br;\n\tint set[MAX_N], book[MAX_N];\n\tpoint p[MAX_N];\n\n\tscanf(\"%d %d\", &n, &d);\n\tfor(i = 1; i <= n; i++)\n\t{\n\t\tscanf(\"%d %d\", &p[i].x, &p[i].y);\n\t\tset[i] = i;\n\t\tbook[i] = 0;\n\t}\n\twhile(scanf(\"%c\", &opt) != EOF)\n\t{\n\t\tif(opt == 'O')\n\t\t{\n\t\t\tscanf(\"%d\", &a);\n\t\t\tar = find_root(set, a);\n\t\t\tfor(i = 1; i <= n; i++)\n\t\t\t{\n\t\t\t\tif(book[i] == 1 && p[i].distance(p[a]) <= (double)d)\n\t\t\t\t{\n\t\t\t\t\tbr = find_root(set, i);\n\t\t\t\t\tset[br] = ar;\n\t\t\t\t}\n\t\t\t}\n\t\t\tbook[a] = 1;\n\t\t}\n\t\telse if(opt == 'S')\n\t\t{\n\t\t\tscanf(\"%d %d\", &a, &b);\n\t\t\tif(book[a] == 0 || book[b] == 0)\n\t\t\t{\n\t\t\t\tprintf(\"FAIL\\n\");\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tar = find_root(set, a);\n\t\t\tbr = find_root(set, b);\n\t\t\tif(ar == br)\n\t\t\t{\n\t\t\t\tprintf(\"SUCCESS\\n\");\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tprintf(\"FAIL\\n\");\n\t\t\t}\n\t\t}\n\t}\n\treturn 0;\n}\n\n```\n",
+      "data": {
+        "title": "POJ-2236 Wireless Network",
+        "date": "2020-04-03 10:31:09",
+        "tags": [
+          "acm",
+          "poj",
+          "并查集"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "简单的并查集",
+      "fileName": "poj-2236-wireless-network"
+    },
+    {
       "content": "单源最短路径变形-dijkstra算法\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=2253>\n\n# 题意\n&emsp;&emsp;湖上有n个石头，青蛙Freddy坐在1号石头上，青蛙Fiona坐在2号石头上，青蛙Freddy想要到Fiona的2号石头上（应该是只绅士青蛙）。但是湖水被污染了，他要尽量避免游泳，因此他需要利用其他石头来中转，与普通的路径长度定义不同，这里路径的长度定义为相邻两个石头距离的最大值。题目要求找出一条最短的路径，输出路径长度。\n\n# 题目解析\n&emsp;&emsp;解题方法与使用dijkstra算法解决普通单源最短路径问题类似，但是因为路径长度的定义不同，所以在初始化起点到其他节点的路径长度，和更新到其他点的最短路径的时候需要改一下。\n\n# 代码\n```cpp\n/* http://poj.org/problem?id=2253 */\n/* AC 0MS 336K */\n#include <stdio.h>\n#include <math.h>\n\nconst int MAX_N = 200 + 10;\n\ntypedef struct point\n{\n\tint x, y;\n\tdouble distance(point p)\n\t{\n\t\treturn sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y));\n\t}\n} point;\n\nint n;\npoint p[MAX_N];\n\ndouble dijkstra(int start, int end)\n{\n\tint i, j, k;\n\tdouble min, max;\n\tint book[MAX_N];\n\tdouble dist[MAX_N];\n\n\tfor(i = 0; i <= n; i++)\n\t{\n\t\tdist[i] = p[start].distance(p[i]);\n\t\tbook[i] = 0;\n\t}\n\tdist[start] = 0.0;\n\tbook[start] = 1;\n\n\tfor(i = 1; i < n; i++)\n\t{\n\t\tmin = 1e10;\n\t\tfor(j = 0; j < n; j++)\n\t\t{\n\t\t\tif(book[j] == 0 && dist[j] < min)\n\t\t\t{\n\t\t\t\tmin = dist[j];\n\t\t\t\tk = j;\n\t\t\t}\n\t\t}\n\t\tif(k == end)\n\t\t{\n\t\t\treturn dist[k];\n\t\t}\n\t\tbook[k] = 1;\n\t\tfor(j = 0; j < n; j++)\n\t\t{\n\t\t\tif(book[j] == 0)\n\t\t\t{\n\t\t\t\t/* 计算起点经过k点到达j点的路径最大值 */\n\t\t\t\tmax = p[k].distance(p[j]);\n\t\t\t\tif(dist[k] > max)\n\t\t\t\t{\n\t\t\t\t\tmax = dist[k];\n\t\t\t\t}\n\t\t\t\tif(dist[j] > max)\n\t\t\t\t{\n\t\t\t\t\tdist[j] = max;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\treturn -1;\n}\n\nint main()\n{\n\tint i, t;\n\tdouble ans;\n\n\tfor(t = 1; scanf(\"%d\", &n) != EOF && n >= 2; t++)\n\t{\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tscanf(\"%d %d\", &p[i].x, &p[i].y);\n\t\t}\n\t\tans = dijkstra(0, 1);\n\t\tprintf(\"Scenario #%d\\n\", t);\n\t\tprintf(\"Frog Distance = %.3f\\n\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```",
       "data": {
         "title": "POJ-2253 Frogger",
@@ -349,6 +369,12 @@
     }
   ],
   "tags": [
+    {
+      "index": -1,
+      "name": "并查集",
+      "slug": "ssset",
+      "used": true
+    },
     {
       "index": -1,
       "name": "最短路",
