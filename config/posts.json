@@ -1,6 +1,26 @@
 {
   "posts": [
     {
+      "content": "简单的并查集\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=1611>\n\n# 题意\n&emsp;&emsp;有n个学生和m个团队，学生编号为0～n，一个学生可以属于多个团体。团体内如果有一个学生被怀疑感染了病毒，那么团体内所有学生都会被怀疑感染了病毒，初始时假设只有0号学生被怀疑感染了病毒，问一共有多少人会被怀疑感染了病毒。\n\n# 题目解析\n&emsp;&emsp;可以用并查集来解决，首先0号学生属于0号集合，对于每个团体，找到所有成员所在的集合编号，如果有一个成员属于0号集合，则把所有成员都合并到0号集合，如果没有成员属于0号集合，则将所有成员所属的集合合并成一个集合，集合编号任意。\n\n# 代码\n```cpp\n/* http://poj.org/problem?id=1611 */\n/* AC 16MS 464K */\n#include <stdio.h>\n\nconst int MAX_N = 30000 + 10;\nconst int MAX_M = 500 + 10;\n\nint find_root(int set[], int i)\n{\n\tif(set[i] != i)\n\t{\n\t\tset[i] = find_root(set, set[i]);\n\t}\n\treturn set[i];\n}\n\nint main()\n{\n\tint n, m;\n\tint i, j, k, num, ar, br, ans;\n\tint set[MAX_N];\n\n\twhile(scanf(\"%d %d\", &n, &m) != EOF && (n != 0 || m != 0))\n\t{\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tset[i] = i;\n\t\t}\n\t\tfor(i = 0; i < m; i++)\n\t\t{\n\t\t\tscanf(\"%d\", &k);\n\t\t\tif(k != 0)\n\t\t\t{\n\t\t\t\tscanf(\"%d\", &num);\n\t\t\t\tar = find_root(set, num);\n\t\t\t}\n\t\t\tfor(j = 1; j < k; j++)\n\t\t\t{\n\t\t\t\tscanf(\"%d\", &num);\n\t\t\t\tbr = find_root(set, num);\n\t\t\t\tif(br == 0)\n\t\t\t\t{\n\t\t\t\t\tset[ar] = br;\n\t\t\t\t\tar = 0;\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t{\n\t\t\t\t\tset[br] = ar;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tans = 0;\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tar = find_root(set, i);\n\t\t\tif(ar == 0)\n\t\t\t{\n\t\t\t\tans++;\n\t\t\t}\n\t\t}\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```",
+      "data": {
+        "title": "POJ-1611 The Suspects",
+        "date": "2020-04-07 18:06:14",
+        "tags": [
+          "acm",
+          "poj",
+          "并查集"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "简单的并查集",
+      "fileName": "poj-1611-the-suspects"
+    },
+    {
       "content": "简单的并查集\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=2236>\n\n# 题意\n&emsp;&emsp;网断了！要把网络修好，电脑是通过无线来通信的，通信范围是d。也就是如果两台电脑没坏，且之间的距离小于d，那这两台电脑就可以相互通信。\n&emsp;&emsp;一共有n台电脑，初始时每台电脑都是坏的，首先给出每台电脑的坐标，然后每次可以进行两种操作：\n&emsp;&emsp;&emsp;&emsp;1. 'O'操作，修好一台电脑\n&emsp;&emsp;&emsp;&emsp;2. 'S'操作，测试两台电脑是否可以通信\n&emsp;&emsp;输出所有的测试结果，如果可以通信输出“SUCCESS”，否则输出“FAIL”。\n\n# 题目解析\n&emsp;&emsp;简单的并查集问题，对于'O'操作，遍历所有已经修好的电脑，如果之间的距离小于d，就合并。对于'S'操作，判断两台电脑是否在一个集合里。\n&emsp;&emsp;注意'O'和'S'的输入，会接收终端的换行符。\n\n# 代码\n```cpp\n/* http://poj.org/problem?id=2236 */\n/* AC 3329MS 328K */\n#include <stdio.h>\n#include <math.h>\n\nconst int MAX_N = 1000 + 10;\n\ntypedef struct point\n{\n\tint x, y;\n\tdouble distance(point p)\n\t{\n\t\treturn sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y));\n\t}\n} point;\n\nint find_root(int set[], int i)\n{\n\tif(set[i] != i)\n\t{\n\t\tset[i] = find_root(set, set[i]);\n\t}\n\treturn set[i];\n}\n\nint main()\n{\n\tint n, d;\n\tchar opt;\n\tint i, j, a, b, ar, br;\n\tint set[MAX_N], book[MAX_N];\n\tpoint p[MAX_N];\n\n\tscanf(\"%d %d\", &n, &d);\n\tfor(i = 1; i <= n; i++)\n\t{\n\t\tscanf(\"%d %d\", &p[i].x, &p[i].y);\n\t\tset[i] = i;\n\t\tbook[i] = 0;\n\t}\n\twhile(scanf(\"%c\", &opt) != EOF)\n\t{\n\t\tif(opt == 'O')\n\t\t{\n\t\t\tscanf(\"%d\", &a);\n\t\t\tar = find_root(set, a);\n\t\t\tfor(i = 1; i <= n; i++)\n\t\t\t{\n\t\t\t\tif(book[i] == 1 && p[i].distance(p[a]) <= (double)d)\n\t\t\t\t{\n\t\t\t\t\tbr = find_root(set, i);\n\t\t\t\t\tset[br] = ar;\n\t\t\t\t}\n\t\t\t}\n\t\t\tbook[a] = 1;\n\t\t}\n\t\telse if(opt == 'S')\n\t\t{\n\t\t\tscanf(\"%d %d\", &a, &b);\n\t\t\tif(book[a] == 0 || book[b] == 0)\n\t\t\t{\n\t\t\t\tprintf(\"FAIL\\n\");\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t\tar = find_root(set, a);\n\t\t\tbr = find_root(set, b);\n\t\t\tif(ar == br)\n\t\t\t{\n\t\t\t\tprintf(\"SUCCESS\\n\");\n\t\t\t}\n\t\t\telse\n\t\t\t{\n\t\t\t\tprintf(\"FAIL\\n\");\n\t\t\t}\n\t\t}\n\t}\n\treturn 0;\n}\n\n```\n",
       "data": {
         "title": "POJ-2236 Wireless Network",
