@@ -1,6 +1,26 @@
 {
   "posts": [
     {
+      "content": "最小生成树问题-Kruskal算法\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=1251>\n\n# 题意\n&emsp;&emsp;给出地图上的n个村庄，村庄之间存在一些双向路径，每条路径有一个权值。需要选出一些路径，使得所有的村庄之间可以相互连通，且选出路径的权值和要最小，求出最小的权值和。\n\n# 题目解析\n&emsp;&emsp;最小生成树的模板题，可以用Prim算法或者Kruskal算法求解，这里用的是Kruskal算法。\n&emsp;&emsp;有个奇怪的问题，用c语言的`scanf()`来输入字符的话会Runtime Error，用c++的cin就没问题。\n\n# 代码\n```cpp\n/* http://poj.org/problem?id=1251 */\n/* AC 0MS 716K */\n#include <stdio.h>\n#include <iostream>\n#include <algorithm>\n\nusing namespace std;\n\nconst int MAX_N = 30;\n\ntypedef struct edge\n{\n\tint a, b, w;\n} edge;\n\nint cmp(edge a, edge b)\n{\n\treturn a.w < b.w;\n}\n\nint find_root(int set[], int i)\n{\n\tif(set[i] != i)\n\t{\n\t\tset[i] = find_root(set, set[i]);\n\t}\n\treturn set[i];\n}\n\nint kruskal(edge e[], int n, int m)\n{\n\tint i, k, ar, br;\n\tint ans = 0;\n\tint set[MAX_N];\n\n\tsort(e, e + m, cmp);\n\tfor(i = 0; i < MAX_N; i++)\n\t{\n\t\tset[i] = i;\n\t}\n\tk = 1;\n\tfor(i = 0; i < m && k < n; i++)\n\t{\n\t\tar = find_root(set, e[i].a);\n\t\tbr = find_root(set, e[i].b);\n\t\tif(ar != br)\n\t\t{\n\t\t\tset[ar] = br;\n\t\t\tans += e[i].w;\n\t\t\tk++;\n\t\t}\n\t}\n\tif(k < n)\n\t{\n\t\treturn -1;\n\t}\n\treturn ans;\n}\n\nint main()\n{\n\tint n, m;\n\tint i, j, k, w, ans;\n\tchar a, b;\n\tedge e[MAX_N * MAX_N];\n\n\t// while(scanf(\"%d\", &n) != EOF && n > 0)\n\twhile(cin >> n && n > 0)\n\t{\n\t\tm = 0;\n\t\tfor(i = 0; i < n - 1; i++)\n\t\t{\n\t\t\t// getchar();\n\t\t\t// scanf(\"%c %d\", &a, &k);\n\t\t\tcin >> a >> k;\n\t\t\tfor(j = 0; j < k; j++)\n\t\t\t{\n\t\t\t\t// getchar();\n\t\t\t\t// scanf(\"%c %d\", &b, &w);\n\t\t\t\tcin >> b >> w;\n\t\t\t\te[m] = (edge){a - 'A', b - 'A', w};\n\t\t\t\tm++;\n\t\t\t}\n\t\t}\n\n\t\tans = kruskal(e, n, m);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n/*\n9\nA 2 B 12 I 25\nB 3 C 10 H 40 I 8\nC 2 D 18 G 55\nD 1 E 44\nE 2 F 60 G 38\nF 0\nG 1 H 35\nH 1 I 35\n3\nA 2 B 10 C 40\nB 1 C 20\n0\n\n*/\n\n```",
+      "data": {
+        "title": "POJ-1251 Jungle Roads",
+        "date": "2020-04-08 16:47:21",
+        "tags": [
+          "acm",
+          "poj",
+          "最小生成树"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "最小生成树问题-Kruskal算法",
+      "fileName": "poj-1251-jungle-roads"
+    },
+    {
       "content": "简单的并查集\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=1611>\n\n# 题意\n&emsp;&emsp;有n个学生和m个团队，学生编号为0～n，一个学生可以属于多个团体。团体内如果有一个学生被怀疑感染了病毒，那么团体内所有学生都会被怀疑感染了病毒，初始时假设只有0号学生被怀疑感染了病毒，问一共有多少人会被怀疑感染了病毒。\n\n# 题目解析\n&emsp;&emsp;可以用并查集来解决，首先0号学生属于0号集合，对于每个团体，找到所有成员所在的集合编号，如果有一个成员属于0号集合，则把所有成员都合并到0号集合，如果没有成员属于0号集合，则将所有成员所属的集合合并成一个集合，集合编号任意。\n\n# 代码\n```cpp\n/* http://poj.org/problem?id=1611 */\n/* AC 16MS 464K */\n#include <stdio.h>\n\nconst int MAX_N = 30000 + 10;\nconst int MAX_M = 500 + 10;\n\nint find_root(int set[], int i)\n{\n\tif(set[i] != i)\n\t{\n\t\tset[i] = find_root(set, set[i]);\n\t}\n\treturn set[i];\n}\n\nint main()\n{\n\tint n, m;\n\tint i, j, k, num, ar, br, ans;\n\tint set[MAX_N];\n\n\twhile(scanf(\"%d %d\", &n, &m) != EOF && (n != 0 || m != 0))\n\t{\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tset[i] = i;\n\t\t}\n\t\tfor(i = 0; i < m; i++)\n\t\t{\n\t\t\tscanf(\"%d\", &k);\n\t\t\tif(k != 0)\n\t\t\t{\n\t\t\t\tscanf(\"%d\", &num);\n\t\t\t\tar = find_root(set, num);\n\t\t\t}\n\t\t\tfor(j = 1; j < k; j++)\n\t\t\t{\n\t\t\t\tscanf(\"%d\", &num);\n\t\t\t\tbr = find_root(set, num);\n\t\t\t\tif(br == 0)\n\t\t\t\t{\n\t\t\t\t\tset[ar] = br;\n\t\t\t\t\tar = 0;\n\t\t\t\t}\n\t\t\t\telse\n\t\t\t\t{\n\t\t\t\t\tset[br] = ar;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tans = 0;\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tar = find_root(set, i);\n\t\t\tif(ar == 0)\n\t\t\t{\n\t\t\t\tans++;\n\t\t\t}\n\t\t}\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```",
       "data": {
         "title": "POJ-1611 The Suspects",
@@ -389,6 +409,12 @@
     }
   ],
   "tags": [
+    {
+      "index": -1,
+      "name": "最小生成树",
+      "slug": "zui-xiao-sheng-cheng-shu",
+      "used": true
+    },
     {
       "index": -1,
       "name": "并查集",
