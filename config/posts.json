@@ -1,6 +1,26 @@
 {
   "posts": [
     {
+      "content": "最小生成树问题\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=1287>\n\n# 题意\n&emsp;&emsp;给出P个节点和R条边的无向图，求最小生成树。\n\n# 题目解析\n&emsp;&emsp;最小生成树的模板题，可以用Prim算法或者Kruskal算法求解，Prim算法适合稠密图（点少边多），Kruskal算法适合稀疏图（点多边少）。\n\n# 代码\nPrim算法\n```cpp\n/* http://poj.org/problem?id=1287 */\n/* AC 16MS 380K */\n#include <stdio.h>\n#include <string.h>\n\nconst int MAX_N = 50 + 10;\n\nint prim(int mp[][MAX_N], int n)\n{\n\tint i, j, k, min, ans;\n\tint book[MAX_N];\n\tint tree[MAX_N];\n\tint dist[MAX_N];\n\n\tfor(i = 1; i < n; i++)\n\t{\n\t\tbook[i] = 0;\n\t\ttree[i] = 0;\n\t\tdist[i] = mp[0][i];\n\t}\n\tbook[0] = 1;\n\ttree[0] = -1;\n\n\tans = 0;\n\tfor(i = 1; i < n; i++)\n\t{\n\t\tmin = 0x1f1f1f1f;\n\t\tk = -1;\n\t\tfor(j = 1; j < n; j++)\n\t\t{\n\t\t\tif(book[j] == 0 && min > dist[j])\n\t\t\t{\n\t\t\t\tk = j;\n\t\t\t\tmin = dist[j];\n\t\t\t}\n\t\t}\n\t\tif(k == -1)\n\t\t{\n\t\t\treturn -1;\n\t\t}\n\t\tbook[k] = 1;\n\t\tans += mp[tree[k]][k];\n\t\tfor(j = 1; j < n; j++)\n\t\t{\n\t\t\tif(book[j] == 0 && mp[k][j] < dist[j])\n\t\t\t{\n\t\t\t\tdist[j] = mp[k][j];\n\t\t\t\ttree[j] = k;\n\t\t\t}\n\t\t}\n\t}\n\treturn ans;\n}\n\nint main()\n{\n\tint n, m;\n\tint i, a, b, w, ans;\n\tint mp[MAX_N][MAX_N];\n\n\twhile(scanf(\"%d\", &n) != EOF && n > 0)\n\t{\n\t\tscanf(\"%d\", &m);\n\t\tmemset(mp, 0x1f, sizeof(mp));\n\t\tfor(i = 0; i < m; i++)\n\t\t{\n\t\t\tscanf(\"%d %d %d\", &a, &b, &w);\n\t\t\ta -= 1;\n\t\t\tb -= 1;\n\t\t\tif(w < mp[a][b])\n\t\t\t{\n\t\t\t\tmp[a][b] = w;\n\t\t\t\tmp[b][a] = w;\n\t\t\t}\n\t\t}\n\n\t\tans = prim(mp, n);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```\n\nKruskal算法\n```cpp\n/* http://poj.org/problem?id=1287 */\n/* AC 16MS 400K */\n#include <stdio.h>\n#include <algorithm>\n\nusing namespace std;\n\nconst int MAX_N = 50 + 10;\n\ntypedef struct edge\n{\n\tint a, b, w;\n} edge;\n\nint cmp(edge a, edge b)\n{\n\treturn a.w < b.w;\n}\n\nint find_root(int set[], int i)\n{\n\tif(set[i] != i)\n\t{\n\t\tset[i] = find_root(set, set[i]);\n\t}\n\treturn set[i];\n}\n\nint kruskal(edge e[], int n, int m)\n{\n\tint i, k, ar, br;\n\tint ans = 0;\n\tint set[MAX_N];\n\n\tsort(e, e + m, cmp);\n\tfor(i = 0; i < MAX_N; i++)\n\t{\n\t\tset[i] = i;\n\t}\n\tk = 1;\n\tfor(i = 0; i < m && k < n; i++)\n\t{\n\t\tar = find_root(set, e[i].a);\n\t\tbr = find_root(set, e[i].b);\n\t\tif(ar != br)\n\t\t{\n\t\t\tset[ar] = br;\n\t\t\tans += e[i].w;\n\t\t\tk++;\n\t\t}\n\t}\n\tif(k < n)\n\t{\n\t\treturn -1;\n\t}\n\treturn ans;\n}\n\nint n, m;\nedge e[MAX_N * MAX_N];\n\nint main()\n{\n\tint i, a, b, w, ans;\n\n\twhile(scanf(\"%d\", &n) != EOF && n > 0)\n\t{\n\t\tscanf(\"%d\", &m);\n\t\tfor(i = 0; i < m; i++)\n\t\t{\n\t\t\tscanf(\"%d %d %d\", &a, &b, &w);\n\t\t\te[i] = (edge){a, b, w};\n\t\t}\n\n\t\tans = kruskal(e, n, m);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```",
+      "data": {
+        "title": "POJ-1287 Networking",
+        "date": "2020-04-10 08:57:52",
+        "tags": [
+          "acm",
+          "poj",
+          "最小生成树"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "最小生成树问题",
+      "fileName": "poj-1287-networking"
+    },
+    {
       "content": "最小生成树问题-Kruskal算法\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=1251>\n\n# 题意\n&emsp;&emsp;给出地图上的n个村庄，村庄之间存在一些双向路径，每条路径有一个权值。需要选出一些路径，使得所有的村庄之间可以相互连通，且选出路径的权值和要最小，求出最小的权值和。\n\n# 题目解析\n&emsp;&emsp;最小生成树的模板题，可以用Prim算法或者Kruskal算法求解，这里用的是Kruskal算法。\n&emsp;&emsp;有个奇怪的问题，用c语言的`scanf()`来输入字符的话会Runtime Error，用c++的cin就没问题。\n\n# 代码\n```cpp\n/* http://poj.org/problem?id=1251 */\n/* AC 0MS 716K */\n#include <stdio.h>\n#include <iostream>\n#include <algorithm>\n\nusing namespace std;\n\nconst int MAX_N = 30;\n\ntypedef struct edge\n{\n\tint a, b, w;\n} edge;\n\nint cmp(edge a, edge b)\n{\n\treturn a.w < b.w;\n}\n\nint find_root(int set[], int i)\n{\n\tif(set[i] != i)\n\t{\n\t\tset[i] = find_root(set, set[i]);\n\t}\n\treturn set[i];\n}\n\nint kruskal(edge e[], int n, int m)\n{\n\tint i, k, ar, br;\n\tint ans = 0;\n\tint set[MAX_N];\n\n\tsort(e, e + m, cmp);\n\tfor(i = 0; i < MAX_N; i++)\n\t{\n\t\tset[i] = i;\n\t}\n\tk = 1;\n\tfor(i = 0; i < m && k < n; i++)\n\t{\n\t\tar = find_root(set, e[i].a);\n\t\tbr = find_root(set, e[i].b);\n\t\tif(ar != br)\n\t\t{\n\t\t\tset[ar] = br;\n\t\t\tans += e[i].w;\n\t\t\tk++;\n\t\t}\n\t}\n\tif(k < n)\n\t{\n\t\treturn -1;\n\t}\n\treturn ans;\n}\n\nint main()\n{\n\tint n, m;\n\tint i, j, k, w, ans;\n\tchar a, b;\n\tedge e[MAX_N * MAX_N];\n\n\t// while(scanf(\"%d\", &n) != EOF && n > 0)\n\twhile(cin >> n && n > 0)\n\t{\n\t\tm = 0;\n\t\tfor(i = 0; i < n - 1; i++)\n\t\t{\n\t\t\t// getchar();\n\t\t\t// scanf(\"%c %d\", &a, &k);\n\t\t\tcin >> a >> k;\n\t\t\tfor(j = 0; j < k; j++)\n\t\t\t{\n\t\t\t\t// getchar();\n\t\t\t\t// scanf(\"%c %d\", &b, &w);\n\t\t\t\tcin >> b >> w;\n\t\t\t\te[m] = (edge){a - 'A', b - 'A', w};\n\t\t\t\tm++;\n\t\t\t}\n\t\t}\n\n\t\tans = kruskal(e, n, m);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n/*\n9\nA 2 B 12 I 25\nB 3 C 10 H 40 I 8\nC 2 D 18 G 55\nD 1 E 44\nE 2 F 60 G 38\nF 0\nG 1 H 35\nH 1 I 35\n3\nA 2 B 10 C 40\nB 1 C 20\n0\n\n*/\n\n```",
       "data": {
         "title": "POJ-1251 Jungle Roads",
