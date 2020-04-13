@@ -1,6 +1,26 @@
 {
   "posts": [
     {
+      "content": "线段树模板题，求区间最大值\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://acm.hdu.edu.cn/showproblem.php?pid=1754>\n\n# 题意\n&emsp;&emsp;中文题，不解释\n\n# 题目解析\n&emsp;&emsp;跟上一题一样，还是线段树的模板题，只不过把求区间和改成了求区间最大值。\n\n# 代码\n```cpp\n/* http://acm.hdu.edu.cn/showproblem.php?pid=1754 */\n/* AC 702MS 4060K */\n#include <stdio.h>\n\nconst int MAX_N = 200000 + 10;\n\nint num[MAX_N];\nint seg_tree[4 * MAX_N];\n\nint build(int root, int left, int right)\n{\n\tint a, b, mid;\n\n\tif(left == right - 1)\n\t{\n\t\tseg_tree[root] = num[left];\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\ta = build(root * 2, left, mid);\n\t\tb = build(root * 2 + 1, mid, right);\n\t\tseg_tree[root] = (a > b) ? a : b;\n\t}\n\treturn seg_tree[root];\n}\n\nint update(int root, int left, int right, int index, int val)\n{\n\tint a, b, mid;\n\t\n\tif(left == right - 1)\n\t{\n\t\tseg_tree[root] = val;\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\tif(index < mid)\n\t\t{\n\t\t\tseg_tree[root * 2] = update(root * 2, left, mid, index, val);\n\t\t}\n\t\telse\n\t\t{\n\t\t\tseg_tree[root * 2 + 1] = update(root * 2 + 1, mid, right, index, val);\n\t\t}\n\t\ta = seg_tree[root * 2];\n\t\tb = seg_tree[root * 2 + 1];\n\t\tseg_tree[root] = (a > b) ? a : b;\n\t}\n\treturn seg_tree[root];\n}\n\nint query(int root, int left, int right, int ql, int qr)\n{\n\tint a, b, mid;\n\n\tif(qr <= left || right <= ql)\n\t{\n\t\treturn 0;\n\t}\n\telse if(ql <= left && right <= qr)\n\t{\n\t\treturn seg_tree[root];\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\ta = query(root * 2, left, mid, ql, qr);\n\t\tb = query(root * 2 + 1, mid, right, ql, qr);\n\t\treturn (a > b) ? a : b;\n\t}\n}\n\nint main()\n{\n\tint n, m, x, y;\n\tint i, ans;\n\tchar req;\n\n\twhile(scanf(\"%d %d\", &n, &m) != EOF)\n\t{\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tscanf(\"%d\", &num[i]);\n\t\t}\n\t\tbuild(1, 0, n);\n\n\t\tfor(i = 0; i < m; i++)\n\t\t{\n\t\t\tgetchar();\n\t\t\treq = getchar();\n\t\t\tscanf(\"%d %d\", &x, &y);\n\t\t\tx -= 1;\n\t\t\tif(req == 'Q')\n\t\t\t{\n\t\t\t\tans = query(1, 0, n, x, y);\n\t\t\t\tprintf(\"%d\\n\", ans);\n\t\t\t}\n\t\t\telse if(req == 'U')\n\t\t\t{\n\t\t\t\tupdate(1, 0, n, x, y);\n\t\t\t}\n\t\t}\n\t}\n\treturn 0;\n}\n\n```",
+      "data": {
+        "title": "HDU-1754 I Hate It",
+        "date": "2020-04-13 15:56:34",
+        "tags": [
+          "acm",
+          "hdu",
+          "线段树"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "线段树模板题，求区间最大值",
+      "fileName": "hdu-1754-i-hate-it"
+    },
+    {
       "content": "线段树模板题\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://acm.hdu.edu.cn/showproblem.php?pid=1166>\n\n# 题意\n&emsp;&emsp;又是一道可以偷懒的中文题，开心！\n\n# 题目解析\n&emsp;&emsp;这是一道线段树的模板题，而且不加延迟标记也能AC。这题也可以用树状数组来做。\n\n# 代码\n```cpp\n/* http://acm.hdu.edu.cn/showproblem.php?pid=1166 */\n/* AC 249MS 1928K */\n#include <stdio.h>\n\nconst int MAX_N = 50000 + 10;\n\nint num[MAX_N];\nint seg_tree[4 * MAX_N];\n\nint build(int root, int left, int right)\n{\n\tint a, b, mid;\n\n\tif(left == right - 1)\n\t{\n\t\tseg_tree[root] = num[left];\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\ta = build(root * 2, left, mid);\n\t\tb = build(root * 2 + 1, mid, right);\n\t\tseg_tree[root] = a + b;\n\t}\n\treturn seg_tree[root];\n}\n\nint update(int root, int left, int right, int index, int add)\n{\n\tint mid;\n\t\n\tif(left == right - 1)\n\t{\n\t\tseg_tree[root] += add;\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\tif(index < mid)\n\t\t{\n\t\t\tseg_tree[root * 2] = update(root * 2, left, mid, index, add);\n\t\t}\n\t\telse\n\t\t{\n\t\t\tseg_tree[root * 2 + 1] = update(root * 2 + 1, mid, right, index, add);\n\t\t}\n\t\tseg_tree[root] = seg_tree[root * 2] + seg_tree[root * 2 + 1];\n\t}\n\treturn seg_tree[root];\n}\n\nint query(int root, int left, int right, int ql, int qr)\n{\n\tint a, b, mid;\n\n\tif(qr <= left || right <= ql)\n\t{\n\t\treturn 0;\n\t}\n\telse if(ql <= left && right <= qr)\n\t{\n\t\treturn seg_tree[root];\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\ta = query(root * 2, left, mid, ql, qr);\n\t\tb = query(root * 2 + 1, mid, right, ql, qr);\n\t\treturn a + b;\n\t}\n}\n\nint main()\n{\n\tint cas, t, n, x, y;\n\tint i, ans;\n\tchar req[20];\n\n\tscanf(\"%d\", &t);\n\tfor(cas = 1; cas <= t; cas++)\n\t{\n\t\tscanf(\"%d\", &n);\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tscanf(\"%d\", &num[i]);\n\t\t}\n\t\tbuild(1, 0, n);\n\n\t\tprintf(\"Case %d:\\n\", cas);\n\t\twhile(getchar(), scanf(\"%s\", req) != EOF)\n\t\t{\n\t\t\tif(req[0] == 'E')\n\t\t\t{\n\t\t\t\tbreak;\n\t\t\t}\n\t\t\tscanf(\"%d %d\", &x, &y);\n\t\t\tx -= 1;\n\t\t\tif(req[0] == 'Q')\n\t\t\t{\n\t\t\t\tans = query(1, 0, n, x, y);\n\t\t\t\tprintf(\"%d\\n\", ans);\n\t\t\t}\n\t\t\telse if(req[0] == 'A')\n\t\t\t{\n\t\t\t\tupdate(1, 0, n, x, y);\n\t\t\t}\n\t\t\telse if(req[0] == 'S')\n\t\t\t{\n\t\t\t\tupdate(1, 0, n, x, -y);\n\t\t\t}\n\t\t}\n\t}\n\treturn 0;\n}\n\n```",
       "data": {
         "title": "HDU-1166 敌兵布阵",
