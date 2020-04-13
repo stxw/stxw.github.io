@@ -7,7 +7,7 @@ hideInList: false
 feature: 
 isTop: false
 ---
-线段树模板题
+线段树模板题，求区间和
 <!-- more -->
 
 # 题目
