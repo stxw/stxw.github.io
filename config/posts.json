@@ -1,6 +1,26 @@
 {
   "posts": [
     {
+      "content": "线段树模板题\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://acm.hdu.edu.cn/showproblem.php?pid=1166>\n\n# 题意\n&emsp;&emsp;又是一道可以偷懒的中文题，开心！\n\n# 题目解析\n&emsp;&emsp;这是一道线段树的模板题，而且不加延迟标记也能AC。这题也可以用树状数组来做。\n\n# 代码\n```cpp\n/* http://acm.hdu.edu.cn/showproblem.php?pid=1166 */\n/* AC 249MS 1928K */\n#include <stdio.h>\n\nconst int MAX_N = 50000 + 10;\n\nint num[MAX_N];\nint seg_tree[4 * MAX_N];\n\nint build(int root, int left, int right)\n{\n\tint a, b, mid;\n\n\tif(left == right - 1)\n\t{\n\t\tseg_tree[root] = num[left];\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\ta = build(root * 2, left, mid);\n\t\tb = build(root * 2 + 1, mid, right);\n\t\tseg_tree[root] = a + b;\n\t}\n\treturn seg_tree[root];\n}\n\nint update(int root, int left, int right, int index, int add)\n{\n\tint mid;\n\t\n\tif(left == right - 1)\n\t{\n\t\tseg_tree[root] += add;\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\tif(index < mid)\n\t\t{\n\t\t\tseg_tree[root * 2] = update(root * 2, left, mid, index, add);\n\t\t}\n\t\telse\n\t\t{\n\t\t\tseg_tree[root * 2 + 1] = update(root * 2 + 1, mid, right, index, add);\n\t\t}\n\t\tseg_tree[root] = seg_tree[root * 2] + seg_tree[root * 2 + 1];\n\t}\n\treturn seg_tree[root];\n}\n\nint query(int root, int left, int right, int ql, int qr)\n{\n\tint a, b, mid;\n\n\tif(qr <= left || right <= ql)\n\t{\n\t\treturn 0;\n\t}\n\telse if(ql <= left && right <= qr)\n\t{\n\t\treturn seg_tree[root];\n\t}\n\telse\n\t{\n\t\tmid = (left + right) / 2;\n\t\ta = query(root * 2, left, mid, ql, qr);\n\t\tb = query(root * 2 + 1, mid, right, ql, qr);\n\t\treturn a + b;\n\t}\n}\n\nint main()\n{\n\tint cas, t, n, x, y;\n\tint i, ans;\n\tchar req[20];\n\n\tscanf(\"%d\", &t);\n\tfor(cas = 1; cas <= t; cas++)\n\t{\n\t\tscanf(\"%d\", &n);\n\t\tfor(i = 0; i < n; i++)\n\t\t{\n\t\t\tscanf(\"%d\", &num[i]);\n\t\t}\n\t\tbuild(1, 0, n);\n\n\t\tprintf(\"Case %d:\\n\", cas);\n\t\twhile(getchar(), scanf(\"%s\", req) != EOF)\n\t\t{\n\t\t\tif(req[0] == 'E')\n\t\t\t{\n\t\t\t\tbreak;\n\t\t\t}\n\t\t\tscanf(\"%d %d\", &x, &y);\n\t\t\tx -= 1;\n\t\t\tif(req[0] == 'Q')\n\t\t\t{\n\t\t\t\tans = query(1, 0, n, x, y);\n\t\t\t\tprintf(\"%d\\n\", ans);\n\t\t\t}\n\t\t\telse if(req[0] == 'A')\n\t\t\t{\n\t\t\t\tupdate(1, 0, n, x, y);\n\t\t\t}\n\t\t\telse if(req[0] == 'S')\n\t\t\t{\n\t\t\t\tupdate(1, 0, n, x, -y);\n\t\t\t}\n\t\t}\n\t}\n\treturn 0;\n}\n\n```",
+      "data": {
+        "title": "HDU-1166 敌兵布阵",
+        "date": "2020-04-13 12:02:13",
+        "tags": [
+          "acm",
+          "hdu",
+          "线段树"
+        ],
+        "published": true,
+        "hideInList": false,
+        "feature": null,
+        "isTop": false
+      },
+      "isEmpty": false,
+      "excerpt": "",
+      "abstract": "线段树模板题",
+      "fileName": "hdu-1166-di-bing-bu-zhen"
+    },
+    {
       "content": "最小生成树问题\n<!-- more -->\n\n# 题目\n&emsp;&emsp;<http://poj.org/problem?id=1287>\n\n# 题意\n&emsp;&emsp;给出P个节点和R条边的无向图，求最小生成树。\n\n# 题目解析\n&emsp;&emsp;最小生成树的模板题，可以用Prim算法或者Kruskal算法求解，Prim算法适合稠密图（点少边多），Kruskal算法适合稀疏图（点多边少）。\n\n# 代码\nPrim算法\n```cpp\n/* http://poj.org/problem?id=1287 */\n/* AC 16MS 380K */\n#include <stdio.h>\n#include <string.h>\n\nconst int MAX_N = 50 + 10;\n\nint prim(int mp[][MAX_N], int n)\n{\n\tint i, j, k, min, ans;\n\tint book[MAX_N];\n\tint tree[MAX_N];\n\tint dist[MAX_N];\n\n\tfor(i = 1; i < n; i++)\n\t{\n\t\tbook[i] = 0;\n\t\ttree[i] = 0;\n\t\tdist[i] = mp[0][i];\n\t}\n\tbook[0] = 1;\n\ttree[0] = -1;\n\n\tans = 0;\n\tfor(i = 1; i < n; i++)\n\t{\n\t\tmin = 0x1f1f1f1f;\n\t\tk = -1;\n\t\tfor(j = 1; j < n; j++)\n\t\t{\n\t\t\tif(book[j] == 0 && min > dist[j])\n\t\t\t{\n\t\t\t\tk = j;\n\t\t\t\tmin = dist[j];\n\t\t\t}\n\t\t}\n\t\tif(k == -1)\n\t\t{\n\t\t\treturn -1;\n\t\t}\n\t\tbook[k] = 1;\n\t\tans += mp[tree[k]][k];\n\t\tfor(j = 1; j < n; j++)\n\t\t{\n\t\t\tif(book[j] == 0 && mp[k][j] < dist[j])\n\t\t\t{\n\t\t\t\tdist[j] = mp[k][j];\n\t\t\t\ttree[j] = k;\n\t\t\t}\n\t\t}\n\t}\n\treturn ans;\n}\n\nint main()\n{\n\tint n, m;\n\tint i, a, b, w, ans;\n\tint mp[MAX_N][MAX_N];\n\n\twhile(scanf(\"%d\", &n) != EOF && n > 0)\n\t{\n\t\tscanf(\"%d\", &m);\n\t\tmemset(mp, 0x1f, sizeof(mp));\n\t\tfor(i = 0; i < m; i++)\n\t\t{\n\t\t\tscanf(\"%d %d %d\", &a, &b, &w);\n\t\t\ta -= 1;\n\t\t\tb -= 1;\n\t\t\tif(w < mp[a][b])\n\t\t\t{\n\t\t\t\tmp[a][b] = w;\n\t\t\t\tmp[b][a] = w;\n\t\t\t}\n\t\t}\n\n\t\tans = prim(mp, n);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```\n\nKruskal算法\n```cpp\n/* http://poj.org/problem?id=1287 */\n/* AC 16MS 400K */\n#include <stdio.h>\n#include <algorithm>\n\nusing namespace std;\n\nconst int MAX_N = 50 + 10;\n\ntypedef struct edge\n{\n\tint a, b, w;\n} edge;\n\nint cmp(edge a, edge b)\n{\n\treturn a.w < b.w;\n}\n\nint find_root(int set[], int i)\n{\n\tif(set[i] != i)\n\t{\n\t\tset[i] = find_root(set, set[i]);\n\t}\n\treturn set[i];\n}\n\nint kruskal(edge e[], int n, int m)\n{\n\tint i, k, ar, br;\n\tint ans = 0;\n\tint set[MAX_N];\n\n\tsort(e, e + m, cmp);\n\tfor(i = 0; i < MAX_N; i++)\n\t{\n\t\tset[i] = i;\n\t}\n\tk = 1;\n\tfor(i = 0; i < m && k < n; i++)\n\t{\n\t\tar = find_root(set, e[i].a);\n\t\tbr = find_root(set, e[i].b);\n\t\tif(ar != br)\n\t\t{\n\t\t\tset[ar] = br;\n\t\t\tans += e[i].w;\n\t\t\tk++;\n\t\t}\n\t}\n\tif(k < n)\n\t{\n\t\treturn -1;\n\t}\n\treturn ans;\n}\n\nint n, m;\nedge e[MAX_N * MAX_N];\n\nint main()\n{\n\tint i, a, b, w, ans;\n\n\twhile(scanf(\"%d\", &n) != EOF && n > 0)\n\t{\n\t\tscanf(\"%d\", &m);\n\t\tfor(i = 0; i < m; i++)\n\t\t{\n\t\t\tscanf(\"%d %d %d\", &a, &b, &w);\n\t\t\te[i] = (edge){a, b, w};\n\t\t}\n\n\t\tans = kruskal(e, n, m);\n\t\tprintf(\"%d\\n\", ans);\n\t}\n\treturn 0;\n}\n\n```",
       "data": {
         "title": "POJ-1287 Networking",
@@ -429,6 +449,12 @@
     }
   ],
   "tags": [
+    {
+      "index": -1,
+      "name": "线段树",
+      "slug": "xian-duan-shu",
+      "used": true
+    },
     {
       "index": -1,
       "name": "最小生成树",
