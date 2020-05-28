@@ -66,9 +66,13 @@
 </div>
 </body>
 <script>
-	var post_links =document.getElementsByClassName("post-content")[0].getElementsByTagName("a");
+	var post_links = document.getElementsByClassName("post-content")[0].getElementsByTagName("a");
+	var local_link = window.location.href;
 	for(var i = 0; i < post_links.length; i++){
-		post_links[i].setAttribute("target","_blank");
+		if(post_links[i].href.startsWith(local_link) == false)
+		{
+			post_links[i].setAttribute("target","_blank");
+		}
 	}
 </script>
 </html>
