@@ -765,7 +765,7 @@ header_bg: /images/header-sagiri.jpg
 card:
   avatar: /images/card.png
   name: 
-  description: 你能抓到我么？
+  description: 
 
 footer:
   # Specify the date when the site was setup.
