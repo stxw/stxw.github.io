@@ -760,7 +760,7 @@ css: css
 js: js
 images: images
 
-header_bg: /images/header-sagiri.jpg
+header_bg: /images/header_default.png
 
 card:
   avatar: /images/card.png
