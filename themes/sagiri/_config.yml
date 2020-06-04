@@ -770,7 +770,7 @@ card:
 footer:
   # Specify the date when the site was setup.
   # If not defined, current year will be used.
-  since: 1/6/2020 00:00:00
+  since: 6/1/2020 00:00:00
 
   # Icon between year and copyright info.
   icon: user
