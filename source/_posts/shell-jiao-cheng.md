@@ -1,6 +1,7 @@
 ---
 title: 'shell基本知识'
 date: 2020-05-10 22:30:26
+categories: linux
 tags: [linux,shell]
 published: true
 hideInList: false

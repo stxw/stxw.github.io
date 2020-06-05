@@ -66,8 +66,8 @@ index_with_subtitle: false
 menu:
   home: /|| home
   archives: /archives/|| archive
-  投喂: /donate/|| cutlery
-  后宫: /friends/|| mars
+  # 投喂: /donate/|| cutlery
+  # 后宫: /friends/|| mars
   留言板: /message/|| pencil
   about: /about/|| rocket
 
@@ -110,8 +110,6 @@ links_icon: link
 links_title: Links
 links_layout: block
 #links_layout: inline
-links:
-  DIYgos: https://diygod.me || https://diygod.me/images/DIYgod.jpg || Hi, DIYgod
 
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif

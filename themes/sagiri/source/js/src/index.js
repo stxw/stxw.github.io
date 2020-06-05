@@ -11,15 +11,15 @@ require('./scrollspy');
 require('./post-details')();
 require('./bootstrap');
 require('./leancloud')();
-require('./share')();
-require('./scroll');
-require('./since');
-require('./title');
+require('./share')(); //文章分享
+require('./since');  //运行时间统计
+require('./title'); //标题变化
 require('./type');
 require('./mix');
-// require('./kanban');
-// require('./evanyou');
-// require('./clipboard');
-// require('./pjax');
-// require('./online');
-// require('./search');
+// require('./scroll'); //回到顶部
+// require('./kanban'); //看板娘
+// require('./evanyou'); //背景彩带
+// require('./clipboard'); //剪贴板加版权
+// require('./pjax'); //
+// require('./online'); //在线人数统计
+// require('./search'); //搜索
