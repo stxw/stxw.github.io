@@ -1,6 +1,7 @@
 ---
 title: 'HDU-3085 Nightmare Ⅱ'
 date: 2020-02-15 16:57:20
+categories: acm
 tags: [acm,搜索,hdu]
 published: true
 hideInList: false

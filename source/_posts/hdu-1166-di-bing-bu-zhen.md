@@ -1,6 +1,7 @@
 ---
 title: 'HDU-1166 敌兵布阵'
 date: 2020-04-13 12:02:13
+categories: acm
 tags: [acm,hdu,线段树]
 published: true
 hideInList: false

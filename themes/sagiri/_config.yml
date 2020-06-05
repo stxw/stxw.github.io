@@ -66,8 +66,7 @@ index_with_subtitle: false
 menu:
   home: /|| home
   archives: /archives/|| archive
-  # 投喂: /donate/|| cutlery
-  # 后宫: /friends/|| mars
+  后宫: /friends/|| mars
   留言板: /message/|| pencil
   about: /about/|| rocket
 

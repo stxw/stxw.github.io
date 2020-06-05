@@ -1,7 +1,8 @@
 ---
 title: 'Markdown语法教程'
 date: 2020-02-07 13:00:05
-tags: []
+categories: 学习笔记
+tags: [markdown]
 published: true
 hideInList: false
 feature: /post-images/markdown-ji-ben-yu-fa.JPG

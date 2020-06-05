@@ -1,6 +1,7 @@
 ---
 title: 'HDU-3335 Divisibility'
 date: 2020-04-02 17:01:49
+categories: acm
 tags: [acm,hdu,舞蹈链]
 published: true
 hideInList: false

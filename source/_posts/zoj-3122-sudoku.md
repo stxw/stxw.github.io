@@ -1,6 +1,7 @@
 ---
 title: 'ZOJ-3122 Sudoku'
 date: 2020-03-27 16:03:14
+categories: acm
 tags: [acm,poj,舞蹈链]
 published: true
 hideInList: false

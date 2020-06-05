@@ -1,6 +1,7 @@
 ---
 title: 'HDU-2102 A计划'
 date: 2020-02-26 19:36:55
+categories: acm
 tags: [acm,搜索,hdu]
 published: true
 hideInList: false

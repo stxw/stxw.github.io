@@ -1,6 +1,7 @@
 ---
 title: 'HDU-1754 I Hate It'
 date: 2020-04-13 15:56:34
+categories: categories: 
 tags: [acm,hdu,线段树]
 published: true
 hideInList: false

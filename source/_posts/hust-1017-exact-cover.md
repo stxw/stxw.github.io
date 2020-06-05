@@ -1,6 +1,7 @@
 ---
 title: 'HUST-1017 Exact cover'
 date: 2020-03-10 20:45:59
+categories: acm
 tags: [hust,舞蹈链,acm]
 published: true
 hideInList: false
