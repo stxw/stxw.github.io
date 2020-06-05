@@ -37,7 +37,7 @@
 				{% set has_one_post = 1 %}
 				{% set year = post.year %}
 				{% set month = post.month %}
-				<div class="collection-year">
+				<div class="collection-contain">
 					<div class="collection-title">
 						<{% if theme.seo %}h2{% else %}h1{% endif %} class="archive-year" id="archive-year-{{ year }}">
 							{{ year }}-{{ month }}

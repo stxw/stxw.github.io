@@ -9,19 +9,21 @@
   {#################}
   {### TAG BLOCK ###}
   {#################}
-  <div class="post-block tag">
+  <div class="post-block tag post">
 
     <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <{% if theme.seo %}h2{% else %}h1{% endif %}>{#
-        #}{{ page.tag }}{#
-        #}<small>{{  __('title.tag')  }}</small>
-        </{% if theme.seo %}h2{% else %}h1{% endif %}>
-      </div>
+	  <div class="collection-contain">
+		<div class="collection-title">
+			<{% if theme.seo %}h2{% else %}h1{% endif %}>{#
+			#}{{ page.tag }}{#
+			#}<small>{{  __('title.tag')  }}</small>
+			</{% if theme.seo %}h2{% else %}h1{% endif %}>
+		</div>
 
-      {% for post in page.posts %}
-        {{ post_template.render(post) }}
-      {% endfor %}
+		{% for post in page.posts %}
+			{{ post_template.render(post) }}
+		{% endfor %}
+	  </div>
     </div>
 
   </div>
