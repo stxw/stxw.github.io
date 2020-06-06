@@ -107,7 +107,7 @@
             {% endif %}
           </span>
 
-          {% if post.categories and post.categories.length and theme.post_meta.categories %}
+          {% if 0 and post.categories and post.categories.length and theme.post_meta.categories %}
             <span class="post-category" >
             {% if theme.post_meta.created_at or theme.post_meta.updated_at %}
               <span class="post-meta-divider">•</span>

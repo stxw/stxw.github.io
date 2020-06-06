@@ -68,7 +68,7 @@ const sagiri = {
     lazyload: function (className) {
         $(className).lazyload({
             effect: "fadeIn",
-            placeholder: "https://cdn.jsdelivr.net/gh/feiyangbeyond/halo-theme-sagiri@sagiri-cdn/image/JyLKoQ.gif"
+            placeholder: "/image/JyLKoQ.gif"
         });
     },
 
@@ -99,8 +99,8 @@ const sagiri = {
 
 $(function () {
     sagiri.scrolldown();
-    sagiri.operation_aplayer_lrc();
-    $(window).scroll(function () {
-        sagiri.operation_aplayer_lrc();
-    });
+    // sagiri.operation_aplayer_lrc();
+    // $(window).scroll(function () {
+    //     sagiri.operation_aplayer_lrc();
+    // });
 })
