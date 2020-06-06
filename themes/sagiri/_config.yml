@@ -757,10 +757,12 @@ css: css
 js: js
 images: images
 
-header_bg: /images/header_default.png
+# header_bg: /images/header_default.png
+header_bg: /images/header_default.jpg
 
 card:
-  avatar: /images/card.png
+  # avatar: /images/card.png
+  avatar: https://api.ixiaowai.cn/mcapi/mcapi.php
   name: 
   description: 
 
