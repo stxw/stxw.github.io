@@ -1,16 +1,23 @@
-{% if page.comments and theme.valine.enable and theme.valine.appid and theme.valine.appkey %}
+{% if theme.valine.enable and theme.valine.appid and theme.valine.appkey %}
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="{{ url_for(theme.js) }}/third-party/Valine.min.js"></script>
   
-  <script src="{{ url_for(theme.js) }}/valine/av-min.js"></script>
-  <script src="{{ url_for(theme.js) }}/valine/Valine.min.js"></script>
   <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = '{{ theme.valine.guest_info }}';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
     new Valine({
-        av: AV,
         el: '#comments' ,
         verify: {{ theme.valine.verify }},
         notify: {{ theme.valine.notify }},
-        app_id: '{{ theme.valine.appid }}',
-        app_key: '{{ theme.valine.appkey }}',
+        appId: '{{ theme.valine.appid }}',
+        appKey: '{{ theme.valine.appkey }}',
         placeholder: '{{ theme.valine.placeholder }}',
+        avatar:'{{ theme.valine.avatar }}',
+        guest_info:guest,
+        pageSize:'{{ theme.valine.pageSize }}' || 10,
 
 		// 设置默认头像
 		avatar: 'mp',
@@ -41,7 +48,7 @@
 			"tv_思考": "90cf159733e558137ed20aa04d09964436f618a1.png",
 			"tv_惊吓": "0d15c7e2ee58e935adc6a7193ee042388adc22af.png",
 			// ... 更多表情
-		}
+		},
     });
   </script>
 {% endif %}

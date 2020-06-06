@@ -79,16 +79,10 @@
 
 
   <script type="text/javascript" src="{{ url_for(theme.js) }}/sagiri.min.js?v={{ theme.version }}"></script>
-  {% if theme.load2main %}
-  	<script type="text/javascript" src="{{ url_for(theme.js) }}/nchuxw/main.js"></script>
+  <script type="text/javascript" src="{{ url_for(theme.js) }}/nchuxw/main.js"></script>
+  {% if theme.load_to_main %}
+  	<script type="text/javascript" src="{{ url_for(theme.js) }}/nchuxw/load_to_main.js"></script>
   {% endif %}
-
-<!--
-  <script type="text/javascript" src="{{ url_for(theme.js) }}/fyang/main.js"></script>
-  <script type="text/javascript" src="{{ url_for(theme.js) }}/fyang/normal.js"></script>
-  <script type="text/javascript" src="{{ url_for(theme.js) }}/fyang/pjax.js"></script>
-  <script type="text/javascript" src="{{ url_for(theme.js) }}/fyang/animate.js"></script>
--->
 
   {% include '_third-party/search/index.swig' %}
   {% include '_third-party/seo/baidu-push.swig' %}

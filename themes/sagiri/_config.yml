@@ -208,8 +208,8 @@ post_wordcount:
 # Declare license on posts
 post_copyright:
   enable: false
-  license: CC BY-NC-SA 3.0
-  license_url: https://creativecommons.org/licenses/by-nc-sa/3.0/
+  license: 
+  license_url: 
 
 
 # ---------------------------------------------------------------
@@ -796,7 +796,7 @@ github_corners:
   link: https://github.com/nchuxw
 
 # 加载页面后，自动跳转到主要内容部分（主页除外）
-load2main: true
+load_to_main: true
 
 # 归档按月统计，设置fasle按年统计
 archives_c_month: true

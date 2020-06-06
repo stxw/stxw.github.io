@@ -14,6 +14,19 @@
   <div class="post-block archive post">
 	<div id="posts" class="posts-collapse">
 
+	  <div class="collection-contain">
+		<div class="collection-title">
+			<{% if theme.seo %}h2{% else %}h1{% endif %}>{#
+			#}{{ page.category }}{#
+			#}{{  __('title.category')  }}
+			</{% if theme.seo %}h2{% else %}h1{% endif %}>
+		</div>
+		<div class="category-all-page">
+		  <div class="category-all">
+		    {{list_categories(site.categories)}}
+	      </div>
+	    </div>
+	  </div>
 <!--
 	  <span class="archive-move-on"></span>
 	  <span class="archive-page-counter">
