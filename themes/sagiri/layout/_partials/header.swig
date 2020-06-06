@@ -65,6 +65,12 @@
       <div class="brand">
         <span class="logo-line-before"><i></i></span>
         <div class="site-title">
+			<div class="site-master" itemprop="author" itemscope itemtype="http://schema.org/Person">
+				<img class="site-master-avatar" itemprop="image" src="{{ url_for( theme.avatar | default(theme.images + '/avatar.gif') ) }}" alt="{{ theme.author }}" />
+				<h2 class="site-master-description" itemprop="description">
+					{{ theme.description }}
+				</h2>
+			</div>
           <div id="animate" class="animate">
             {% for letter in config.title %}{#
               #}<span>{{ letter }}</span>{#
@@ -93,11 +99,5 @@
       <span class="btn-bar"></span>
     </button>
   </div>
-</div>
-<div class="site-master" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-master-avatar" itemprop="image" src="{{ url_for( theme.avatar | default(theme.images + '/avatar.gif') ) }}" alt="{{ theme.author }}" />
-    <h2 class="site-master-description" itemprop="description">
-        {{ theme.description }}
-    </h2>
 </div>
 {% include '../_custom/header.swig' %}
