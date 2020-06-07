@@ -165,10 +165,9 @@ markdown可以使用两种方法创建链接
 ```
 比如想跳转转到本文的“Markdown简介”的位置，可以用下面的代码实现：
 ```
-[Markdown简介](#markdown简介)
+[Markdown简介](#Markdown简介)
 ```
-[Markdown简介](#markdown简介)
-这里的标题名字貌似不能是大写字母，如果包含大写字母无法跳转。
+[Markdown简介](#Markdown简介)
 
 ## 列表
 ### 无序列表
