@@ -3,10 +3,6 @@ title: 'POJ-1611 The Suspects'
 date: 2020-04-07 18:06:14
 categories: acm
 tags: [acm,poj,并查集]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 简单的并查集
 <!-- more -->

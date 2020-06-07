@@ -3,10 +3,6 @@ title: 'POJ-1287 Networking'
 date: 2020-04-10 08:57:52
 categories: acm
 tags: [acm,poj,最小生成树]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 最小生成树问题
 <!-- more -->

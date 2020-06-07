@@ -3,10 +3,6 @@ title: 'POJ-2236 Wireless Network'
 date: 2020-04-03 10:31:09
 categories: acm
 tags: [acm,poj,并查集]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 简单的并查集
 <!-- more -->

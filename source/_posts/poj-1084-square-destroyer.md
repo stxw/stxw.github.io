@@ -3,10 +3,7 @@ title: 'POJ-1084 Square Destroyer'
 date: 2020-03-27 09:40:48
 categories: acm
 tags: [acm,poj,舞蹈链]
-published: true
-hideInList: false
-feature: 
-isTop: false
+mathjax: true
 ---
 舞蹈链重复覆盖问题
 

@@ -3,10 +3,7 @@ title: 'FZU-1686 神龙的难题'
 date: 2020-03-19 19:00:07
 categories: acm
 tags: [acm,舞蹈链]
-published: true
-hideInList: false
-feature: 
-isTop: false
+mathjax: true
 ---
 舞蹈链重复覆盖问题
 <!-- more -->

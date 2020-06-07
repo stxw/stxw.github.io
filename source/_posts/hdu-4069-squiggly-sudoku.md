@@ -3,10 +3,6 @@ title: 'HDU-4069 Squiggly Sudoku'
 date: 2020-03-31 15:26:52
 categories: acm
 tags: [acm,hdu,舞蹈链]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 变形的数独问题
 <!-- more -->

@@ -3,10 +3,6 @@ title: 'POJ-1251 Jungle Roads'
 date: 2020-04-08 16:47:21
 categories: acm
 tags: [acm,poj,最小生成树]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 最小生成树问题-Kruskal算法
 <!-- more -->

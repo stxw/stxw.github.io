@@ -3,10 +3,6 @@ title: 'HDU-1067 Gap'
 date: 2020-02-23 15:45:01
 categories: acm
 tags: [acm,搜索,hdu]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 广度优先搜索＋map标记状态
 <!-- more -->

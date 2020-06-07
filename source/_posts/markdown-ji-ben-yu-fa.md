@@ -3,15 +3,9 @@ title: 'Markdown语法教程'
 date: 2020-02-07 13:00:05
 categories: 学习笔记
 tags: [markdown]
-published: true
-hideInList: false
-feature: /post-images/markdown-ji-ben-yu-fa.JPG
-isTop: false
 ---
 从网上收集的markdown语法教程
 <!-- more -->
-
-@[TOC]
 
 
 # 写在前面
@@ -40,7 +34,7 @@ isTop: false
 ```
 效果如下：
 
-![](https://nchuxw.github.io//post-images/1581056192563.png)
+![](https://nchuxw.ml/images/1581056192563.png)
 
 &emsp;&emsp;需要注意的是，使用这种方式的标题，上一行如果是普通文本，两行之间要加一个换行，不然上一行文本也会有标题的样式。
 
@@ -55,7 +49,7 @@ isTop: false
 ```
 效果如下：
 
-![](https://nchuxw.github.io//post-images/1581056288407.png)
+![](https://nchuxw.ml/images/1581056288407.png)
 
 ## 字体
 ### 简单字体
@@ -136,17 +130,17 @@ markdown里敲多个换行只能显示一个，如果想显示多个换行，需
 ![这是一张无法加载的图片](错误的图片地址 "title")
 如果图片有标题，当鼠标停在图片上时会显示出来，即使图片无法加载，鼠标停靠时也会显示，下面是一个例子，请读者自行尝试。
 ```
-![涅普迪努](https://nchuxw.github.io//post-images/nepnep.png "我可爱吗^_^")
+![涅普迪努](https://nchuxw.ml/images/nepnep.png "我可爱吗^_^")
 ```
-![涅普迪努](https://nchuxw.github.io//post-images/nepnep.png "我可爱吗^_^")
+![涅普迪努](https://nchuxw.ml/images/nepnep.png "我可爱吗^_^")
 
 ### 自定义图片
 Markdown无法自定义图片的宽度和高度，如果想改变的话需要借助html的img标签。
 ```
-<img width=100 height=160 src="https://nchuxw.github.io//post-images/nepnep.png" title="我是变小后的涅普迪努"></img>
+<img width=100 height=160 src="https://nchuxw.ml/images/nepnep.png" title="我是变小后的涅普迪努"></img>
 ```
 下面是一张100×160的图片
-<img width=100 height=160 src="https://nchuxw.github.io//post-images/nepnep.png" title="我是变小后的涅普迪努"></img>
+<img width=100 height=160 src="https://nchuxw.ml/images/nepnep.png" title="我是变小后的涅普迪努"></img>
 
 ## 链接
 ### 外部链接
@@ -252,6 +246,7 @@ Markdown 制作表格使用 | 来分隔不同的单元格，使用 - 来分隔�
 | 单元格  | 单元格 |
 ```
 显示效果：
+
 |  表头   | 表头  |
 |  ----  | ----  |
 | 单元格  | 单元格 |
@@ -261,6 +256,7 @@ Markdown 制作表格使用 | 来分隔不同的单元格，使用 - 来分隔�
 * -: 设置内容和标题栏居右对齐。
 * :- 设置内容和标题栏居左对齐。
 * :-: 设置内容和标题栏居中对齐。
+
 实例如下：
 ```
 | 左对齐的一列 | 右对齐的一列 | 居中对齐的一列 |
@@ -269,6 +265,7 @@ Markdown 制作表格使用 | 来分隔不同的单元格，使用 - 来分隔�
 | 单元格 | 单元格 | 单元格 |
 ```
  显示效果：
+
 | 左对齐的一列 | 右对齐的一列 | 居中对齐的一列 |
 | :----| ----: | :----: |
 | 单元格 | 单元格 | 单元格 |
@@ -322,21 +319,23 @@ def sigmoid(self, input):
     return 1.0 / (1.0 + np.exp(-input))
 ```
 以下为常用的语言的语法关键字
-|语言              |关键字|
-|---------------|--------|
-|C                    |cpp, c|
-|Java             |java|
-|Python        |py, python|
-|Shell             |bash, shell|
-|C#                  |csharp, c#|
-|CSS               |css|
-|JavaScript |js, jscript, javascript|
-|XML              |xml , xhtml, xslt, html|
-|PHP              |php|
-|SQL               |sql|
+
+|语言|关键字|
+|---|---|
+|C|cpp, c|
+|Java|java|
+|Python|py, python|
+|Shell|bash, shell|
+|C#|csharp, c#|
+|CSS|css|
+|JavaScript|js, jscript, javascript|
+|XML|xml , xhtml, xslt, html|
+|PHP|php|
+|SQL|sql|
 
 ## 转义字符
 &emsp;&emsp;markdown里有些字符代表特殊功能，比如 * 代表无序列表开始标志，如果只是想显示这些符号，而不使用符号的特殊功能，需要在符号前加一个 \\ ，markdown里需要转义的字符如下：
+
 | |原始字符|显示效果|
 |-|-|-|
 |反斜杠|\\\\|\\|

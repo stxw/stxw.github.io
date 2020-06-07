@@ -3,10 +3,6 @@ title: 'POJ-3074 Sudoku'
 date: 2020-03-27 09:41:34
 categories: acm
 tags: [acm,poj,舞蹈链]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 用舞蹈链来解决数独问题
 <!-- more -->

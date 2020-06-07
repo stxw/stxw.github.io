@@ -3,10 +3,7 @@ title: '图像内插'
 date: 2020-03-23 23:05:39
 categories: 学习笔记
 tags: [图像处理,opencv]
-published: true
-hideInList: false
-feature: 
-isTop: false
+mathjax: true
 ---
 关于常见的图像内插方法的介绍
 <!-- more -->

@@ -3,10 +3,6 @@ title: 'HDU-1754 I Hate It'
 date: 2020-04-13 15:56:34
 categories: acm
 tags: [acm,hdu,线段树]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 线段树模板题，求区间最大值
 <!-- more -->

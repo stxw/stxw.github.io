@@ -3,10 +3,6 @@ title: 'shell基本知识'
 date: 2020-05-10 22:30:26
 categories: 学习笔记
 tags: [linux,shell]
-published: true
-hideInList: false
-feature: /post-images/shell-jiao-cheng.jpg
-isTop: false
 ---
 
 自己整理的shell基本知识

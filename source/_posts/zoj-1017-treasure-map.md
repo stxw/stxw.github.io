@@ -3,10 +3,6 @@ title: 'ZOJ-1017 Treasure Map'
 date: 2020-03-16 23:26:32
 categories: acm
 tags: [舞蹈链,acm]
-published: true
-hideInList: false
-feature: 
-isTop: false
 ---
 二维精确覆盖问题
 
