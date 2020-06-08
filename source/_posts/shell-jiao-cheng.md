@@ -1,13 +1,12 @@
 ---
-title: 'shell基本知识'
+title: 'shell脚本基础知识'
 date: 2020-05-10 22:30:26
 categories: 学习笔记
 tags: [linux,shell]
 ---
 
-自己整理的shell基本知识
-
 # 简介
+## shell
 &emsp;&emsp;shell是操作系统内核之外的指令解析器，是一个程序，同时是一种命令语言和程序设计语言。是处于操作人员和操作系统接口之间的一层封装，用于方便操作人员使用计算机。
 用途：
 1. 用于计算机的启动、常用程序的运行等脚本。
@@ -15,6 +14,51 @@ tags: [linux,shell]
 3. 处理文本文件。
 
 &emsp;&emsp;常用的shell：sh、bash。
+
+## shell脚本
+&emsp;&emsp;将多行命令封装进一个文本文件里，执行一个shell脚本即可执行多个shell命令。
+&emsp;&emsp;shell的第一行用于指定脚本解释器的路径，方法是`#!解释器的路径`，比如指定为/bin/sh的代码如下：
+```shell
+#!/bin/sh
+```
+
+# 执行方式
+&emsp;&emsp;shell有两种执行方式，第一种是`脚本解释器 shell文件`，第二种是`./shell文件`。使用第二种方式时，要确保shell文件有可执行权限。
+```shell
+bash ./test.sh  # 第一种方式
+./test.sh  # 第二种方式
+```
+
+# 注释
+## 单行注释
+&emsp;&emsp;shell脚本里用#来表示单行注释，如果使用第一种方式执行shell，第一行的`#!`也是注释；如果用第二种方式执行shell，第一行的`#!`则不是注释。
+```shell
+#!/bin/sh
+
+# 这是一个注释
+ls -l # 这也是一个注释
+```
+## 多行注释
+1. 方法一
+```shell
+: '
+echo "这是一个注释"
+echo "这也是注释"
+echo "这还是注释"
+'
+```
+**注意**：注释的开头的`:`和`'`之间有一个空格，不然会报错。
+
+2. 方法二
+```shell
+:<< 字符
+echo "这是一个注释"
+echo "这也是注释"
+echo "这还是注释"
+字符
+```
+&emsp;&emsp;这里的字符上下两个要相同，否则注释无法结束。
+
 
 # 别名
 &emsp;&emsp;给命令取其他名字，用来简化带参数的命令，比如使用`alias ll='ls -l'`命令来给`ls -l`取一个`ll`的别名，以后就可以用`ll`来代替`ls -l`了。
@@ -47,7 +91,7 @@ xxx@xxx:~$
 ```shell
 xxx@xxx:~$ read VAR
 abc   # 输入的字符串
-xxx@xxx:~$ echo $VAR
+xxx@xxx:~$ echo ${VAR}
 abc
 xxx@xxx:~$ 
 ```
@@ -55,9 +99,9 @@ xxx@xxx:~$
 ```shell
 xxx@xxx:~$ read VAR1 VAR2
 abc 123  # 输入的字符串
-xxx@xxx:~$ echo $VAR1
+xxx@xxx:~$ echo ${VAR1}
 abc
-xxx@xxx:~$ echo $VAR2
+xxx@xxx:~$ echo ${VAR2}
 123
 xxx@xxx:~$ 
 ```
@@ -65,9 +109,9 @@ xxx@xxx:~$
 ```shell
 xxx@xxx:~$ read VAR1 VAR2
 abc\ 123 xyz       
-xxx@xxx:~$ echo $VAR1
+xxx@xxx:~$ echo ${VAR1}
 abc 123
-xxx@xxx:~$ echo $VAR2
+xxx@xxx:~$ echo ${VAR2}
 xyz
 xxx@xxx:~$ 
 ```
@@ -75,9 +119,9 @@ xxx@xxx:~$
 ```shell
 xxx@xxx:~$ read VAR1 VAR2
 abc 123 xyz
-xxx@xxx:~$ echo $VAR1
+xxx@xxx:~$ echo ${VAR1}
 abc
-xxx@xxx:~$ echo $VAR2
+xxx@xxx:~$ echo ${VAR2}
 123 xyz  # 变量VAR2是最后一个保存输入的变量
 xxx@xxx:~$   # 所以“123”和“xyz”之间的空格，即使不加反斜杠，也当做普通字符处理
 ```
@@ -87,9 +131,9 @@ xxx@xxx:~$ VAR1=xyz
 xxx@xxx:~$ VAR2=123
 xxx@xxx:~$ read VAR1 VAR2
 abc
-xxx@xxx:~$ echo $VAR1
+xxx@xxx:~$ echo ${VAR1}
 abc
-xxx@xxx:~$ echo $VAR2 # 变量VAR2原来是123，现在是空字符串。
+xxx@xxx:~$ echo ${VAR2} # 变量VAR2原来是123，现在是空字符串。
 
 xxx@xxx:~$ 
 ```
@@ -163,7 +207,7 @@ MY_VAR=123;
 ## 使用
 语法：`$变量名`或`${变量名}`
 ```shell
-echo $VAR
+echo ${VAR}
 echo ${VAR}
 ```
 &emsp;&emsp;推荐使用加大括号的方式，可以增强代码的可读性。
@@ -259,9 +303,9 @@ touch "aaa bbb"
 ## 单引号
 &emsp;&emsp;作用与双引号类似，区别是双引号只能将空格、制表符等部分特殊符号当普通字符来处理，而单引号可以作用于所有字符。比如`$`符号(用于引用变量)加了双引号还是特殊字符，加单引号则表示普通字符。
 ```shell
-echo $PATH
-echo "$PATH"
-echo '$PATH'
+echo ${PATH}
+echo "${PATH}"
+echo '${PATH}'
 ```
 &emsp;&emsp;上面的三行命令，第一行和第二行的作用相同，都是输出PATH变量，第三行命令只会输出字符串“$PATH”。
 
@@ -301,3 +345,72 @@ echo "hello world"; ls -la;
 
 # 模式匹配
 &emsp;&emsp;请参考[正则表达式](#正则表达式)，（我还没写\尴尬）。
+
+
+# 表达式运算
+## 运算符
+&emsp;&emsp;shell里的运算符基本跟c语言的一样
+* 基本运算符：+、-、*、/(加减乘除)、%(取模)
+* 逻辑运算符：&&、||、!(与或非)
+* 位运算符：&(与)、|(或)、^(异或)、~(取反)、<<(位左移)、>>(位右移)
+* 赋值运算符：=、+=、*=、/=、%=、&=、|=、^|、<<=、.....
+
+## 格式
+&emsp;&emsp;shell里用`$[表达式]`表示中括号里的是表达式，也可以用`$((表达式))`来表示，推荐使用中括号的形式。
+&emsp;&emsp;**注意**：shell里只能对整形变量进行表达式运算，不能对字符串类型的变量进行表达式运算
+```shell
+xxx@xxx:~$ declare -i VAR1=123
+xxx@xxx:~$ declare -i VAR2=111
+xxx@xxx:~$ echo $[VAR1 + VAR2]
+234
+```
+
+## expr命令
+&emsp;&emsp;也可以用expr命令来进行表达式运算，expr命令支持的运算符有：|、&、<、<=、=、!=、>=、+、-、*、/、%。语法：`expr 表达式`，举个栗子：
+```shell
+xxx@xxx:~$ expr 123 + 111  # 加法运算
+234
+xxx@xxx:~$ VAR1=333
+xxx@xxx:~$ VAR2=234
+xxx@xxx:~$ expr ${VAR1} - ${VAR2}  # 变量１减变量２
+99
+xxx@xxx:~$ expr ${VAR1} \* ${VAR2}  # 变量１乘变量２
+77922
+xxx@xxx:~$ expr ${VAR1} / ${VAR2}  # 变量１除变量２
+1
+```
+&emsp;&emsp;**注意**：运算符两边都有一个空格。部分运算符前面要加个`\`来转义，比如*、&、(、>。
+&emsp;&emsp;还可以用小括号来组成更复杂的表达式。
+```shell
+xxx@xxx:~$ expr 12 \* \( 34 - 26 \)  # 乘号和小括号前都要加\
+96
+xxx@xxx:~$ declare -i VAR1=413
+xxx@xxx:~$ declare -i VAR2=34
+xxx@xxx:~$ expr ${VAR1} % \( ${VAR2} - 21 \) 
+10
+```
+&emsp;&emsp;expr还可以进行简单的字符串运算，支持的有：
+* **字符串 : 正则表达式**： 在字符串中由给定正则表达式决定的锚定模式匹配。
+* **match 字符串 正则表达式**：与“字符串 : 正则表达式”相同。
+* **substr 字符串 位置 长度**：从某个位置开始，截取指定长度的子串，位置由 1 开始计数。
+* **index 字符串 字符**：字符串中第一次出现指定字符的位置，如果不存在该字符，则输出0。
+* **length 字符串**：字符串的长度。
+```shell
+xxx@xxx:~$ expr substr 'this is a test' 2 8
+his is a
+xxx@xxx:~$ expr length 'this is a test'
+14
+xxx@xxx:~$ expr index 'this is a test' s
+4
+```
+&emsp;&emsp;expr命令会将计算结果输出到标准输出，如果想将结果保存到变量里，可以用反引号来实现。
+```shell
+xxx@xxx:~$ VAR=`expr 23 \* 42`
+xxx@xxx:~$ echo ${VAR}
+966
+```
+
+# 条件判断
+
+
+# 分支结构
