@@ -141,6 +141,7 @@
     motion: {{ theme.motion | json_encode }},
     since: '{{ theme.footer.since }}',
     onlineAPI: '{{ theme.online_api }}',
+	load_to_main: {{ theme.load_to_main }},
     site: {
       title: '{{ theme.title }}',
       subtitle: '{{ theme.subtitle }}',

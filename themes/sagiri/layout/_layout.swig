@@ -79,10 +79,7 @@
 
 
   <script type="text/javascript" src="{{ url_for(theme.js) }}/sagiri.min.js?v={{ theme.version }}"></script>
-  <script type="text/javascript" src="{{ url_for(theme.js) }}/nchuxw/main.js"></script>
-  {% if theme.load_to_main %}
-  	<script type="text/javascript" src="{{ url_for(theme.js) }}/nchuxw/load_to_main.js"></script>
-  {% endif %}
+  <script type="text/javascript" src="{{ url_for(theme.js) }}/main.js"></script>
 
   {% include '_third-party/search/index.swig' %}
   {% include '_third-party/seo/baidu-push.swig' %}
