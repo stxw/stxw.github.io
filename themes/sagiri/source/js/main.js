@@ -1,4 +1,4 @@
-const nchuxw = {
+const stxw = {
 	load_to_main: function(){
 		var pathname = window.location.pathname;
 		var pre_pathname = sessionStorage.getItem("pre_pathname");
@@ -14,6 +14,6 @@ const nchuxw = {
 
 $(function(){
 	if(window.CONFIG.load_to_main){
-		nchuxw.load_to_main();
+		stxw.load_to_main();
 	}
 })

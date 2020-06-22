@@ -30,7 +30,7 @@ favicon:
   #ms_browserconfig: /images/browserconfig.xml
 
 # Set default keywords (Use a comma to separate)
-keywords: "nchuxw,blog"
+keywords: "stxw,blog"
 
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
@@ -96,7 +96,7 @@ scheme: Pisces
 # Value before `||` delimeter is the target permalink.
 # Value after `||` delimeter is the name of FontAwesome icon. If icon (with or without delimeter) is not specified, globe icon will be loaded.
 social:
-  GitHub: https://github.com/nchuxw || github
+  GitHub: https://github.com/stxw || github
   QQ: http://wpa.qq.com/msgrd?v=3&uin=1845812298&site=qq&menu=yes || qq
 
 social_icons:
@@ -113,7 +113,7 @@ links_layout: block
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
 # in site  directory(source/uploads): /uploads/avatar.gif
-avatar: /images/nchuxw.jpg
+avatar: /images/stxw.jpg
 
 # Table Of Contents in the Sidebar
 toc:
@@ -340,8 +340,8 @@ changyan:
 # more info please open https://github.com/xCss/Valine
 valine:
   enable: true
-  appid: GsWPUX3gNpxaaFg6ju9fabnV-gzGzoHsz # your leancloud application appid
-  appkey: FkTfssOsPi9NX0J5z6NR96yR # your leancloud application appkey
+  appid: jlqSEX0wdFUIe61mhuLydOHt-9Nh9j0Va # your leancloud application appid
+  appkey: sMgXdfkmWwqSgBIoXw7SiGig # your leancloud application appkey
   notify: false # mail notifier , https://github.com/xCss/Valine/wiki
   verify: false # Verification code
   placeholder: 说点什么吧！ (*´∇｀*)
@@ -795,7 +795,7 @@ online_api:
 
 github_corners:
   open: true
-  link: https://github.com/nchuxw
+  link: https://github.com/stxw
 
 # 加载页面后，自动跳转到主要内容部分（主页除外）
 load_to_main: true
