@@ -340,8 +340,8 @@ changyan:
 # more info please open https://github.com/xCss/Valine
 valine:
   enable: true
-  appid: jlqSEX0wdFUIe61mhuLydOHt-9Nh9j0Va # your leancloud application appid
-  appkey: sMgXdfkmWwqSgBIoXw7SiGig # your leancloud application appkey
+  appid: 6iCAxfaoBsA1LaiU36OQQVya-MdYXbMMI # your leancloud application appid
+  appkey: gVPQRrCwc64fycoMHuq9jfgG # your leancloud application appkey
   notify: false # mail notifier , https://github.com/xCss/Valine/wiki
   verify: false # Verification code
   placeholder: 说点什么吧！ (*´∇｀*)
