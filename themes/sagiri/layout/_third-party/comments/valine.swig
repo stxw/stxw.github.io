@@ -1,6 +1,6 @@
 {% if theme.valine.enable and theme.valine.appid and theme.valine.appkey %}
   <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-  <script src="{{ url_for(theme.js) }}/third-party/Valine.min.js"></script>
+  <script src="{{ url_for(theme.js) }}/Valine.min.js"></script>
   
   <script type="text/javascript">
     new Valine({

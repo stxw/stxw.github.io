@@ -791,10 +791,8 @@ footer:
   sitemap: /sitemap.xml
   beian: 
 
-online_api:
-
 github_corners:
-  open: true
+  enable: true
   link: https://github.com/stxw
 
 # 加载页面后，自动跳转到主要内容部分（主页除外）
@@ -802,6 +800,13 @@ load_to_main: true
 
 # 归档按月统计，设置fasle按年统计
 archives_c_month: true
+
+# 看板娘
+live2d:
+  enable: true
+  model: /images/live2d_model/nepnep/index.json # 模型的地址
+  width: 300 # 控制模型的尺寸比例
+  height: 380 # 需要根据不同模型来调整
 
 # Theme version
 version: 0.0.4

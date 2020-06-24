@@ -21,7 +21,7 @@
 
   <div class="{{ container_class }} {% block page_class %}{% endblock %}">
 
-  	{% if theme.github_corners.open %}
+  	{% if theme.github_corners.enable %}
   		{% include '_partials/github-corner.swig' %}
   	{% endif %}
 
@@ -67,6 +67,15 @@
     <canvas id="live2d" width="150" height="400" class="live2d"></canvas>
 -->
 
+
+	{% if theme.live2d.enable %}
+		<canvas id="live2d" height="{{ theme.live2d.height }}" style="width: {{ theme.live2d.width }};" ></canvas>
+		<script type="text/javascript" src="{{ url_for(theme.js) }}/live2d.js"></script>
+		<script>
+			loadlive2d('live2d', "{{ theme.live2d.model }}");
+		</script>
+	{% endif %}
+
     {% if theme.needmoreshare2.enable and theme.needmoreshare2.float.enable %}
       <div id="needsharebutton-float">
         <span class="btn">
@@ -77,8 +86,7 @@
 
   </div>
 
-
-  <script type="text/javascript" src="{{ url_for(theme.js) }}/sagiri.min.js?v={{ theme.version }}"></script>
+  <script type="text/javascript" src="{{ url_for(theme.js) }}/sagiri.min.js"></script>
   <script type="text/javascript" src="{{ url_for(theme.js) }}/main.js"></script>
 
   {% include '_third-party/search/index.swig' %}
