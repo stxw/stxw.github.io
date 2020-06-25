@@ -791,6 +791,7 @@ footer:
   sitemap: /sitemap.xml
   beian: 
 
+# 页面右上角github图标
 github_corners:
   enable: true
   link: https://github.com/stxw
