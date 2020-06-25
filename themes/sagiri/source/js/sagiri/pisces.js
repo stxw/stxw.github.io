@@ -11,14 +11,15 @@ function pisces () {
       var headerOffset = getHeaderOffset(),
         // footerOffset = getFooterOffset(),
         sidebarHeight = $('#sidebar').height(),
-        contentHeight = $('#content').height();
+		contentHeight = $('#content').height();
+	  var contentTop =  $('#main').offset().top;
 
       // Not affix if sidebar taller then content (to prevent bottom jumping).
       if (sidebarHeight < contentHeight) {
         sidebarInner.affix({
           offset: {
-            top: headerOffset - 2 * CONFIG.sidebar.offset,
-            bottom: 540
+            top: contentTop,
+            bottom: 0
           }
         });
       }

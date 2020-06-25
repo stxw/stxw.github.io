@@ -12,7 +12,7 @@ module.exports = {
     devtool: 'source-map',
 
     entry: {
-        'sagiri': './source/js/src/index.js'
+        'sagiri': './source/js/sagiri/index.js'
     },
 
     output: {
