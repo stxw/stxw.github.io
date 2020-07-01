@@ -16,8 +16,8 @@ mathjax: true
 $$f_d(x, y) = f_s(\lfloor \frac{W_s}{W_d} \times x + 0.5 \rfloor, \lfloor \frac{H_s}{H_d} \times y + 0.5 \rfloor)$$
 
 &emsp;&emsp;上式中$\lfloor \frac{W_s}{W_d} \times x + 0.5 \rfloor$表示对$\frac{W_s}{W_d} \times x$四舍五入。
-&emsp;&emsp;最近邻内插算法实现的图像缩放的原理很简单，但缺点是得到的图像效果不太好。[^最近邻内插] 代码可以参考下文的 nearest_interpolation() 函数。
-[^最近邻内插]: 有关最近邻内插的内容参考了<https://www.cnblogs.com/skyfsm/p/7578302.html>
+&emsp;&emsp;最近邻内插算法实现的图像缩放的原理很简单，但缺点是得到的图像效果不太好[^1]。代码可以参考下文的 nearest_interpolation() 函数。
+[^1]: 有关最近邻内插的内容参考了<https://www.cnblogs.com/skyfsm/p/7578302.html>
 
 # 双线性内插
 &emsp;&emsp;双线型内插利用了源图中虚拟点四周的四个真实存在的像素，来共同决定目标图中的一个像素，使用双线性内插的缩放效果比简单的最邻近内插要好很多。
@@ -39,14 +39,14 @@ $$f_s(x_f,\lfloor y_f + 1 \rfloor) = (\lfloor x_f + 1 \rfloor - x_f) \times f_s(
 
 $$f_s(x_f,y_f) = (\lfloor y_f + 1\rfloor - y_f) \times f_s(x_f,\lfloor y_f \rfloor) + (y_f - \lfloor y_f \rfloor) \times f_s(x_f,\lfloor y_f + 1 \rfloor)$$
 
-&emsp;&emsp;实际上，双线性内插是根据四个像素点与浮点坐标的距离来计算四个像素点的权重，然后将四个像素点的加权平均和作为浮点坐标的像素值。图片使用双线性内插的缩放效果要优于最邻近内插，但是计算量要比最邻近内插大一点。[^双线性内插] 代码可以参考下文的 bilinear_interpolation() 函数。
-[^双线性内插]: 有关双线性内插的内容参考了<https://www.cnblogs.com/yssongest/p/5303151.html>
+&emsp;&emsp;实际上，双线性内插是根据四个像素点与浮点坐标的距离来计算四个像素点的权重，然后将四个像素点的加权平均和作为浮点坐标的像素值。图片使用双线性内插的缩放效果要优于最邻近内插，但是计算量要比最邻近内插大一点[^2]。代码可以参考下文的 bilinear_interpolation() 函数。
+[^2]: 有关双线性内插的内容参考了<https://www.cnblogs.com/yssongest/p/5303151.html>
 
 # 双三次内插
 &emsp;&emsp;双三次内插的原理于双线性内插相似，都是根据浮点坐标附近的像素来计算出浮点坐标的像素值，计算时也是根据与浮点坐标之间的距离来计算附近像素点的权重，最后根据附近像素点的权重和像素值取加权平均和。与双线性内插不同的是，双三次内插计算了浮点坐标附近的16个像素点，而双线性内插只计算了4个。
 &emsp;&emsp;双三次内插的核心问题是，如何根据像素点与浮点坐标的距离计算权重，有关双三次内插的计算方法参考自<https://blog.csdn.net/qq_29058565/article/details/52769497>，我偷个懒，就不再详细解释了。
-&emsp;&emsp;与前面两种内插方法相比，双三次内插在保存细节方面比双线性内插相对要好一些，但是计算量比前两种方法都要高一些，是商业图像编辑程序如Adobe Photoshap和Corel Photopaint的标准内插方法。[^双三次内插]
-[^双三次内插]: 此处引用自冈萨雷斯的《数字图像处理》第三版第37页。
+&emsp;&emsp;与前面两种内插方法相比，双三次内插在保存细节方面比双线性内插相对要好一些，但是计算量比前两种方法都要高一些，是商业图像编辑程序如Adobe Photoshap和Corel Photopaint的标准内插方法[^3]。
+[^3]: 此处引用自冈萨雷斯的《数字图像处理》第三版第37页。
 
 # 代码
 &emsp;&emsp;使用opencv库实现的，只能处理灰度图。
