@@ -1,8 +1,10 @@
+/* 加载页面后，自动跳转到主要内容部分（主页除外） */
 const stxw = {
 	load_to_main: function(){
 		var pathname = window.location.pathname;
 		var pre_pathname = sessionStorage.getItem("pre_pathname");
-		if(pathname != "/" && pathname != pre_pathname)
+		var cur_st = $(document).scrollTop();
+		if(pathname != "/" && cur_st < 10 && pathname != pre_pathname)
 		{
 			$('html, body').animate({
 				scrollTop: $("#main").offset().top - 50
@@ -11,6 +13,10 @@ const stxw = {
 		sessionStorage.setItem("pre_pathname", pathname);
 	}
 }
+
+/* live2d一言和工具 */
+
+
 
 $(function(){
 	if(window.CONFIG.load_to_main){
