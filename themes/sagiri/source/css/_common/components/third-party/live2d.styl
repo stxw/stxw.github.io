@@ -1,12 +1,14 @@
 .waifu {
   position: fixed;
-  bottom: 25px;
-  right: 30px;
+  bottom: 0px;
+  right: 10px;
   z-index: 2;
   font-size: 0;
   pointer-events: none;
-  -webkit-transform: translateY(3px);
-  transform: translateY(3px);
+
+  +mobile() {
+    display: none;
+  }
 }
 .waifu-tips {
   color: #fff;
@@ -19,6 +21,7 @@
   font-weight: 400;
 }
 .waifu-tip-item {
+  color: #7a097b;
   border: 1px solid rgba(255, 137, 255, 0.4);
   border-radius: 12px;
   background-color: rgba(255, 137, 255, 0.2);
@@ -29,77 +32,29 @@
   margin-bottom: 20px;
 }
 .waifu-tool {
-  display: block;
+  position: fixed;
+  display: inline-block;
   color: #aaa;
-  top: 50px;
-  right: 10px;
+  bottom: 250px;
+  right: 25px;
   font-size: 24px;
   line-height: 30px;
 }
-.waifu-tool span {
+.waifu-tool i {
   display: block;
+  padding-bottom: 7px;
   cursor: pointer;
   pointer-events: auto;
-  color: rgba(255, 137, 255, 0.1);
+  color: rgba(255, 137, 255, 0.3);
   transition: 0.2s;
 }
-.waifu-tool span:hover {
+.waifu-tool i:hover {
   color: rgba(255, 137, 255, 0.8);
 }
 .waifu #live2d {
   position: relative;
-}
-@font-face {
-  font-family: 'Flat-UI-Icons';
-  src: url('flat-ui-icons-regular.eot');
-  src: url('flat-ui-icons-regular.eot?#iefix') format('embedded-opentype'),
-    url('flat-ui-icons-regular.woff') format('woff'),
-    url('flat-ui-icons-regular.ttf') format('truetype'),
-    url('flat-ui-icons-regular.svg#flat-ui-icons-regular') format('svg');
-}
-[class^='fui-'],
-[class*='fui-'] {
-  font-family: 'Flat-UI-Icons';
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-.fui-cross:before {
-  content: '\e609';
-}
-.fui-info-circle:before {
-  content: '\e60f';
-}
-.fui-photo:before {
-  content: '\e62a';
-}
-.fui-eye:before {
-  content: '\e62c';
-}
-.fui-chat:before {
-  content: '\e62d';
-}
-.fui-home:before {
-  content: '\e62e';
-}
-.fui-user:before {
-  content: '\e631';
-}
-
-@-webkit-keyframes fadeInRight {
-  from {
-    opacity: 0;
-    -webkit-transform: translate3d(100%, 0, 0);
-    transform: translate3d(100%, 0, 0);
-  }
-
-  to {
-    opacity: 1;
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-  }
+  bottom: 0;
+  right: 0;
+  z-index: 5;
+  pointer-events: none;
 }

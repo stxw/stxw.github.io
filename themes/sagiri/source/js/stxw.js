@@ -14,10 +14,6 @@ const stxw = {
 	}
 }
 
-/* live2d一言和工具 */
-
-
-
 $(function(){
 	if(window.CONFIG.load_to_main){
 		stxw.load_to_main();

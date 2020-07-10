@@ -20,7 +20,7 @@ override: false
 # Then need to rename & redefine they on any other names, otherwise icons from Next will rewrite your custom icons in Hexo.
 favicon:
   visibilitychange: true
-  narmal: /images/favicon.ico
+  narmal: /images/stxw.jpg
   hidden: /images/failure.ico
   show_text: (/≧▽≦/)咦！又好了！
   hide_text: (T﹏T)啊呀！崩溃啦！
