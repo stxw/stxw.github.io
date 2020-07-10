@@ -1,3 +1,4 @@
+/* 加载页面后，自动跳转到主要内容部分（主页除外） */
 const stxw = {
 	load_to_main: function(){
 		var pathname = window.location.pathname;
@@ -12,6 +13,10 @@ const stxw = {
 		sessionStorage.setItem("pre_pathname", pathname);
 	}
 }
+
+/* live2d一言和工具 */
+
+
 
 $(function(){
 	if(window.CONFIG.load_to_main){

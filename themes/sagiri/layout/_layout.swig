@@ -62,17 +62,8 @@
       </div>
     {% endif %}
 
-<!--
-    <canvas id="evanyou"></canvas>
-    <canvas id="live2d" width="150" height="400" class="live2d"></canvas>
--->
-
 	{% if theme.live2d.enable %}
-		<canvas id="live2d" height="{{ theme.live2d.height }}" style="width:{{ theme.live2d.width }}px;" ></canvas>
-		<script type="text/javascript" src="{{ url_for(theme.js) }}/live2d.js"></script>
-		<script>
-			loadlive2d('live2d', "{{ theme.live2d.model }}");
-		</script>
+		{% include '_partials/live2d.swig' %}
 	{% endif %}
 
     {% if theme.needmoreshare2.enable and theme.needmoreshare2.float.enable %}
