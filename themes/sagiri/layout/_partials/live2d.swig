@@ -7,6 +7,9 @@
 		<i class="fa fa-chevron-down" ></i>
 	</div>
 </div>
+<div class="waifu-show">
+	<i class= "fa fa-chevron-up"></i>
+</div>
 <script type="text/javascript" src="{{ url_for(theme.js) }}/live2d.js"></script>
 <script>
 	loadlive2d('live2d', "{{ theme.live2d.model }}");

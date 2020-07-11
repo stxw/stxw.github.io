@@ -1,4 +1,4 @@
-/* live2d一言和工具 */
+/* live2d一言和工具栏 */
 !(function() {
   function randomOneFromArr(arr) {
     if (Array.isArray(arr)) {
@@ -10,7 +10,7 @@
     constructor() {
       this.messageTimer = null;
     }
-    say(msg, durationTime = 10000) {
+    say(msg, durationTime = 12000) {
       let temp = $('<div class="waifu-tip-item"></div>');
       temp.text(randomOneFromArr(msg));
       $('.waifu-tips').append(temp);
@@ -38,8 +38,10 @@
   });
   $('.waifu-tool .fa-chevron-down').click(function() {
     $('.waifu').slideToggle();
-    setTimeout(() => {
-      $('.waifu').slideToggle();
-    }, 1000 * 60 * 5);
+    $('.waifu-show').css("display","block");
+  });
+  $('.waifu-show').click(function() {
+    $('.waifu-show').css("display","none");
+    $('.waifu').slideToggle();
   });
 })();

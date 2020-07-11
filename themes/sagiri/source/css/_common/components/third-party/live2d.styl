@@ -10,6 +10,7 @@
     display: none;
   }
 }
+
 .waifu-tips {
   color: #fff;
   width: 300px;
@@ -21,7 +22,9 @@
   font-weight: 400;
 }
 .waifu-tip-item {
-  color: #7a097b;
+  color: #0089f7;
+  font-size: 16px;
+  pointer-events: auto;
   border: 1px solid rgba(255, 137, 255, 0.4);
   border-radius: 12px;
   background-color: rgba(255, 137, 255, 0.2);
@@ -31,6 +34,7 @@
   padding: 7px;
   margin-bottom: 20px;
 }
+
 .waifu-tool {
   position: fixed;
   display: inline-block;
@@ -51,6 +55,28 @@
 .waifu-tool i:hover {
   color: rgba(255, 137, 255, 0.8);
 }
+
+.waifu-show {
+  position: fixed;
+  display: none;
+  color: #aaa;
+  bottom: 250px;
+  right: 25px;
+  font-size: 24px;
+  line-height: 30px;
+}
+.waifu-show i {
+  display: block;
+  padding-bottom: 7px;
+  cursor: pointer;
+  pointer-events: auto;
+  color: rgba(255, 137, 255, 0.3);
+  transition: 0.2s;
+}
+.waifu-show i:hover {
+  color: rgba(255, 137, 255, 0.8);
+}
+
 .waifu #live2d {
   position: relative;
   bottom: 0;
