@@ -21,10 +21,6 @@
 
   <div class="{{ container_class }} {% block page_class %}{% endblock %}">
 
-  	{% if theme.github_corners.enable %}
-  		{% include '_partials/github-corner.swig' %}
-  	{% endif %}
-
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"> {%- include '_partials/header.swig' %} </div>
     </header>

@@ -100,4 +100,10 @@
     </button>
   </div>
 </div>
+
+
+{% if theme.github_corners.enable %}
+	{% include './github-corner.swig' %}
+{% endif %}
+
 {% include '../_custom/header.swig' %}
