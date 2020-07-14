@@ -111,8 +111,9 @@ search:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: sagiri
 #theme: next
+theme: sagiri
+# theme: sakura
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
