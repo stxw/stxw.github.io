@@ -235,11 +235,7 @@ custom_logo:
 # Available value:
 #    normal | night | night eighties | night blue | night bright
 # https://github.com/chriskempson/tomorrow-theme
-<<<<<<< HEAD
 highlight_theme: night eighties
-=======
-highlight_theme: night bright
->>>>>>> c31ec155f2a22e618cb0269d153f5cd1ef9ecc1c
 
 
 # ---------------------------------------------------------------
