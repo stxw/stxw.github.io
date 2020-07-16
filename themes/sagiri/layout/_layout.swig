@@ -74,6 +74,7 @@
 
   <script type="text/javascript" src="{{ url_for(theme.js) }}/sagiri.min.js"></script>
   <script type="text/javascript" src="{{ url_for(theme.js) }}/stxw.js"></script>
+  <script type="text/javascript" src="{{ url_for(theme.js) }}/highlight_tool.js"></script>
 
   {% include '_third-party/search/index.swig' %}
   {% include '_third-party/seo/baidu-push.swig' %}
