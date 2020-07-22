@@ -802,6 +802,9 @@ load_to_main: true
 # 归档按月统计，设置fasle按年统计
 archives_c_month: true
 
+# 文章标题自动编号
+post_title_num : true
+
 # 看板娘
 live2d:
   enable: true

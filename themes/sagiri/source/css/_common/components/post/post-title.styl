@@ -31,3 +31,32 @@
 
   .fa { font-size: 16px; }
 }
+
+if hexo-config('post_title_num') {
+  .post-body {
+    h1 {
+    counter-increment: h1_counter;
+    counter-reset: h2_counter 0;
+
+    &:before {
+      content: counter(h1_counter)". ";
+    }
+    }
+
+    h2 {
+      counter-increment: h2_counter;
+      counter-reset: h3_counter 0;
+
+      &:before {
+        content: counter(h1_counter)"."counter(h2_counter)". ";
+      }
+    }
+    h3 {
+      counter-increment: h3_counter;
+
+      &:before {
+        content: counter(h1_counter)"."counter(h2_counter)"."counter(h3_counter)". ";
+      }
+    }
+  }
+}
