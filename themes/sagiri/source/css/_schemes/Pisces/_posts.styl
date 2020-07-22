@@ -170,13 +170,22 @@
 
 .comments {
   background: #fff;
-  margin: 0;
-  padding: 40px;
   border-radius: 5px;
+  margin: 0 auto;
+  max-width: 900px;
+  
+  #vcomments {
+    padding: 40px;
+  }
 
   +mobile() {
     border-radius: 0;
   }
+}
+
+.content {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .disqus-loading {
