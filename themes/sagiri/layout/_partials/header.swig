@@ -50,7 +50,7 @@
   {% endif %}
 </nav>
 
-<div class="site-brand-wrapper" style="background-image: url({{ url_for( theme.header_bg | default(theme.images + '/header_default.png') ) }})">
+<div class="site-brand-wrapper" >
   <div class="site-meta {% if theme.custom_logo.enabled %}custom-logo{% endif %}">
     {% if theme.custom_logo.image and theme.scheme === 'Muse' %}
       <div class="site-meta-headline">
@@ -98,6 +98,7 @@
   </div>
 </div>
 
+<img class="background-image" src="{{ url_for(theme.background_image) }}" />
 
 {% if theme.github_corners.enable %}
 	{% include './github-corner.swig' %}

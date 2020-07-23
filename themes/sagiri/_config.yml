@@ -757,8 +757,7 @@ css: css
 js: js
 images: images
 
-# header_bg: /images/header_default.png
-header_bg: /images/header_default.jpg
+background_image: /images/header_default.jpg
 
 card:
   # avatar: /images/card.png
