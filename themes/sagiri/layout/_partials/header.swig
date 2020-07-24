@@ -98,7 +98,7 @@
   </div>
 </div>
 
-<img class="background-image" src="{{ url_for(theme.background_image) }}" />
+<img class="background-image" src="{{ url_for(theme.background.image_src) }}" />
 
 {% if theme.github_corners.enable %}
 	{% include './github-corner.swig' %}
