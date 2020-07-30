@@ -23,7 +23,7 @@ if ($figureHighlight.length) {
 	* 代码copy
 	* copy function
 	*/
-	$highlightTools.append('<div class="copy-notice"></div><i class="fa fa-paste copy-button"></i>')
+	$highlightTools.append('<div class="copy-notice"></div><i class="fa fa-paste copy-button" title="复制"></i>')
 	const copy_code = function (text, ctx) {
 		const copy_success   = "复制成功"
 		const copy_error     = "复制失败"
@@ -76,15 +76,17 @@ if ($figureHighlight.length) {
 	/**
    * 代码收缩
    */
-	$highlightTools.append('<i class="fa fa-angle-down code-expand"></i>')
+	$highlightTools.append('<i class="fa fa-angle-down code-expand" title="隐藏代码"></i>')
 	$(document).on('click', '.highlight-tools >.code-expand', function () {
 		const $hideItem = $(this).parent().nextAll()
 		if ($(this).hasClass('code-closed')) {
-			$hideItem.css('display', 'block')
-			$(this).removeClass('code-closed')
+			$hideItem.css('display', 'block');
+			$(this).removeClass('code-closed');
+			$(this).attr('title', '隐藏代码');
 		} else {
-			$hideItem.css('display', 'none')
-			$(this).addClass('code-closed')
+			$hideItem.css('display', 'none');
+			$(this).addClass('code-closed');
+			$(this).attr('title', '显示代码');
 		}
 	})
 }
