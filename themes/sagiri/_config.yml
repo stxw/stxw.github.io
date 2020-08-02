@@ -759,7 +759,7 @@ images: images
 
 background:
   image_src: /images/backgound.png
-  image_opacity: 1
+  image_opacity: 0.9
   element_opacity: 0.85
 
 
