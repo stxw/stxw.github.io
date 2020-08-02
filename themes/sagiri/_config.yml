@@ -758,8 +758,8 @@ js: js
 images: images
 
 background:
-  image_src: /images/header_default.jpg
-  image_opacity: 0.5
+  image_src: /images/backgound.png
+  image_opacity: 1
   element_opacity: 0.85
 
 
