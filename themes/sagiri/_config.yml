@@ -758,10 +758,9 @@ js: js
 images: images
 
 background:
-  image_src: /images/backgound.png
+  image_src: /images/backgound.jpeg
   image_opacity: 0.9
   element_opacity: 0.85
-
 
 card:
   # avatar: /images/card.png
