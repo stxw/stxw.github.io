@@ -16,7 +16,7 @@ require('./since');  //运行时间统计
 require('./title'); //标题变化
 require('./type');
 // require('./mix'); // 顶部头像动画
-// require('./scroll'); //回到顶部
+require('./scroll'); //回到顶部，向上滑动显示菜单
 // require('./kanban'); //看板娘
 // require('./evanyou'); //背景彩带
 // require('./clipboard'); //剪贴板加版权
