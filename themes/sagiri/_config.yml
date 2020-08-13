@@ -35,7 +35,7 @@ keywords: "stxw,blog"
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
 # Set rss to specific value if you have burned your feed already.
-rss:
+rss: false
 
 # ---------------------------------------------------------------
 # SEO Settings
@@ -66,7 +66,7 @@ index_with_subtitle: false
 menu:
   home: /|| home
   archives: /archives/|| archive
-  # 后宫: /friends/|| mars
+  后宫: /friends/|| mars
   留言板: /message/|| pencil
   about: /about/|| rocket
 
@@ -109,6 +109,8 @@ links_icon: link
 links_title: Links
 links_layout: block
 #links_layout: inline
+# links:
+#   stxw: http://stxw.ml/
 
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
