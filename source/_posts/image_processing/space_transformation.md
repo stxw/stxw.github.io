@@ -1,7 +1,7 @@
 ---
 title: '图像的几何空间变换'
 date: 2020-07-03 09:54:55
-categories: 学习笔记
+categories: 图像处理
 tags: [图像处理, opencv]
 mathjax: true
 ---

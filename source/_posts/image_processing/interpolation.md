@@ -1,7 +1,7 @@
 ---
 title: '图像内插'
 date: 2020-03-23 23:05:39
-categories: 学习笔记
+categories: 图像处理
 tags: [图像处理,opencv]
 mathjax: true
 ---

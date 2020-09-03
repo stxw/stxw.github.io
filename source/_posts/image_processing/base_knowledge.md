@@ -1,7 +1,7 @@
 ---
 title: '数字图像基础'
 date: 2020-02-18 20:44:55
-categories: 学习笔记
+categories: 图像处理
 tags: [图像处理]
 mathjax: true
 ---

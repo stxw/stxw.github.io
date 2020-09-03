@@ -1,7 +1,7 @@
 ---
 title: '图像的灰度变换'
 date: 2020-07-16 14:32:00
-categories: 学习笔记
+categories: 图像处理
 tags: [图像处理]
 mathjax: true
 ---
