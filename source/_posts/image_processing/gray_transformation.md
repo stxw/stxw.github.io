@@ -20,14 +20,14 @@ mathjax: true
 $$ s = c\log(1 + r) $$
 
 &emsp;&emsp;式中$c$是常数，并假设$r>=0$。对数变换和反对数变换的曲线如下所示，蓝色曲线代表对数变换，橙色曲线代表反对数变换（图上反对数变换的公式有点看不清，是$s=e^{\frac{r}{c}} - 1$），c的取值为$\frac{L - 1}{T(L - 1)}$。对数变换将输入中范围较窄的低灰度值映射为输出中范围较宽的灰度值，将输入中范围较宽的高灰度值映射为输出中范围较窄的灰度值。使用这种类型的变换来扩展图像中的暗像素值，同时压缩更高灰度级的值。反对数变换的作用则相反。
-![](/images/logarithmic_transformation.png "对数变换和反对数变换")
+![](/images/image_processing/gray_transformation/logarithmic_transformation.png "对数变换和反对数变换")
 
 # 幂律变换
 &emsp;&emsp;幂律变换也叫伽马变换，它的通用公式为：
 $$ s = cr^{\gamma} $$
 
 &emsp;&emsp;式中$c$和$\gamma$是常数。不同$\gamma$值的幂律变换曲线如下所示。
-![](/images/exponential_transform.png "幂律变换")
+![](/images/image_processing/gray_transformation/exponential_transform.png "幂律变换")
 
 
 # 分段线性变换函数
@@ -35,13 +35,13 @@ $$ s = cr^{\gamma} $$
 
 ## 对比度拉伸
 &emsp;&emsp;对比度拉伸是最简单的分段线性变换之一，对比度拉伸是扩展图像灰度级动态范围的处理，因此可以跨越记录介质和显示装置的全部灰度范围。下图是一个对比度拉伸的典型函数图像。
-![](/images/contrast_stretch.png "对比度拉伸")
+![](/images/image_processing/gray_transformation/contrast_stretch.png "对比度拉伸")
 
 &emsp;&emsp;通过变换后，灰度值在$[r_1, r_2]$范围内的像素会线性拉伸到$[s_1, s_2]$范围内，最终的结果是在范围$[r_1, r_2]$内会增强对比度，其他范围内的对比度会降低。
 
 ## 灰度级分层
 &emsp;&emsp;用于突出图像中特定范围的亮度，可以用来增强某些特征。给个书上的例图吧，不想码字了！
-![](/images/grayscale_stratification.png "灰度级分层")
+![](/images/image_processing/gray_transformation/grayscale_stratification.png "灰度级分层")
 
 ## 比特平面分层
 &emsp;&emsp;对于8比特的灰度图，每个像素由8个比特位构成，如果把图像上所有像素的特定位置的比特位单独拿出来，就可以构成一张只包含0和1的二值图像，该图像就叫原图像的比特平面。比如取每个像素中8个比特位的第7个比特位，构成该图像的第7比特平面。

@@ -33,7 +33,7 @@ tags: [markdown]
 ```
 效果如下：
 
-![](/images/1581056192563.png)
+![](/images/learn_note/markdown_base/1581056192563.png)
 
 &emsp;&emsp;需要注意的是，使用这种方式的标题，上一行如果是普通文本，两行之间要加一个换行，不然上一行文本也会有标题的样式。
 
@@ -48,7 +48,7 @@ tags: [markdown]
 ```
 效果如下：
 
-![](/images/1581056288407.png)
+![](/images/learn_note/markdown_base/1581056288407.png)
 
 # 字体
 ## 简单字体
@@ -129,17 +129,17 @@ markdown里敲多个换行只能显示一个，如果想显示多个换行，需
 ![这是一张无法加载的图片](错误的图片地址 "title")
 如果图片有标题，当鼠标停在图片上时会显示出来，即使图片无法加载，鼠标停靠时也会显示，下面是一个例子，请读者自行尝试。
 ```
-![涅普迪努](/images/nepnep.png "我可爱吗^_^")
+![涅普迪努](/images/learn_note/markdown_base/nepnep.png "我可爱吗^_^")
 ```
-![涅普迪努](/images/nepnep.png "我可爱吗^_^")
+![涅普迪努](/images/learn_note/markdown_base/nepnep.png "我可爱吗^_^")
 
 ## 自定义图片
 Markdown无法自定义图片的宽度和高度，如果想改变的话需要借助html的img标签。
 ```
-<img width=100 height=160 src="/images/nepnep.png" title="我是变小后的涅普迪努"></img>
+<img width=100 height=160 src="https://stxw.ml/images/learn_note/markdown_base/nepnep.png" title="我是变小后的涅普迪努"></img>
 ```
 下面是一张100×160的图片
-<img width=100 height=160 src="/images/nepnep.png" title="我是变小后的涅普迪努"></img>
+<img width=100 height=160 src="/images/learn_note/markdown_base/nepnep.png" title="我是变小后的涅普迪努"></img>
 
 # 链接
 ## 外部链接

@@ -37,12 +37,12 @@ $$
 
 |变换名称|变换矩阵$T$|坐标公式|例子|
 |:---:|:---:|:---:|:---:|
-| 恒等变换 | $\left[\begin{matrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = v \\\\ y = w$ | ![](https://stxw.ml/images/affine_t_1.png) |
-| 尺度变换 | $\left[\begin{matrix} c_x & 0 & 0 \\\\ 0 & c_y & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = c_x v \\\\ y = c_y w$ | ![](https://stxw.ml/images/affine_t_2.png) |
-| 平移变换 | $\left[\begin{matrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ t_x & t_y & 1\end{matrix}\right]$ | $x = v + t_x \\\\ y = w + t_y$ | ![](https://stxw.ml/images/affine_t_3.png) |
-| 旋转变换 | $\left[\begin{matrix} \cos\theta & \sin\theta & 0 \\\\ -\sin\theta & \cos\theta & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = v\cos\theta - w\sin\theta \\\\ y = v\sin\theta + w\cos\theta$ | ![](/images/affine_t_4.png) |
-| 垂直偏移变换 | $\left[\begin{matrix} 1 & 0 & 0 \\\\ s_v & 1 & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = v + s_vw \\\\ y = w$ | ![](https://stxw.ml/images/affine_t_5.png) |
-| 水平偏移变换 | $\left[\begin{matrix} 1 & s_h & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = v \\\\ y = w + s_hv$ | ![](https://stxw.ml/images/affine_t_6.png) |
+| 恒等变换 | $\left[\begin{matrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = v \\\\ y = w$ | ![](/images/image_processing/space_transformation/affine_t_1.png) |
+| 尺度变换 | $\left[\begin{matrix} c_x & 0 & 0 \\\\ 0 & c_y & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = c_x v \\\\ y = c_y w$ | ![](/images/image_processing/space_transformation/affine_t_2.png) |
+| 平移变换 | $\left[\begin{matrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ t_x & t_y & 1\end{matrix}\right]$ | $x = v + t_x \\\\ y = w + t_y$ | ![](/images/image_processing/space_transformation/affine_t_3.png) |
+| 旋转变换 | $\left[\begin{matrix} \cos\theta & \sin\theta & 0 \\\\ -\sin\theta & \cos\theta & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = v\cos\theta - w\sin\theta \\\\ y = v\sin\theta + w\cos\theta$ | ![](/images/image_processing/space_transformation/affine_t_4.png) |
+| 垂直偏移变换 | $\left[\begin{matrix} 1 & 0 & 0 \\\\ s_v & 1 & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = v + s_vw \\\\ y = w$ | ![](/images/image_processing/space_transformation/affine_t_5.png) |
+| 水平偏移变换 | $\left[\begin{matrix} 1 & s_h & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1\end{matrix}\right]$ | $x = v \\\\ y = w + s_hv$ | ![](/images/image_processing/space_transformation/affine_t_6.png) |
 
 # 实现
 &emsp;&emsp;实现空间变换的方法有两种：
