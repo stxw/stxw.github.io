@@ -3,13 +3,25 @@
 
   .post-title-link,
   .post-title {
-    color: #444;
     font-size: 25px;
-    font-weight: 700;
+	font-weight: 700;
+	
+  }
+
+  .post-title{
+	color: $black-dim;
+  }
+
+  .post-title-link{
+	color: $blue;
+
+	&:hover{
+		color: $corol-light;
+	}
   }
 
   .post-meta {
-    color: #555;
+    color: $black-light;
     margin-top: 5px;
 
     +mobile() {
