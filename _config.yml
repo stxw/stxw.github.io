@@ -13,8 +13,8 @@ timezone: ''
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-# url: http://qgwrpk4vq.hd-bkt.clouddn.com
 url: http://stxw.ml
+# url: http://qgwrpk4vq.hd-bkt.clouddn.com
 root: /
 permalink: :title/
 permalink_defaults:
@@ -139,22 +139,23 @@ deploy:
 ##image/js/css  子参数folder为不同静态资源种类的目录名称，一般不需要改动
 ##image.extend  这是个特殊参数，用于生成缩略图或加水印等操作。具体请参考http://developer.qiniu.com/docs/v6/api/reference/fop/image/ 
 ##              可使用基本图片处理、高级图片处理、图片水印处理这3个接口。例如 ?imageView2/2/w/500 即生成宽度最多500px的缩略图
-qiniu:
-  offline: false
-  sync: true
-  bucket: stxw-blog
-  secret_file: qiniu.json
-  access_key: AccessKey
-  secret_key: SecretKey
-  dirPrefix: 
-  urlPrefix: stxw-blog.s3-cn-east-1.qiniucs.com
-  up_host: http://upload.qiniu.com
-  local_dir: public
-  update_exist: true
-  image: 
-    folder: images
-    extend: 
-  js:
-    folder: js
-  css:
-    folder: css
+# 因域名备案未成功，暂停使用
+# qiniu:
+#   offline: false
+#   sync: true
+#   bucket: stxw-blog
+#   secret_file: qiniu.json
+#   access_key: AccessKey
+#   secret_key: SecretKey
+#   dirPrefix: 
+#   urlPrefix: http://qgwrpk4vq.hd-bkt.clouddn.com
+#   up_host: http://upload.qiniu.com
+#   local_dir: public
+#   update_exist: true
+#   image: 
+#     folder: images
+#     extend: 
+#   js:
+#     folder: js
+#   css:
+#     folder: css
