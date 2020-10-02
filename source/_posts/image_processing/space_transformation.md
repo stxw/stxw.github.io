@@ -18,7 +18,7 @@ $$(x, y) = T\{(v, w)\}$$
 &emsp;&emsp;上式中$(v, w)$是原图中像素的坐标，$(x, y)$是变换后图像的坐标，$T$是变换函数，也就是原图中某个位置的像素通过变换函数，映射到目标图像中。比如：$(x, y) = T{(v, w)} = (v/2, w/2)$表示在两个方向上将原图缩小一半。
 
 ## 图像内插
-&emsp;&emsp;请参考我的另一篇博文[图像内插](/image_processing/tu-xiang-nei-cha/)。
+&emsp;&emsp;请参考我的另一篇博文[图像内插](/image_processing/interpolation/)。
 
 # 仿射变换
 &emsp;&emsp;仿射变换是最常用的空间坐标变换之一，其一般形式如下：
