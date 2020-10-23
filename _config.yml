@@ -14,7 +14,6 @@ timezone: ''
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://stxw.ml
-# url: http://qgwrpk4vq.hd-bkt.clouddn.com
 root: /
 permalink: :title/
 permalink_defaults:
@@ -148,7 +147,7 @@ deploy:
 #   access_key: AccessKey
 #   secret_key: SecretKey
 #   dirPrefix: 
-#   urlPrefix: http://qgwrpk4vq.hd-bkt.clouddn.com
+#   urlPrefix: http://stxw.ml
 #   up_host: http://upload.qiniu.com
 #   local_dir: public
 #   update_exist: true
