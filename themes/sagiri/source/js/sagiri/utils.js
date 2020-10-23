@@ -267,7 +267,7 @@ NexT.utils = NexT.$u = {
   },
 
   getContentVisibilityHeight: function () {
-    var docHeight = $('#content').height(),
+    var docHeight = $('#content').height() + $('#header').height(),
         winHeight = $(window).height(),
         contentVisibilityHeight = (docHeight > winHeight) ? (docHeight - winHeight) : ($(document).height() - winHeight);
     return contentVisibilityHeight;
