@@ -755,9 +755,9 @@ vendors:
 
 
 # Assets
-css: css
-js: js
-images: images
+css: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/css
+js: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/js
+images: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/images
 
 background:
   image_src: /images/backgound.jpeg
@@ -769,6 +769,11 @@ card:
   avatar: https://api.ixiaowai.cn/mcapi/mcapi.php
   name: 
   description: 
+
+# 图片镜像，可用于jsdelivr加速
+img_mirror:
+  enable: true
+  prefix: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/
 
 footer:
   # Specify the date when the site was setup.
@@ -812,7 +817,7 @@ post_title_num : true
 # 看板娘
 live2d:
   enable: true
-  model: /images/live2d_model/nepnep/index.json # 模型的地址
+  model: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/images/live2d_model/nepnep/index.json # 模型的地址
   width: 300 # 控制模型的尺寸比例
   height: 380 # 需要根据不同模型来调整
 

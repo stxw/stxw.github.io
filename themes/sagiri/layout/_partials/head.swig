@@ -141,7 +141,6 @@
     motion: {{ theme.motion | json_encode }},
     since: '{{ theme.footer.since }}',
     onlineAPI: '{{ theme.online_api }}',
-	load_to_main: {{ theme.load_to_main }},
     site: {
       title: '{{ theme.title }}',
       subtitle: '{{ theme.subtitle }}',
@@ -169,7 +168,12 @@
       hidden: '{{theme.favicon.hidden}}',
       show_text: '{{theme.favicon.show_text}}',
       hide_text: '{{theme.favicon.hide_text}}'
-    }
+    },
+	load_to_main: {{ theme.load_to_main }},
+	img_mirror: {
+      enable: {{theme.img_mirror.enable}},
+      prefix: '{{theme.img_mirror.prefix}}'
+	}
   };
 </script>
 {% set js_vendors = {} %}
