@@ -591,3 +591,18 @@ case 字符串 in
 esac # 结束case语句
 ```
 &emsp;&emsp;case语句只能对字符串进行判断，这里的模式是指正则表达式。
+
+# 循环结构
+## for语句
+
+## while语句
+
+## until语句
+
+# 其他命令
+## find
+
+## sed
+
+## awk
+
