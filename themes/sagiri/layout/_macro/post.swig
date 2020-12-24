@@ -344,7 +344,8 @@
     {#####################}
     {### END POST BODY ###}
     {#####################}
-
+    
+	<hr>
     {% if theme.wechat_subscriber.enabled and not is_index %}
       <div>
         {% include 'wechat-subscriber.swig' %}
