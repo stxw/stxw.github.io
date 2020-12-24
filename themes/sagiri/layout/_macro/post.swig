@@ -345,7 +345,6 @@
     {### END POST BODY ###}
     {#####################}
     
-	<hr>
     {% if theme.wechat_subscriber.enabled and not is_index %}
       <div>
         {% include 'wechat-subscriber.swig' %}
@@ -353,6 +352,7 @@
     {% endif %}
 
     {% if not is_index %}
+	  <hr>
       <div class="post-share">分享到：</div>
     {% endif %}
 
