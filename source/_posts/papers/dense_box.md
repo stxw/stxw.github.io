@@ -6,7 +6,7 @@ tags: [论文, 深度学习, 目标检测]
 mathjax: true
 ---
 
-[论文下载链接](/documnets/densebox.pdf)
+[论文下载链接](https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/documnets/densebox.pdf)
 
 # Abstract（摘要）
 &emsp;&emsp;**DenseBox**：一个用于做目标检测，统一的端到端的FCN框架，通过检测目标在图像中的所有可能的位置和尺度，直接预测目标的边界框和类别的置信度。
