@@ -760,20 +760,20 @@ js: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/js
 images: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/images
 
 background:
-  image_src: /images/backgound.jpeg
+  image_src: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/images/backgound.jpeg
   image_opacity: 0.9
   element_opacity: 0.85
+
+# 图片镜像，可用于jsdelivr加速
+img_mirror:
+  enable: true
+  prefix: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/
 
 card:
   # avatar: /images/card.png
   avatar: https://api.ixiaowai.cn/mcapi/mcapi.php
   name: 
   description: 
-
-# 图片镜像，可用于jsdelivr加速
-img_mirror:
-  enable: true
-  prefix: https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/
 
 footer:
   # Specify the date when the site was setup.
