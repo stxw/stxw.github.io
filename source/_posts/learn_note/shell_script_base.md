@@ -318,6 +318,7 @@ echo ls -l
 echo `ls -l`
 ```
 &emsp;&emsp;第一行命令会将字符串“ls -l”输出，第二行命令则会先执行`ls -l`命令，然后用`echo`命令将`ls -l`的执行结果输出。
+&emsp;&emsp;反引号也可以用`$()`来代替，比如`` `ls -l` ``和`$(ls -l)`是等效的。
 
 ## 反斜杠
 &emsp;&emsp;转义字符，将反斜杠后面的字符当做普通字符来处理。
@@ -342,9 +343,9 @@ echo "hello world"; ls -la;
 4. **$**：用于引用变量，见[变量](#变量)。
 5. **&**：将命令放到后台运行，见[后台切换](#后台切换)。
 6. **#**：在shell脚本里表示单行注释，见[单行注释](#单行注释)。
-7. **()**：用于创建成组的命令。
+7. **()**：`$()`用来表示括号里的是命令，和[反引号](#反引号)作用相同。`$(())`用来表示[表达式运算](#表达式运算)。
 8. **\[\]**：用于shell的[通配符](#通配符)，或者用来表示[表达式运算](#表达式运算)，也可以用来表示[条件判断](#条件判断)。
-9. **{}**：用于shell的[通配符](#通配符)，或者用来引用[变量](#变量)。
+9. **{}**：用于shell的[通配符](#通配符)，或者用来引用[变量](#变量)，也可以用来生成序列，用法见[for语句](#for语句)。
 
 # 通配符和正则表达式
 &emsp;&emsp;shell里的通配符一般用来匹配文件路径，正则表达式则是用来匹配字符串的。
@@ -363,7 +364,7 @@ echo "hello world"; ls -la;
 
 &emsp;&emsp;shell里的通配符一般用来匹配多个文件或文件夹的路径，常用的使用通配符的命令有：ls、find、cp、mv、chmod...。
 ```shell
-xxx@xxx:~/code/shell$ ls -1 test_[0-9].sh
+xxx@xxx:~$ ls -1 test_[0-9].sh
 test_0.sh
 test_1.sh
 test_2.sh
@@ -403,7 +404,7 @@ test_2.sh
 
 &emsp;&emsp;**注意**：shell里用grep时，`|`、`()`、`{}`、`+`、`?`需要转义。比如：
 ```shell
-xxx@xxx:~/code/shell$ ls -1 | grep 'test_1\{2\}'
+xxx@xxx:~$ ls -1 | grep 'test_1\{2\}'
 test_11.sh
 ```
 &emsp;&emsp;上面的`{`和`}`前面要加`\`转义。
@@ -554,7 +555,7 @@ fi # 结束if语句
 &emsp;&emsp;这里的条件一般是一条shell命令，比如`test`、`gcc`等。如果命令的返回值为0，则条件成立。
 &emsp;&emsp;小实验：
 ```shell
-xxx@xxx:~/code/shell$ cat shell.sh 
+xxx@xxx:~$ cat shell.sh 
 #!/bin/sh
 
 if [ ${1} -gt ${2} ]  # 判断${1}是否大于${2}
@@ -567,11 +568,11 @@ else
 	echo 'num_1 < num_2'
 fi
 
-xxx@xxx:~/code/shell$ ./shell.sh 12 12
+xxx@xxx:~$ ./shell.sh 12 12
 num_1 = num_2
-xxx@xxx:~/code/shell$ ./shell.sh 12 11
+xxx@xxx:~$ ./shell.sh 12 11
 num_1 > num_2
-xxx@xxx:~/code/shell$ ./shell.sh 12 13
+xxx@xxx:~$ ./shell.sh 12 13
 num_1 < num_2
 ```
 
@@ -594,6 +595,126 @@ esac # 结束case语句
 
 # 循环结构
 ## for语句
+&emsp;&emsp;语法：
+```shell
+for VAR in item1 item2 .... itemN
+do
+	# 循环内的命令
+done
+```
+&emsp;&emsp;举个栗子：
+```shell
+stxw@stxw-c:~$ cat shell.sh 
+
+for VAR in aaa bbb ccc
+do
+	echo ${VAR}
+done
+
+stxw@stxw-c:~$ bash shell.sh 
+aaa
+bbb
+ccc
+```
+&emsp;&emsp;然后再介绍几种shell里与for语句搭配使用的形式。
+1. `{s..e}`：用来生成从s到e的序列，s和e可以是整数，也可以是大小写字母。
+```shell
+stxw@stxw-c:~$ echo {-3..12}
+-3 -2 -1 0 1 2 3 4 5 6 7 8 9 10 11 12
+stxw@stxw-c:~$ echo {a..z}
+a b c d e f g h i j k l m n o p q r s t u v w x y z
+```
+&emsp;&emsp;这里要注意的是，s和e中间有**两个**点，多一个或少一个都不行。
+&emsp;&emsp;如果s和e是整数的话，可以在s和e前面加0，达到自动用0补全的效果，比如：
+```shell
+stxw@stxw-c:~$ echo {001..012}
+001 002 003 004 005 006 007 008 009 010 011 012
+```
+&emsp;&emsp;这个和for循环搭配使用，就可以从s循环到e了，举个栗子：
+```shell
+stxw@stxw-c:~$ cat shell.sh 
+
+for i in {01..04}
+do
+	echo "str_${i}"
+done
+
+stxw@stxw-c:~$ bash shell.sh 
+str_01
+str_02
+str_03
+str_04
+```
+
+2. `` `命令` ``或者`$(命令)`：用for语句来循环shell命令的输出，下面的例子用for语句输出当前目录的所有文件：
+```shell
+for FILE_NAME in `ls`
+do
+	echo ${FILE_NAME}
+done
+```
+&emsp;&emsp;这里再重点介绍一下seq命令，seq命令也是用来生成序列的，与`{s..e}`不同的是，seq可以生成浮点数序列，但是不能生成大小写字母序列，用法有三种，如下：
+- seq [选项]... 尾数
+- seq [选项]... 首数 尾数
+- seq [选项]... 首数 增量 尾数
+
+&emsp;&emsp;首数默认是1，增量默认也是1，可用的选项有三个：
+| 选项 | 描述 |
+| --- | --- |
+| -f | 指定生成的序列中每个数字的格式，指定方式和c语言的printf函数方式相同，<br>比如`%2.1f`，要注意的是只能用`%f`，`%d`和`%lf`都不行。 |
+| -s | 指定分隔数字的字符串，默认是换行`\n`。 |
+| -w | 通过填充前导零来均衡宽度，这个不能和`-f`同时使用。 |
+&emsp;&emsp;一些例子：
+```shell
+stxw@stxw-c:~$ seq 3 # 只有一个数字的，生成从1到该数字的序列，默认增量是1
+1
+2
+3
+stxw@stxw-c:~$ seq -s ' ' 12  # 用空格来分隔数字
+1 2 3 4 5 6 7 8 9 10 11 12
+stxw@stxw-c:~$ 
+stxw@stxw-c:~$ seq -s ' ' -3 12  # 有两个数字的，生成两个数字之间增量为1的序列
+-3 -2 -1 0 1 2 3 4 5 6 7 8 9 10 11 12
+stxw@stxw-c:~$ 
+stxw@stxw-c:~$ seq -s ' ' -3 0.8 12 # 三个数字的
+-3.0 -2.2 -1.4 -0.6 0.2 1.0 1.8 2.6 3.4 4.2 5.0 5.8 6.6 7.4 8.2 9.0 9.8 10.6 11.4
+stxw@stxw-c:~$ 
+stxw@stxw-c:~$ seq -s '__' -3 12  # 用'__'来分隔数字
+-3__-2__-1__0__1__2__3__4__5__6__7__8__9__10__11__12
+stxw@stxw-c:~$ 
+stxw@stxw-c:~$ seq -s ' ' -w -3 12  # 通过填充前导零来均衡宽度
+-3 -2 -1 00 01 02 03 04 05 06 07 08 09 10 11 12
+stxw@stxw-c:~$ 
+stxw@stxw-c:~$ seq -s ' ' -f %05.2f 12  # 指定数字的格式
+01.00 02.00 03.00 04.00 05.00 06.00 07.00 08.00 09.00 10.00 11.00 12.00
+```
+&emsp;&emsp;seq与for语句搭配使用：
+```shell
+stxw@stxw-c:~$ cat shell.sh 
+
+for i in `seq -3 12`
+do
+	echo -n "${i} "
+done
+echo
+
+stxw@stxw-c:~$ bash shell.sh 
+-3 -2 -1 0 1 2 3 4 5 6 7 8 9 10 11 12 
+```
+
+3. 最后一种是for语句和路径通配符，举个栗子：
+```shell
+stxw@stxw-c:~$ cat shell.sh 
+# 用for语句输出当前目录下的所有文件
+for FILE_NAME in ./*
+do
+	echo -n "${FILE_NAME} "
+done
+echo
+
+stxw@stxw-c:~$ bash shell.sh 
+./a.out ./in.txt ./out.txt ./shell.sh ./test.cpp 
+```
 
 ## while语句
 
