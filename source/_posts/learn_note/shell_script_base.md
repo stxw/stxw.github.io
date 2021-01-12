@@ -719,8 +719,30 @@ stxw@stxw-c:~$ bash shell.sh
 ```
 
 ## while语句
+&emsp;&emsp;语法：
+```shell
+while 条件测试
+do
+	# 循环内的命令
+done
+```
+&emsp;&emsp;while语句首先进行条件测试，如果条件为真，则进入循环，直到条件为假时退出循环，跟C语言的一样。while语句的一个经典的用法是搭配输入重定向，读取文件的内容，下面是一个例子：
+```shell
+while read VAR # 读取标准输入的一行
+do
+	echo ${VAR}
+done < in.txt # 将in.txt文件重定向到标准输入
+```
 
 ## until语句
+&emsp;&emsp;语法：
+```shell
+until 条件测试
+do
+	# 循环内的命令
+done
+```
+&emsp;&emsp;until语句在条件为假时进入循环，条件为真时退出循环，其他和while语句相同。
 
 # 其他命令
 ## find
