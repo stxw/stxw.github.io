@@ -848,6 +848,7 @@ find ./ -amin -5
 - -anewer file ：对文件的最后一次访问时间在file的最后一次修改时间之后。
 - -newer file ：文件数据最后一次的修改时间在file的最后一次修改时间之后。(注意这里前面不要加m)
 - -cnewer file ：文件状态最后一次修改时间在file的最后一次修改时间之后。
+
 ```shell
 # 查找当前目录下，最后一次的访问时间在./test.sh文件的最后一次修改时间之后的文件。
 find ./ -anewer ./test.sh
@@ -869,6 +870,7 @@ find ./ -group root
 - -perm mode ：文件的权限位恰好是mode(八进制或符号)。
 - -perm -mode ：mode中的所有的权限位都被设置了的文件。
 - -perm +mode ：mode中的任意一个的权限位被设置了的文件。
+
 ```shell
 # 查找当前目录下，权限是0777的文件。
 find ./ -perm 0777
