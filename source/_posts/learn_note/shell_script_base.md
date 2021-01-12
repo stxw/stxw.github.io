@@ -858,6 +858,7 @@ find ./ -anewer ./test.sh
 参数：
 - -user uname ：文件的所有者是uname(也可以使用数字形式的用户ID)。
 - -group gname ：文件属于gname(也允许使用数字形式的组ID)群组。
+
 ```shell
 # 查找当前目录下，文件所有者是root的文件。
 find ./ -user root
