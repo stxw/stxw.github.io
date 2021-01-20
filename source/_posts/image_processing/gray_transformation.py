@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 def exponential_transform():
 	my_font = matplotlib.font_manager.FontProperties(fname='/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc')
 
-	x = range(0, 255, 1)
+	x = range(0, 256, 1)
 
 	c = 255.0 / (255.0 ** 0.04)
 	y = [ c * (i ** 0.04) for i in x ]
@@ -110,5 +110,5 @@ def grayscale_stratification():
 
 if __name__ == "__main__":
 	exponential_transform()
-#	contrast_stretch()
-#	grayscale_stratification()
+	# contrast_stretch()
+	# grayscale_stratification()
