@@ -9,4 +9,6 @@ type: about
 属性：宅、二次元、咸鱼
 
 现在在学：
-	- 深度学习：
+- 深度学习：<https://github.com/stxw/deep_learning>
+- 图像处理：<https://github.com/stxw/opencv_learn>
+- acm: <https://github.com/stxw/acm>
