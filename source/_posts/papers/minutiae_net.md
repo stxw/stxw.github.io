@@ -6,7 +6,7 @@ tags: [论文, 深度学习, 指纹识别]
 mathjax: true
 ---
 
-[论文下载链接](https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/documnets/MinutiaeNet.pdf)
+[论文原文下载链接](https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/documnets/papers/MinutiaeNet.pdf)
 
 # Abstract（摘要）
 &emsp;&emsp;提出了一个基于深度神经网络的全自动指纹细节点提取器。
