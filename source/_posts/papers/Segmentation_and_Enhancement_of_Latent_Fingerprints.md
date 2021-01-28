@@ -20,10 +20,15 @@ mathjax: true
 3. 为了兼顾鲁棒性和准确性，提出了一种基于64×64和32×32两种分辨率字典的从粗到精的策略。
 4. 所提出的分割和增强算法优于已发布的算法，并能显著提高最先进的商用潜指纹匹配器在两个潜指纹数据库(NIST SD27和WVU DB)上的性能。
 
+![](/images/paper/Segmentation_and_Enhancement_of_Latent_Fingerprints/fig_3.png)
+
 本文的其余部分组织如下：第二节给出了所提算法的细节。实验结果报告在第3节。最后在第四部分给出了结论和未来的研究方向。
 
 # 提出的算法
 ## 算法简介
+
+![](/images/paper/Segmentation_and_Enhancement_of_Latent_Fingerprints/fig_4.png)
+
 &emsp;&emsp;本算法包括离线字典学习阶段和在线词典分割和增强阶段(图4)。在离线阶段，学习两种字典：
 1. 一个块大小为64×64像素的粗级字典。
 2. 16个块大小为32×32像素的细级字典。
@@ -46,20 +51,92 @@ mathjax: true
 $$ \tilde{p} = (p - \mu_p) / \sigma_p \tag{1}
 $$ 其中$\mu_p$是块$p$的平均强度，$\sigma_p$是块$p$的标准差。
 
-&emsp;&emsp;用$ P^c = \{ p^c_j \}^{N^c}_{j=1} $表示粗级字典的训练集，其中$N^c$表示在$P^c$中训练块的数量，用$P^f_i = \{ p^f_{i,j} \}^{N^f_i}_{j=1} $，$i = 1,· · ·,16$，表示16个细级字典的训练集，其中$N^f_i$表示第$i$个特定脊线方向字典的训练块数量。为了平衡效率和准确性，我们从$P^c$中随机选取80,000个块，从每个$P^f_i$中随机选取10,000个块进行字典学习。
+&emsp;&emsp;用$P^c = \left\\{ p^c_j \right\\}^{N^c}\_{j=1}$表示粗级字典的训练集，其中$N^c$表示在$P^c$中训练块的数量，用$P^f_i = \left\\{ p^f_{i,j} \right\\}^{N^f_i}\_{j=1} $，$i = 1,· · ·,16$，表示16个细级字典的训练集，其中$N^f_i$表示第$i$个特定脊线方向字典的训练块数量。为了平衡效率和准确性，我们从$P^c$中随机选取80,000个块，从每个$P^f_i$中随机选取10,000个块进行字典学习。
 
 ### 字典学习
-&emsp;&emsp;不失一般性，对于一个训练集$ P = \{ p_j \}^{N^c}_{j=1} $，字典学习的目标是构建一个大小为$N_P \times N_D$字典$D$，$D$需要提供$P$中每个块的最佳稀疏表示, $N_P$是$P$中块的维度，$N_D$是字典里$D$中元素的数量。一个典型的字典学习目标函数是：
-$$ \min_{D, \Gamma}\| P - D\Gamma \|_F^2 \ \ s.t.\forall j, \ \ \|\gamma_j\|_0 \leq T_0, \tag{2} 
-$$ 其中$\gamma_j$是大小为$N_D \times N$的矩阵$\Gamma$的第$j$列，$\|\cdot\|_0$是计算表示中非零项个数的$l^0$范数，$T_0$是预定的非零项个数，$\|\cdot\|_F$是Frobenius范数。字典学习的有效算法之一是K-SVD，它通过以下两个阶段的迭代来最小化公式(2)中的目标函数。
+&emsp;&emsp;不失一般性，对于一个训练集$P = \left\\{ p_j \right\\}^{N^c}\_{j=1}$，字典学习的目标是构建一个大小为$N_P \times N_D$字典$D$，$D$需要提供$P$中每个块的最佳稀疏表示, $N_P$是$P$中块的维度，$N_D$是字典里$D$中元素的数量。一个典型的字典学习目标函数是：
+$$ \min_{D, \Gamma}\\| P - D\Gamma \\|_F^2 \ \ s.t.\forall j, \ \ \\|\gamma_j\\|_0 \leq T_0, \tag{2} 
+$$ 其中$\gamma_j$是大小为$N_D \times N$的矩阵$\Gamma$的第$j$列，$\\|\cdot\\|_0$是计算表示中非零项个数的$l^0$范数，$T_0$是预定的非零项个数，$\\|\cdot\\|_F$是Frobenius范数。字典学习的有效算法之一是K-SVD，它通过以下两个阶段的迭代来最小化公式(2)中的目标函数。
 - 稀疏编码阶段：在固定字典$D$下，通过求解以下优化问题，得到$P$中每个块$p_j$的系数向量$\gamma_j$的表示：
 $$
-\min_{\gamma_j} \| p_j - D_{\gamma_j} \|_2^2 \ s.t. \ \| \gamma_j \|_0 \leq T_0, j = 1,2,...,N, \tag{3}
+\min_{\gamma_j} \\| p_j - D_{\gamma_j} \\|_2^2 \ s.t. \ \\| \gamma_j \\|_0 \leq T_0, j = 1,2,...,N, \tag{3}
 $$
 - 字典更新阶段：这一阶段通过奇异值分解(SVD)每次更新字典$D$的一列，同时固定$D$的所有其他列，从而减小公式(2)中的目标函数。
 
 使用离散余弦变换(DCT)基础构造初始字典D。每个字典元素学习后都通过公式(1)进行归一化。
 &emsp;&emsp;以$P^c$和$P^f_i, i = 1，···，16$为训练集，共构造了17个不同的字典(粗级字典$D^c$和16个细级字典$D^f_i, i = 1，···，16$)。将粗级字典中的元素个数$N^c_D$设置为1024，将每个细级字典中的元素个数$N^f_D$设置为64。图5显示了粗级字典$D^c$中的字典元素子集，图6显示了16个细级字典中的字典元素子集。
+
+![](/images/paper/Segmentation_and_Enhancement_of_Latent_Fingerprints/fig_5.png)
+
+![](/images/paper/Segmentation_and_Enhancement_of_Latent_Fingerprints/fig_6.png)
+
+## 潜指纹图像分解
+&emsp;&emsp;一个潜指纹图像，$f$，可以用两部分的和来表示：$f = u + v$，其中$u$表示$f$的卡通(分段光滑)部分，$v$表示振荡部分或纹理部分。Buades等人利用低通滤波不会使卡通图像的总变化量减小的特点，提出了一种基于局部总变化量(LTV)的快速非线性分解方法。在一个像素$x$处的局部总变化量定义为：
+$$
+LTV_{\sigma}(f)(x) = L_{\sigma} * |\nabla f|(x), \tag{4}
+$$ 其中，$L_{\sigma}$是一个$\sigma$大小的低通滤波器，其傅里叶变换由$\hat{L}_{\sigma}(\xi) = 1/(1 + (2 \pi \sigma \xi)^4)$获得。用低通滤波器对图像进行滤波前后，$LTV$的相对减小率$\lambda\_\sigma(x)$可以测量图像的局部振荡行为，$\lambda\_\sigma(x)$由以下公式计算得到：
+$$
+\lambda_\sigma(x) = \frac{LTV_\sigma(f)(x) - LTV_\sigma(L_\sigma * f)(x)}{LTV_\sigma(f)(x)}. \tag{5}
+$$ 当$\lambda\_\sigma(x)$接近1时，说明低通滤波后的$LTV$降低了很多，像素$x$属于纹理部分。另一方面，当$\lambda\_\sigma(x)$接近0时，低通滤波后的$LTV$相对降低很少，像素$x$属于分段平滑的卡通部分。因此，卡通部分$u$和纹理部分$v$可由$f$和$L_\sigma * f$根据$\lambda\_\sigma(x)$加权和提取：
+$$ u(x) = w(\lambda_\sigma(x))((L_\sigma * f)(x) - f(x)) + f(x), \tag{6} $$
+
+$$ v(x) = f(x) - u(x), \tag{7} $$
+
+其中$w(y)$是一个分段线性递增函数，定义为：
+$$
+w(y) = \begin{cases}
+0                     & y < a_1, \\\\
+(y - a_1)/(a_2 - a_1) & a_1 < y < a_2, \\\\
+1                     & y > a_2. 
+\end{cases}
+\tag{8}
+$$ 如果$w(\lambda_\sigma(x)) = 0$(像素$x$属于卡通部分)，$u(x)$等于$f(x)$，$v(x)$等于0。如果$w(\lambda_\sigma(x)) = 1$(像素$x$属于纹理部分)，$u(x)$等于低通滤波图像$L_\sigma * f(x)$中的像素值，$v(x)$等于原图像$f(x)$与低通滤波图像$L_\sigma * f(x)$的差值。
+&emsp;&emsp;图9(b)显示了图9(a)中三幅不同的潜图像的纹理部分；在保持摩擦脊模式的同时，大部分的结构噪声被成功地去除。
+
+## 脊线质量、方位和频率的粗略估计
+### 稀疏编码
+&emsp;&emsp;对于每个块$p \in P^c_L$用公式(1)进行了归一化，并且通过行连接的方式转化为了向量。$p$的稀疏表示可以通过正交匹配追踪求解下面的优化问题得到：
+$$
+\min_\alpha \\| p - D^c \alpha \\|_2^2 \ \ s.t. \ \\| \alpha \\|_0 \leq T_1, \tag{9}
+$$ 其中$\alpha$为稀疏系数向量，其中最多$T_1$项不为零，$D^c$为粗级字典。根据$\alpha$中的非零项，选择字典$D^c$中元素的子集$D^c_s$。设$\alpha'$为$D^c_s$对应的非零系数。然后将$p$投影到$D^c_s$的元素张成的空间上。近似计算为：
+$$
+\hat{p} = D^c_s \alpha', \tag{10}
+$$  其中，$\alpha'$由以下公式获得：
+$$
+\alpha' = (D^{cT}_s D^c_s)^{-1} D^{cT}_s p. \tag{11}
+$$ 残差向量可以计算为：
+$$
+r(p) = p - \hat{p} = p - D^c_s \alpha'. \tag{12}
+$$
+
+### 块质量的定义
+&emsp;&emsp;一般来说，当$p$是指纹块时，重构误差$\\|r(p)\\|\_2$较小。但是，这种按像素计算的误差衡量忽略了指纹图像的空间属性。为此，我们使用图像$I_1$和$I_2$之间的结构相似指数(SSIM)来计算重构误差，其定义为：
+$$
+SSIM(I_1, I_2) = \frac{(2\mu_1\mu_2 + C_l)(2\sigma_{12} + C_c)}{(\mu_1^2 + \mu_2^2 + C_l)(\sigma_1^2 + \sigma_1^2 + C_c)}, \tag{13}
+$$ 其中$\mu_1$和$\sigma_1$是图像$I_1$的平均强度和标准差，$\mu_2$和$\sigma_2$是图像$I_2$的平均强度和标准差，$\sigma_{12}$为图像$I_1$和$I_2$之间的协方差，$C_l$和$C_c$是降低计算不稳定性的参数。
+&emsp;&emsp;图7比较了$T_1$从1变到4时，两个指纹块(顶部和中间的两行)和一个非指纹块(底部的一行)的重建结果和SSIM指数。我们可以看到，高质量的指纹块在块$p$与其重建块$\hat{p}$之间的SSIM值很大，而非指纹块的SSIM值很小。块$p$的质量$Q_p$定义为：
+$$
+Q_p = SSIM(p, \hat{p}). \tag{14}
+$$
+
+![](/images/paper/Segmentation_and_Enhancement_of_Latent_Fingerprints/fig_7.png)
+
+### 脊线质量图，方向场和频率场估计
+&emsp;&emsp;重构后的块$p$被分割成不重叠的16×16的块，就像[12]和[10]中使用的那样。对于每个块，根据[12]得到其方向和频率，然后得到重构出的块方向场$\theta_{\hat{p}}$(如图8)和频率场$f_{\hat{p}}$。利用重构后的块$\hat{p}$的方向场$\theta_{\hat{p}}$和频率场$f_{\hat{p}}$估计了潜指纹图像中块$p$的方向场$\theta_p$和频率场$f_p$。对于一个被多个块覆盖的区域，其质量、方向和频率定义如下。将潜指纹图像分为不重叠的16×16块。对于潜指纹中的每个区域$b$，设$\\{q_i,\theta_i,f_i\\}$为重叠区域$b$中第$i$个块的脊线质量、方向和频率。对脊线质量$Q^c_b$、方向$\theta^c_b$和频率$f^c_b$的粗略估计为：
+$$ Q^c_b = \frac{1}{n_b} \sum^{n_b}_{i=1}{q_i}, \tag{15} $$
+
+$$ \theta^c_b = \frac{1}{2} \tan^-1 \left( \sum^{n_b}\_{i=1}{q_i\sin{2\theta_i}}, \sum^{n_b}_{i=1}{q_i\cos{2\theta_i}} \right), \tag{16} $$
+
+$$ f^c_b = \frac{1}{\sum^{n_s}\_{i = 1}{q_i}} \sum^{n_s}_{i = 1}{q_i f_i}, \tag{17} $$
+
+其中$n_b$是重叠区域$b$中块的数量。
+
+![](/images/paper/Segmentation_and_Enhancement_of_Latent_Fingerprints/fig_8.png)
+
+
+
+
+![](/images/paper/Segmentation_and_Enhancement_of_Latent_Fingerprints/fig_9.png)
 
 
 
