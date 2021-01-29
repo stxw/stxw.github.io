@@ -22,8 +22,8 @@ favicon:
   visibilitychange: true
   narmal: /images/stxw.jpg
   hidden: /images/failure.ico
-  show_text: (/≧▽≦/)咦！又好了！
-  hide_text: (T﹏T)啊呀！崩溃啦！
+  show_text: (/≧▽≦/)欢迎回来！
+  hide_text: (T﹏T)不要走嘛...
   apple_touch_icon: /images/apple-touch-icon-next.png
   safari_pinned_tab: /images/logo.svg
   #android_manifest: /images/manifest.json
