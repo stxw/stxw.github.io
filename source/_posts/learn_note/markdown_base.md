@@ -386,5 +386,5 @@ ___
 ___
 
 ## 数学公式和画图
-详细请查看这个链接<https://www.runoob.com/markdown/md-advance.html>
+可以参考这个大佬的链接<https://www.cnblogs.com/yalphait/articles/8685586.html>
 <br/>
