@@ -73,17 +73,17 @@ echo "这还是注释"
 * -e ：输出前解析转义字符（类似`\n`之类的），默认不解析。
 
 ```shell
-xxx@xxx:~$ echo 'abc!'   # 输出后会换一行
+$ echo 'abc!'   # 输出后会换一行
 abc!
-xxx@xxx:~$ echo -n 'abc!'   # 输出后不换行
-abc!xxx@xxx:~$ 
+$ echo -n 'abc!'   # 输出后不换行
+abc!$ 
 
-xxx@xxx:~$ echo 'abc\nabc'  # 不解析转义字符，将\n当做普通字符串输出
+$ echo 'abc\nabc'  # 不解析转义字符，将\n当做普通字符串输出
 abc\nabc
-xxx@xxx:~$ echo -e 'abc\nabc'  # 解析转义字符，将\n当做换行符输出
+$ echo -e 'abc\nabc'  # 解析转义字符，将\n当做换行符输出
 abc
 abc
-xxx@xxx:~$ 
+$ 
 ```
 
 &emsp;&emsp;cat命令用于将文件的内容输出到标准输出，语法：`cat 要输出的文件`。
@@ -91,53 +91,53 @@ xxx@xxx:~$
 ## 输入
 &emsp;&emsp;read命令会从标准输入中读取字符串，保存到变量中，语法：`read 保存输入的变量`。
 ```shell
-xxx@xxx:~$ read VAR
+$ read VAR
 abc   # 输入的字符串
-xxx@xxx:~$ echo ${VAR}
+$ echo ${VAR}
 abc
-xxx@xxx:~$ 
+$ 
 ```
 &emsp;&emsp;也可以用read命令将读取的字符串保存到多个变量中，语法：`read 变量1 变量2 ...`。read命令读取到空格就换一个变量来保存字符串，读取到回车停止读取。
 ```shell
-xxx@xxx:~$ read VAR1 VAR2
+$ read VAR1 VAR2
 abc 123  # 输入的字符串
-xxx@xxx:~$ echo ${VAR1}
+$ echo ${VAR1}
 abc
-xxx@xxx:~$ echo ${VAR2}
+$ echo ${VAR2}
 123
-xxx@xxx:~$ 
+$ 
 ```
 &emsp;&emsp;用read将输入保存到变量时，如果想将空格当做普通字符保存到变量中，可以在空格前加一个反斜杠来转义。
 ```shell
-xxx@xxx:~$ read VAR1 VAR2
+$ read VAR1 VAR2
 abc\ 123 xyz       
-xxx@xxx:~$ echo ${VAR1}
+$ echo ${VAR1}
 abc 123
-xxx@xxx:~$ echo ${VAR2}
+$ echo ${VAR2}
 xyz
-xxx@xxx:~$ 
+$ 
 ```
 &emsp;&emsp;当用来保存输入的变量是最后一个变量的时候，即使不加反斜杠来转义，也会把空格当做普通字符来处理。
 ```shell
-xxx@xxx:~$ read VAR1 VAR2
+$ read VAR1 VAR2
 abc 123 xyz
-xxx@xxx:~$ echo ${VAR1}
+$ echo ${VAR1}
 abc
-xxx@xxx:~$ echo ${VAR2}
+$ echo ${VAR2}
 123 xyz  # 变量VAR2是最后一个保存输入的变量
-xxx@xxx:~$   # 所以“123”和“xyz”之间的空格，即使不加反斜杠，也当做普通字符处理
+$   # 所以“123”和“xyz”之间的空格，即使不加反斜杠，也当做普通字符处理
 ```
 &emsp;&emsp;如果后面的变量还没有用到，read就读取到了换行，那么，没用到的变量会赋值为空字符串。
 ```shell
-xxx@xxx:~$ VAR1=xyz
-xxx@xxx:~$ VAR2=123
-xxx@xxx:~$ read VAR1 VAR2
+$ VAR1=xyz
+$ VAR2=123
+$ read VAR1 VAR2
 abc
-xxx@xxx:~$ echo ${VAR1}
+$ echo ${VAR1}
 abc
-xxx@xxx:~$ echo ${VAR2} # 变量VAR2原来是123，现在是空字符串。
+$ echo ${VAR2} # 变量VAR2原来是123，现在是空字符串。
 
-xxx@xxx:~$ 
+$ 
 ```
 
 
@@ -199,10 +199,10 @@ declare MY_STRING
 ```
 &emsp;&emsp;其实，字符串类型的变量不用`declare`声明也可以赋值或者使用，相当于一个空字符串。
 ```shell
-xxx@xxx:~$ echo "MY_VAR=${MY_VAR};" #在没有用`declare`声明时，使用'MY_VAR'变量
+$ echo "MY_VAR=${MY_VAR};" #在没有用`declare`声明时，使用'MY_VAR'变量
 MY_VAR=;
-xxx@xxx:~$ MY_VAR=123 #在没有用`declare`声明时，给'MY_VAR'变量赋值
-xxx@xxx:~$ echo "MY_VAR=${MY_VAR};"
+$ MY_VAR=123 #在没有用`declare`声明时，给'MY_VAR'变量赋值
+$ echo "MY_VAR=${MY_VAR};"
 MY_VAR=123;
 ```
 
@@ -222,11 +222,11 @@ echo ${VAR}
 ## 释放
 语法：`unset 变量名`
 ```shell
-xxx@xxx:~$ VAR=123
-xxx@xxx:~$ echo "VAR=${VAR};"
+$ VAR=123
+$ echo "VAR=${VAR};"
 VAR=123;
-xxx@xxx:~$ unset VAR
-xxx@xxx:~$ echo "VAR=${VAR};"
+$ unset VAR
+$ echo "VAR=${VAR};"
 VAR=;
 ```
 &emsp;&emsp;变量VAR在释放之前的值是123，在释放之后是一个空字符串。
@@ -244,8 +244,8 @@ echo "VAR=${VAR};"
 **第一个例子**
 &emsp;&emsp;首先在终端中声明一个名称为VAR的局部变量，然后用bash执行test.sh脚本，结果如下：
 ```shell
-xxx@xxx:~$ declare VAR='123'
-xxx@xxx:~$ bash ./test.sh
+$ declare VAR='123'
+$ bash ./test.sh
 VAR=;
 ```
 &emsp;&emsp;在这个例子中，当前终端可以当做一个shell进程，执行`bash ./test.sh`命令会创建一个子shell进程，然后用创建的子shell进程去解析test.sh里的命令。因为VAR是一个局部变量，所以在创建子shell进程时，不会将VAR变量复制给子shell进程，所以子shell进程执行test.sh后输出的VAR是一个空字符串。
@@ -253,9 +253,9 @@ VAR=;
 **第二个例子**
 &emsp;&emsp;首先在终端中声明一个名称为VAR的局部变量，先将VAR用`export`导出为环境变量，然后再用bash执行test.sh脚本，结果如下：
 ```shell
-xxx@xxx:~$ declare VAR='123'
-xxx@xxx:~$ export VAR
-xxx@xxx:~$ bash ./test.sh 
+$ declare VAR='123'
+$ export VAR
+$ bash ./test.sh 
 VAR=123;
 ```
 &emsp;&emsp;与第一个例子不同的地方是VAR被导出成了环境变量，当前终端在创建子shell进程的时候会将VAR复制，成为子shell进程的环境变量，所以输出的VAR是字符串'123'。
@@ -364,7 +364,7 @@ echo "hello world"; ls -la;
 
 &emsp;&emsp;shell里的模式一般用来匹配多个文件或文件夹的路径，使用模式的常用命令有：ls、find、cp、mv、chmod...。
 ```shell
-xxx@xxx:~$ ls -1 test_[0-9].sh
+$ ls -1 test_[0-9].sh
 test_0.sh
 test_1.sh
 test_2.sh
@@ -404,7 +404,7 @@ test_2.sh
 
 &emsp;&emsp;**注意**：shell里用grep时，`|`、`()`、`{}`、`+`、`?`需要转义。比如：
 ```shell
-xxx@xxx:~$ ls -1 | grep 'test_1\{2\}'
+$ ls -1 | grep 'test_1\{2\}'
 test_11.sh
 ```
 &emsp;&emsp;上面的`{`和`}`前面要加`\`转义。
@@ -421,34 +421,34 @@ test_11.sh
 &emsp;&emsp;shell里用`$[表达式]`表示中括号里的是表达式，也可以用`$((表达式))`来表示，推荐使用中括号的形式。
 &emsp;&emsp;**注意**：shell里只能对整形变量进行表达式运算，不能对字符串类型的变量进行表达式运算
 ```shell
-xxx@xxx:~$ declare -i VAR1=123
-xxx@xxx:~$ declare -i VAR2=111
-xxx@xxx:~$ echo $[VAR1 + VAR2]
+$ declare -i VAR1=123
+$ declare -i VAR2=111
+$ echo $[VAR1 + VAR2]
 234
 ```
 
 ## expr命令
 &emsp;&emsp;也可以用expr命令来进行表达式运算，expr命令支持的运算符有：|、&、<、<=、=、!=、>=、+、-、*、/、%。语法：`expr 表达式`，举个栗子：
 ```shell
-xxx@xxx:~$ expr 123 + 111  # 加法运算
+$ expr 123 + 111  # 加法运算
 234
-xxx@xxx:~$ VAR1=333
-xxx@xxx:~$ VAR2=234
-xxx@xxx:~$ expr ${VAR1} - ${VAR2}  # 变量１减变量２
+$ VAR1=333
+$ VAR2=234
+$ expr ${VAR1} - ${VAR2}  # 变量１减变量２
 99
-xxx@xxx:~$ expr ${VAR1} \* ${VAR2}  # 变量１乘变量２
+$ expr ${VAR1} \* ${VAR2}  # 变量１乘变量２
 77922
-xxx@xxx:~$ expr ${VAR1} / ${VAR2}  # 变量１除变量２
+$ expr ${VAR1} / ${VAR2}  # 变量１除变量２
 1
 ```
 &emsp;&emsp;**注意**：运算符两边都有一个空格。部分运算符前面要加个`\`来转义，比如*、&、(、>。
 &emsp;&emsp;还可以用小括号来组成更复杂的表达式。
 ```shell
-xxx@xxx:~$ expr 12 \* \( 34 - 26 \)  # 乘号和小括号前都要加\
+$ expr 12 \* \( 34 - 26 \)  # 乘号和小括号前都要加\
 96
-xxx@xxx:~$ declare -i VAR1=413
-xxx@xxx:~$ declare -i VAR2=34
-xxx@xxx:~$ expr ${VAR1} % \( ${VAR2} - 21 \) 
+$ declare -i VAR1=413
+$ declare -i VAR2=34
+$ expr ${VAR1} % \( ${VAR2} - 21 \) 
 10
 ```
 &emsp;&emsp;expr还可以进行简单的字符串运算，支持的有：
@@ -459,17 +459,17 @@ xxx@xxx:~$ expr ${VAR1} % \( ${VAR2} - 21 \)
 * **length 字符串**：字符串的长度。
 
 ```shell
-xxx@xxx:~$ expr substr 'this is a test' 2 8
+$ expr substr 'this is a test' 2 8
 his is a
-xxx@xxx:~$ expr length 'this is a test'
+$ expr length 'this is a test'
 14
-xxx@xxx:~$ expr index 'this is a test' s
+$ expr index 'this is a test' s
 4
 ```
 &emsp;&emsp;expr命令会将计算结果输出到标准输出，如果想将结果保存到变量里，可以用反引号来实现。
 ```shell
-xxx@xxx:~$ VAR=`expr 23 \* 42`
-xxx@xxx:~$ echo ${VAR}
+$ VAR=`expr 23 \* 42`
+$ echo ${VAR}
 966
 ```
 
@@ -485,19 +485,19 @@ xxx@xxx:~$ echo ${VAR}
 * **字符串1 != 字符串2**：字符串不相等
 
 ```shell
-xxx@xxx:~$ VAR=''
-xxx@xxx:~$ [ -z ${VAR} ] # 判断字符串${VAR}长度是否为0
-xxx@xxx:~$ echo $?  # 查看test命令的返回值
+$ VAR=''
+$ [ -z ${VAR} ] # 判断字符串${VAR}长度是否为0
+$ echo $?  # 查看test命令的返回值
 0
-xxx@xxx:~$ VAR='abc'
-xxx@xxx:~$ [ -z ${VAR} ]
-xxx@xxx:~$ echo $?
+$ VAR='abc'
+$ [ -z ${VAR} ]
+$ echo $?
 1
-xxx@xxx:~$ [ ${VAR} = 'abc' ] # 判断字符串${VAR}是否等于'abc'
-xxx@xxx:~$ echo $?
+$ [ ${VAR} = 'abc' ] # 判断字符串${VAR}是否等于'abc'
+$ echo $?
 0
-xxx@xxx:~$ [ ${VAR} = '123' ]
-xxx@xxx:~$ echo $?
+$ [ ${VAR} = '123' ]
+$ echo $?
 1
 ```
 
@@ -555,7 +555,7 @@ fi # 结束if语句
 &emsp;&emsp;这里的条件一般是一条shell命令，比如`test`、`gcc`等。如果命令的返回值为0，则条件成立。
 &emsp;&emsp;小实验：
 ```shell
-xxx@xxx:~$ cat shell.sh 
+$ cat shell.sh 
 #!/bin/sh
 
 if [ ${1} -gt ${2} ]  # 判断${1}是否大于${2}
@@ -568,11 +568,11 @@ else
 	echo 'num_1 < num_2'
 fi
 
-xxx@xxx:~$ ./shell.sh 12 12
+$ ./shell.sh 12 12
 num_1 = num_2
-xxx@xxx:~$ ./shell.sh 12 11
+$ ./shell.sh 12 11
 num_1 > num_2
-xxx@xxx:~$ ./shell.sh 12 13
+$ ./shell.sh 12 13
 num_1 < num_2
 ```
 
@@ -604,14 +604,14 @@ done
 ```
 &emsp;&emsp;举个栗子：
 ```shell
-stxw@stxw-c:~$ cat shell.sh 
+$ cat shell.sh 
 
 for VAR in aaa bbb ccc
 do
 	echo ${VAR}
 done
 
-stxw@stxw-c:~$ bash shell.sh 
+$ bash shell.sh 
 aaa
 bbb
 ccc
@@ -619,27 +619,27 @@ ccc
 &emsp;&emsp;然后再介绍几种shell里与for语句搭配使用的形式。
 1. `{s..e}`：用来生成从s到e的序列，s和e可以是整数，也可以是大小写字母。
 ```shell
-stxw@stxw-c:~$ echo {-3..12}
+$ echo {-3..12}
 -3 -2 -1 0 1 2 3 4 5 6 7 8 9 10 11 12
-stxw@stxw-c:~$ echo {a..z}
+$ echo {a..z}
 a b c d e f g h i j k l m n o p q r s t u v w x y z
 ```
 &emsp;&emsp;这里要注意的是，s和e中间有**两个**点，多一个或少一个都不行。
 &emsp;&emsp;如果s和e是整数的话，可以在s和e前面加0，达到自动用0补全的效果，比如：
 ```shell
-stxw@stxw-c:~$ echo {001..012}
+$ echo {001..012}
 001 002 003 004 005 006 007 008 009 010 011 012
 ```
 &emsp;&emsp;这个和for循环搭配使用，就可以从s循环到e了，举个栗子：
 ```shell
-stxw@stxw-c:~$ cat shell.sh 
+$ cat shell.sh 
 
 for i in {01..04}
 do
 	echo "str_${i}"
 done
 
-stxw@stxw-c:~$ bash shell.sh 
+$ bash shell.sh 
 str_01
 str_02
 str_03
@@ -668,31 +668,31 @@ done
 
 &emsp;&emsp;一些例子：
 ```shell
-stxw@stxw-c:~$ seq 3 # 只有一个数字的，生成从1到该数字的序列，默认增量是1
+$ seq 3 # 只有一个数字的，生成从1到该数字的序列，默认增量是1
 1
 2
 3
-stxw@stxw-c:~$ seq -s ' ' 12  # 用空格来分隔数字
+$ seq -s ' ' 12  # 用空格来分隔数字
 1 2 3 4 5 6 7 8 9 10 11 12
-stxw@stxw-c:~$ 
-stxw@stxw-c:~$ seq -s ' ' -3 12  # 有两个数字的，生成两个数字之间增量为1的序列
+$ 
+$ seq -s ' ' -3 12  # 有两个数字的，生成两个数字之间增量为1的序列
 -3 -2 -1 0 1 2 3 4 5 6 7 8 9 10 11 12
-stxw@stxw-c:~$ 
-stxw@stxw-c:~$ seq -s ' ' -3 0.8 12 # 三个数字的
+$ 
+$ seq -s ' ' -3 0.8 12 # 三个数字的
 -3.0 -2.2 -1.4 -0.6 0.2 1.0 1.8 2.6 3.4 4.2 5.0 5.8 6.6 7.4 8.2 9.0 9.8 10.6 11.4
-stxw@stxw-c:~$ 
-stxw@stxw-c:~$ seq -s '__' -3 12  # 用'__'来分隔数字
+$ 
+$ seq -s '__' -3 12  # 用'__'来分隔数字
 -3__-2__-1__0__1__2__3__4__5__6__7__8__9__10__11__12
-stxw@stxw-c:~$ 
-stxw@stxw-c:~$ seq -s ' ' -w -3 12  # 通过填充前导零来均衡宽度
+$ 
+$ seq -s ' ' -w -3 12  # 通过填充前导零来均衡宽度
 -3 -2 -1 00 01 02 03 04 05 06 07 08 09 10 11 12
-stxw@stxw-c:~$ 
-stxw@stxw-c:~$ seq -s ' ' -f %05.2f 12  # 指定数字的格式
+$ 
+$ seq -s ' ' -f %05.2f 12  # 指定数字的格式
 01.00 02.00 03.00 04.00 05.00 06.00 07.00 08.00 09.00 10.00 11.00 12.00
 ```
 &emsp;&emsp;seq与for语句搭配使用：
 ```shell
-stxw@stxw-c:~$ cat shell.sh 
+$ cat shell.sh 
 
 for i in `seq -3 12`
 do
@@ -700,13 +700,13 @@ do
 done
 echo
 
-stxw@stxw-c:~$ bash shell.sh 
+$ bash shell.sh 
 -3 -2 -1 0 1 2 3 4 5 6 7 8 9 10 11 12 
 ```
 
 3. 最后一种是for语句和路径通配符，举个栗子：
 ```shell
-stxw@stxw-c:~$ cat shell.sh 
+$ cat shell.sh 
 # 用for语句输出当前目录下的所有文件
 for FILE_NAME in ./*
 do
@@ -714,7 +714,7 @@ do
 done
 echo
 
-stxw@stxw-c:~$ bash shell.sh 
+$ bash shell.sh 
 ./a.out ./in.txt ./out.txt ./shell.sh ./test.cpp 
 ```
 
@@ -763,10 +763,10 @@ find ./ -regex '^\./test.*'
 ### 根据路径查找
 &emsp;&emsp;语法`find 查找的路径 -path pattern`，查找文件的完整路径与[模式](#模式)pattern相匹配的文件。与`-name`的区别是`-name`不匹配文件所在的目录，举个栗子：
 ```shell
-stxw@stxw-c:~$ find ./shell -name "*sh*"
+$ find ./shell -name "*sh*"
 ./shell
 ./shell/test_1.sh
-stxw@stxw-c:~$ find ./shell -path "*sh*"
+$ find ./shell -path "*sh*"
 ./shell
 ./shell/stxw.txt
 ./shell/test_1.sh
