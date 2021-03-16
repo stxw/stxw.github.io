@@ -6,7 +6,7 @@ tags: [论文, 指纹识别]
 mathjax: true
 ---
 
-![论文原文下载链接](https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/documnets/papers/High-Performance_Large-Scale_Image_Recognition_Without_Normalization.pdf)
+[论文原文下载链接](https://cdn.jsdelivr.net/gh/stxw/stxw.github.io/documnets/papers/High-Performance_Large-Scale_Image_Recognition_Without_Normalization.pdf)
 
 
 # Abstract（摘要）
